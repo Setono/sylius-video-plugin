@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Typ'
             url: 'Video-URL'
-            code: 'Einbettungscode'
+            html: 'Einbettungscode'
             file: 'Videodatei'
             poster: 'Vorschaubild'
             help:
                 type: 'Wählen Sie, wie dieses Video bereitgestellt wird.'
                 file: 'Laden Sie eine Videodatei hoch, z. B. MP4 oder WebM.'
                 url: 'Link zu einer Videodatei oder einer Videoseite wie YouTube oder Vimeo.'
-                code: 'Fügen Sie den Einbettungscode (iframe) des Videoanbieters ein.'
+                html: 'Fügen Sie den Einbettungscode (iframe) des Videoanbieters ein.'
                 poster: 'Optionales Vorschaubild, das vor der Videowiedergabe angezeigt wird.'
     type:
         file: 'Datei-Upload'
         url: 'Externe URL'
         embed: 'Einbettungscode'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Bitte wählen Sie einen gültigen Videotyp.'
     file_video:
         file:
             not_blank: 'Bitte laden Sie eine Videodatei hoch.'
-    url_video:
-        url:
-            not_blank: 'Bitte geben Sie die Video-URL ein.'
-            invalid: 'Dieser Wert ist keine gültige URL.'
-    embed_video:
-        code:
-            not_blank: 'Bitte geben Sie den Einbettungscode ein.'

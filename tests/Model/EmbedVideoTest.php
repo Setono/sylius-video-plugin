@@ -21,14 +21,14 @@ final class EmbedVideoTest extends TestCase
     /**
      * @test
      */
-    public function it_holds_embed_code(): void
+    public function it_holds_embed_html(): void
     {
         $video = new EmbedVideo();
 
-        self::assertNull($video->getCode());
+        self::assertNull($video->getHtml());
 
-        $video->setCode('<iframe></iframe>');
+        $video->setHtml('<iframe></iframe>');
 
-        self::assertSame('<iframe></iframe>', $video->getCode());
+        self::assertSame('<iframe></iframe>', $video->getHtml());
     }
 }

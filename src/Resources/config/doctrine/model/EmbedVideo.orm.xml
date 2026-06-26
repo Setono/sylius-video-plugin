@@ -4,10 +4,10 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <!-- code is nullable at the DB level because STI rows of other types do not have embed
-         code; the application-layer validator enforces NotBlank for embed videos. -->
+    <!-- html is nullable at the DB level because STI rows of other types do not have embed
+         markup; the application-layer validator enforces NotBlank for embed videos. -->
     <mapped-superclass name="Setono\SyliusVideoPlugin\Model\EmbedVideo">
-        <field name="code" type="text" column="code" nullable="true"/>
+        <field name="html" type="text" column="html" nullable="true"/>
     </mapped-superclass>
 
 </doctrine-mapping>

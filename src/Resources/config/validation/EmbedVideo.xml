@@ -5,9 +5,8 @@
                                         https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
     <class name="Setono\SyliusVideoPlugin\Model\EmbedVideo">
-        <property name="code">
+        <property name="html">
             <constraint name="NotBlank">
-                <option name="message">setono_sylius_video.embed_video.code.not_blank</option>
                 <option name="groups">
                     <value>sylius</value>
                 </option>

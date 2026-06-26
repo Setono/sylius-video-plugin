@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Type'
             url: 'Video-URL'
-            code: 'Insluitcode'
+            html: 'Insluitcode'
             file: 'Videobestand'
             poster: 'Posterafbeelding'
             help:
                 type: 'Kies hoe deze video wordt aangeleverd.'
                 file: 'Upload een videobestand, bijv. MP4 of WebM.'
                 url: 'Link naar een videobestand of een videopagina zoals YouTube of Vimeo.'
-                code: 'Plak de insluitcode (iframe) van de videoaanbieder.'
+                html: 'Plak de insluitcode (iframe) van de videoaanbieder.'
                 poster: 'Optionele voorbeeldafbeelding die wordt getoond voordat de video wordt afgespeeld.'
     type:
         file: 'Bestand uploaden'
         url: 'Externe URL'
         embed: 'Insluitcode'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Kies een geldig videotype.'
     file_video:
         file:
             not_blank: 'Upload een videobestand.'
-    url_video:
-        url:
-            not_blank: 'Voer de video-URL in.'
-            invalid: 'Deze waarde is geen geldige URL.'
-    embed_video:
-        code:
-            not_blank: 'Voer de insluitcode in.'

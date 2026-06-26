@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusVideoPlugin\Tests\EventListener;
+namespace Setono\SyliusVideoPlugin\Tests\EventSubscriber;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\EventListener\VideoFileUploadListener;
+use Setono\SyliusVideoPlugin\EventSubscriber\VideoFileUploadSubscriber;
 use Setono\SyliusVideoPlugin\Model\EmbedVideo;
 use Setono\SyliusVideoPlugin\Model\FileVideo;
-use Setono\SyliusVideoPlugin\Tests\Application\Entity\Product\Product;
+use Setono\SyliusVideoPlugin\Tests\Application\Entity\Product;
 use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-final class VideoFileUploadListenerTest extends TestCase
+final class VideoFileUploadSubscriberTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -26,7 +26,7 @@ final class VideoFileUploadListenerTest extends TestCase
         self::assertSame([
             'sylius.product.pre_create' => 'upload',
             'sylius.product.pre_update' => 'upload',
-        ], VideoFileUploadListener::getSubscribedEvents());
+        ], VideoFileUploadSubscriber::getSubscribedEvents());
     }
 
     /**
@@ -46,7 +46,7 @@ final class VideoFileUploadListenerTest extends TestCase
         });
         $uploader->uploadPoster(Argument::cetera())->shouldNotBeCalled();
 
-        (new VideoFileUploadListener($uploader->reveal()))->upload(new GenericEvent($product));
+        (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent($product));
 
         self::assertTrue($product->hasVideo($video));
     }
@@ -65,7 +65,7 @@ final class VideoFileUploadListenerTest extends TestCase
         $uploader = $this->prophesize(VideoFileUploaderInterface::class);
         $uploader->uploadPoster($video)->shouldBeCalledOnce();
 
-        (new VideoFileUploadListener($uploader->reveal()))->upload(new GenericEvent($product));
+        (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent($product));
     }
 
     /**
@@ -82,7 +82,7 @@ final class VideoFileUploadListenerTest extends TestCase
         $uploader = $this->prophesize(VideoFileUploaderInterface::class);
         $uploader->upload($video)->shouldBeCalledOnce();
 
-        (new VideoFileUploadListener($uploader->reveal()))->upload(new GenericEvent($product));
+        (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent($product));
 
         self::assertFalse($product->hasVideo($video));
     }
@@ -96,6 +96,6 @@ final class VideoFileUploadListenerTest extends TestCase
         $uploader->upload(Argument::cetera())->shouldNotBeCalled();
         $uploader->uploadPoster(Argument::cetera())->shouldNotBeCalled();
 
-        (new VideoFileUploadListener($uploader->reveal()))->upload(new GenericEvent(new \stdClass()));
+        (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent(new \stdClass()));
     }
 }

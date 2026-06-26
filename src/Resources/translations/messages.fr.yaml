@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Type'
             url: 'URL de la vidéo'
-            code: 'Code d’intégration'
+            html: 'Code d’intégration'
             file: 'Fichier vidéo'
             poster: 'Image d’aperçu'
             help:
                 type: 'Choisissez comment cette vidéo est fournie.'
                 file: 'Téléversez un fichier vidéo, par ex. MP4 ou WebM.'
                 url: 'Lien vers un fichier vidéo ou une page vidéo comme YouTube ou Vimeo.'
-                code: 'Collez le code d’intégration (iframe) fourni par l’hébergeur de la vidéo.'
+                html: 'Collez le code d’intégration (iframe) fourni par l’hébergeur de la vidéo.'
                 poster: 'Image d’aperçu facultative affichée avant la lecture de la vidéo.'
     type:
         file: 'Téléversement de fichier'
         url: 'URL externe'
         embed: 'Code d’intégration'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Veuillez choisir un type de vidéo valide.'
     file_video:
         file:
             not_blank: 'Veuillez téléverser un fichier vidéo.'
-    url_video:
-        url:
-            not_blank: 'Veuillez saisir l’URL de la vidéo.'
-            invalid: 'Cette valeur n’est pas une URL valide.'
-    embed_video:
-        code:
-            not_blank: 'Veuillez saisir le code d’intégration.'

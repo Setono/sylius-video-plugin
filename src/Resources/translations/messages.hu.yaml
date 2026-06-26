@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Típus'
             url: 'Videó URL-címe'
-            code: 'Beágyazási kód'
+            html: 'Beágyazási kód'
             file: 'Videófájl'
             poster: 'Előnézeti kép'
             help:
                 type: 'Válassza ki, hogyan érhető el ez a videó.'
                 file: 'Töltsön fel egy videófájlt, pl. MP4 vagy WebM.'
                 url: 'Hivatkozás egy videófájlra vagy videóoldalra, például YouTube vagy Vimeo.'
-                code: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
+                html: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
                 poster: 'Választható előnézeti kép, amely a videó lejátszása előtt jelenik meg.'
     type:
         file: 'Fájlfeltöltés'
         url: 'Külső URL'
         embed: 'Beágyazási kód'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Válasszon érvényes videótípust.'
     file_video:
         file:
             not_blank: 'Töltsön fel egy videófájlt.'
-    url_video:
-        url:
-            not_blank: 'Adja meg a videó URL-címét.'
-            invalid: 'Ez az érték nem érvényes URL.'
-    embed_video:
-        code:
-            not_blank: 'Adja meg a beágyazási kódot.'

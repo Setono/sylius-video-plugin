@@ -30,7 +30,7 @@
                 <argument type="collection">
                     <argument key="type">embed</argument>
                     <argument key="label">setono_sylius_video.type.embed</argument>
-                    <argument key="field">code</argument>
+                    <argument key="field">html</argument>
                     <argument key="model">%setono_sylius_video.model.embed_video.class%</argument>
                     <argument key="factory" type="service" id="setono_sylius_video.factory.embed_video"/>
                 </argument>

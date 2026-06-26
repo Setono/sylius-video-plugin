@@ -190,7 +190,7 @@ final class ProductVideoType extends AbstractType
         return match ($fieldName) {
             'file' => [FileType::class, [], []],
             'url' => [UrlType::class, ['default_protocol' => 'https'], []],
-            'code' => [TextareaType::class, [], ['rows' => 4]],
+            'html' => [TextareaType::class, [], ['rows' => 4]],
             default => [TextType::class, [], []],
         };
     }

@@ -48,14 +48,14 @@ final class ProductVideoTypeTest extends TypeTestCase
 
         $form->submit([
             'type' => 'embed',
-            'code' => '<iframe></iframe>',
+            'html' => '<iframe></iframe>',
         ]);
 
         self::assertTrue($form->isSynchronized());
 
         $data = $form->getData();
         self::assertInstanceOf(EmbedVideo::class, $data);
-        self::assertSame('<iframe></iframe>', $data->getCode());
+        self::assertSame('<iframe></iframe>', $data->getHtml());
     }
 
     /**
@@ -69,7 +69,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         $form = $this->factory->create(ProductVideoType::class, $video);
 
         self::assertTrue($form->has('url'));
-        self::assertFalse($form->has('code'));
+        self::assertFalse($form->has('html'));
         self::assertSame('https://example.com/video', $form->get('url')->getData());
         self::assertSame('url', $form->get('type')->getData());
     }
@@ -89,7 +89,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         $form->submit([
             'type' => 'embed',
             'url' => 'https://example.com/new',
-            'code' => '<iframe></iframe>',
+            'html' => '<iframe></iframe>',
         ]);
 
         self::assertTrue($form->isSynchronized());
@@ -122,7 +122,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         self::assertSame('setono_sylius_video.form.video.help.poster', $form->get('posterFile')->getConfig()->getOption('help'));
         self::assertSame('setono_sylius_video.form.video.help.file', $form->get('file')->getConfig()->getOption('help'));
         self::assertSame('setono_sylius_video.form.video.help.url', $form->get('url')->getConfig()->getOption('help'));
-        self::assertSame('setono_sylius_video.form.video.help.code', $form->get('code')->getConfig()->getOption('help'));
+        self::assertSame('setono_sylius_video.form.video.help.html', $form->get('html')->getConfig()->getOption('help'));
     }
 
     /**
@@ -133,7 +133,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         $registry = new VideoKindRegistry([
             ['type' => 'file', 'label' => 'setono_sylius_video.type.file', 'field' => 'file', 'model' => FileVideo::class, 'factory' => new Factory(FileVideo::class)],
             ['type' => 'url', 'label' => 'setono_sylius_video.type.url', 'field' => 'url', 'model' => UrlVideo::class, 'factory' => new Factory(UrlVideo::class)],
-            ['type' => 'embed', 'label' => 'setono_sylius_video.type.embed', 'field' => 'code', 'model' => EmbedVideo::class, 'factory' => new Factory(EmbedVideo::class)],
+            ['type' => 'embed', 'label' => 'setono_sylius_video.type.embed', 'field' => 'html', 'model' => EmbedVideo::class, 'factory' => new Factory(EmbedVideo::class)],
         ]);
 
         return [

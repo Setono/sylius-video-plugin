@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Typ'
             url: 'Video-URL'
-            code: 'Inbäddningskod'
+            html: 'Inbäddningskod'
             file: 'Videofil'
             poster: 'Affischbild'
             help:
                 type: 'Välj hur den här videon tillhandahålls.'
                 file: 'Ladda upp en videofil, t.ex. MP4 eller WebM.'
                 url: 'Länk till en videofil eller en videosida som YouTube eller Vimeo.'
-                code: 'Klistra in inbäddningskoden (iframe) från videoleverantören.'
+                html: 'Klistra in inbäddningskoden (iframe) från videoleverantören.'
                 poster: 'Valfri förhandsvisningsbild som visas innan videon spelas upp.'
     type:
         file: 'Filuppladdning'
         url: 'Extern URL'
         embed: 'Inbäddningskod'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Välj en giltig videotyp.'
     file_video:
         file:
             not_blank: 'Ladda upp en videofil.'
-    url_video:
-        url:
-            not_blank: 'Ange video-URL:en.'
-            invalid: 'Detta värde är inte en giltig URL.'
-    embed_video:
-        code:
-            not_blank: 'Ange inbäddningskoden.'

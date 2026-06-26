@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\Renderer;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Model\EmbedVideo;
 use Setono\SyliusVideoPlugin\Model\UrlVideo;
 use Setono\SyliusVideoPlugin\Renderer\EmbedVideoRenderer;
-use Setono\SyliusVideoPlugin\Sanitizer\EmbedSanitizerInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
 final class EmbedVideoRendererTest extends TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @test
      */
@@ -29,27 +25,20 @@ final class EmbedVideoRendererTest extends TestCase
     /**
      * @test
      */
-    public function it_renders_the_sanitized_embed_code(): void
+    public function it_renders_the_embed_html(): void
     {
-        $sanitizer = $this->prophesize(EmbedSanitizerInterface::class);
-        $sanitizer->sanitize('<iframe></iframe>')->willReturn('<iframe data-safe></iframe>');
-
-        $twig = new Environment(new ArrayLoader(['renderer' => '{{ code|raw }}']));
+        $twig = new Environment(new ArrayLoader(['renderer' => '{{ html|raw }}']));
 
         $video = new EmbedVideo();
-        $video->setCode('<iframe></iframe>');
+        $video->setHtml('<iframe></iframe>');
 
-        $renderer = new EmbedVideoRenderer($twig, $sanitizer->reveal(), 'renderer');
+        $renderer = new EmbedVideoRenderer($twig, 'renderer');
 
-        self::assertSame('<iframe data-safe></iframe>', $renderer->render($video));
+        self::assertSame('<iframe></iframe>', $renderer->render($video));
     }
 
     private function renderer(): EmbedVideoRenderer
     {
-        return new EmbedVideoRenderer(
-            new Environment(new ArrayLoader()),
-            $this->prophesize(EmbedSanitizerInterface::class)->reveal(),
-            'renderer',
-        );
+        return new EmbedVideoRenderer(new Environment(new ArrayLoader()), 'renderer');
     }
 }

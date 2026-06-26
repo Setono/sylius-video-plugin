@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\Model;
 
 interface EmbedVideoInterface extends ProductVideoInterface
 {
-    public function getCode(): ?string;
+    public function getHtml(): ?string;
 
-    public function setCode(?string $code): void;
+    public function setHtml(?string $html): void;
 }
