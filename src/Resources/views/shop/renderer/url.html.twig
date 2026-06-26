@@ -1,0 +1,14 @@
+{% set poster = setono_sylius_video_poster(video) %}
+<div class="setono-sylius-video setono-sylius-video--url">
+    {% if url is not null %}
+        {% if is_direct_file %}
+            <video class="setono-sylius-video__player" controls preload="metadata"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
+                <source src="{{ url }}">
+            </video>
+        {% else %}
+            <div class="setono-sylius-video__responsive" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                <iframe src="{{ url }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

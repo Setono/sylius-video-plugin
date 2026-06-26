@@ -1,0 +1,36 @@
+setono_sylius_video:
+    ui:
+        videos: 'Vídeos'
+    form:
+        product:
+            videos: 'Vídeos'
+        video:
+            type: 'Tipo'
+            url: 'URL del vídeo'
+            code: 'Código de inserción'
+            file: 'Archivo de vídeo'
+            poster: 'Imagen de portada'
+            help:
+                type: 'Elija cómo se proporciona este vídeo.'
+                file: 'Suba un archivo de vídeo, p. ej. MP4 o WebM.'
+                url: 'Enlace a un archivo de vídeo o a una página de vídeo como YouTube o Vimeo.'
+                code: 'Pegue el código de inserción (iframe) del proveedor del vídeo.'
+                poster: 'Imagen de vista previa opcional que se muestra antes de reproducir el vídeo.'
+    type:
+        file: 'Subida de archivo'
+        url: 'URL externa'
+        embed: 'Código de inserción'
+        youtube: 'YouTube'
+    product_video:
+        type:
+            invalid: 'Elija un tipo de vídeo válido.'
+    file_video:
+        file:
+            not_blank: 'Suba un archivo de vídeo.'
+    url_video:
+        url:
+            not_blank: 'Introduzca la URL del vídeo.'
+            invalid: 'Este valor no es una URL válida.'
+    embed_video:
+        code:
+            not_blank: 'Introduzca el código de inserción.'

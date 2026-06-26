@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <!--
+        path is DB-nullable (shared STI table), so the "a file is required" rule is enforced
+        here. At validation time a brand-new file video carries a pending upload (hasFile()),
+        while a persisted one already has a path; either satisfies the rule.
+    -->
+    <class name="Setono\SyliusVideoPlugin\Model\FileVideo">
+        <constraint name="Expression">
+            <option name="expression">this.getPath() !== null or this.hasFile()</option>
+            <option name="message">setono_sylius_video.file_video.file.not_blank</option>
+            <option name="groups">
+                <value>sylius</value>
+            </option>
+        </constraint>
+    </class>
+
+</constraint-mapping>

@@ -1,0 +1,36 @@
+setono_sylius_video:
+    ui:
+        videos: 'Videoer'
+    form:
+        product:
+            videos: 'Videoer'
+        video:
+            type: 'Type'
+            url: 'Video-URL'
+            code: 'Innbyggingskode'
+            file: 'Videofil'
+            poster: 'Plakatbilde'
+            help:
+                type: 'Velg hvordan denne videoen leveres.'
+                file: 'Last opp en videofil, f.eks. MP4 eller WebM.'
+                url: 'Lenke til en videofil eller en videoside som YouTube eller Vimeo.'
+                code: 'Lim inn innbyggingskoden (iframe) fra videoleverandøren.'
+                poster: 'Valgfritt forhåndsvisningsbilde som vises før videoen spilles av.'
+    type:
+        file: 'Filopplasting'
+        url: 'Ekstern URL'
+        embed: 'Innbyggingskode'
+        youtube: 'YouTube'
+    product_video:
+        type:
+            invalid: 'Velg en gyldig videotype.'
+    file_video:
+        file:
+            not_blank: 'Last opp en videofil.'
+    url_video:
+        url:
+            not_blank: 'Skriv inn video-URL-en.'
+            invalid: 'Denne verdien er ikke en gyldig URL.'
+    embed_video:
+        code:
+            not_blank: 'Skriv inn innbyggingskoden.'

@@ -1,2 +1,0 @@
-setono_sylius_video:
-    resource: "@SetonoSyliusVideoPlugin/Resources/config/routes.yaml"

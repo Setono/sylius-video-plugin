@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-    <services>
-        <!-- Put your services here -->
-    </services>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+        Dispatcher only. Services are declared explicitly (no autowire / autoconfigure) in
+        per-folder files under services/, one file per src/ folder that contains services.
+        Service IDs are the fully qualified class name; interfaces are registered as `alias`
+        entries pointing at the concrete implementation.
+    -->
+    <imports>
+        <import resource="services/event_listener.xml"/>
+        <import resource="services/filesystem.xml"/>
+        <import resource="services/form.xml"/>
+        <import resource="services/kind.xml"/>
+        <import resource="services/menu.xml"/>
+        <import resource="services/poster.xml"/>
+        <import resource="services/renderer.xml"/>
+        <import resource="services/sanitizer.xml"/>
+        <import resource="services/twig.xml"/>
+        <import resource="services/uploader.xml"/>
+    </imports>
+
+    <services/>
+
 </container>

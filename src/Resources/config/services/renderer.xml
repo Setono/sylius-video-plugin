@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+        CompositeVideoRenderer is populated by setono/composite-compiler-pass from every service
+        tagged `setono_sylius_video.renderer`. The composite stays untagged so it is not added to
+        itself.
+    -->
+    <services>
+        <service id="Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer"/>
+
+        <service id="Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface"
+                 alias="Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer"/>
+
+        <service id="Setono\SyliusVideoPlugin\Renderer\FileVideoRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface"/>
+            <tag name="setono_sylius_video.renderer"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Renderer\UrlVideoRenderer">
+            <argument type="service" id="twig"/>
+            <tag name="setono_sylius_video.renderer"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Renderer\EmbedVideoRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\Sanitizer\EmbedSanitizerInterface"/>
+            <tag name="setono_sylius_video.renderer"/>
+        </service>
+    </services>
+</container>
