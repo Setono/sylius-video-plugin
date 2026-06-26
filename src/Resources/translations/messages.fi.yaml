@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Tyyppi'
             url: 'Videon URL-osoite'
-            code: 'Upotuskoodi'
+            html: 'Upotuskoodi'
             file: 'Videotiedosto'
             poster: 'Esikatselukuva'
             help:
                 type: 'Valitse, miten tämä video toimitetaan.'
                 file: 'Lataa videotiedosto, esim. MP4 tai WebM.'
                 url: 'Linkki videotiedostoon tai videosivulle, kuten YouTube tai Vimeo.'
-                code: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
+                html: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
                 poster: 'Valinnainen esikatselukuva, joka näytetään ennen videon toistoa.'
     type:
         file: 'Tiedoston lataus'
         url: 'Ulkoinen URL-osoite'
         embed: 'Upotuskoodi'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Valitse kelvollinen videotyyppi.'
     file_video:
         file:
             not_blank: 'Lataa videotiedosto.'
-    url_video:
-        url:
-            not_blank: 'Anna videon URL-osoite.'
-            invalid: 'Tämä arvo ei ole kelvollinen URL-osoite.'
-    embed_video:
-        code:
-            not_blank: 'Anna upotuskoodi.'

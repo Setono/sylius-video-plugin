@@ -28,7 +28,6 @@
 
         <service id="Setono\SyliusVideoPlugin\Renderer\EmbedVideoRenderer">
             <argument type="service" id="twig"/>
-            <argument type="service" id="Setono\SyliusVideoPlugin\Sanitizer\EmbedSanitizerInterface"/>
             <tag name="setono_sylius_video.renderer"/>
         </service>
     </services>

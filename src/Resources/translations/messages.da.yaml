@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Type'
             url: 'Video-URL'
-            code: 'Indlejringskode'
+            html: 'Indlejringskode'
             file: 'Videofil'
             poster: 'Posterbillede'
             help:
                 type: 'Vælg, hvordan denne video leveres.'
                 file: 'Upload en videofil, f.eks. MP4 eller WebM.'
                 url: 'Link til en videofil eller en videoside som YouTube eller Vimeo.'
-                code: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'
+                html: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'
                 poster: 'Valgfrit forhåndsvisningsbillede, der vises, før videoen afspilles.'
     type:
         file: 'Filupload'
         url: 'Ekstern URL'
         embed: 'Indlejringskode'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Vælg en gyldig videotype.'
     file_video:
         file:
             not_blank: 'Upload en videofil.'
-    url_video:
-        url:
-            not_blank: 'Indtast video-URL’en.'
-            invalid: 'Denne værdi er ikke en gyldig URL.'
-    embed_video:
-        code:
-            not_blank: 'Indtast indlejringskoden.'

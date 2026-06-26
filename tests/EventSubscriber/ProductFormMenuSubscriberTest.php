@@ -2,17 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusVideoPlugin\Tests\Menu;
+namespace Setono\SyliusVideoPlugin\Tests\EventSubscriber;
 
 use Knp\Menu\ItemInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\Menu\ProductFormMenuListener;
+use Setono\SyliusVideoPlugin\EventSubscriber\ProductFormMenuSubscriber;
 use Sylius\Bundle\AdminBundle\Event\ProductMenuBuilderEvent;
 
-final class ProductFormMenuListenerTest extends TestCase
+final class ProductFormMenuSubscriberTest extends TestCase
 {
     use ProphecyTrait;
+
+    /**
+     * @test
+     */
+    public function it_subscribes_to_the_product_form_menu_event(): void
+    {
+        self::assertSame(
+            ['sylius.menu.admin.product.form' => 'addVideosTab'],
+            ProductFormMenuSubscriber::getSubscribedEvents(),
+        );
+    }
 
     /**
      * @test
@@ -33,6 +44,6 @@ final class ProductFormMenuListenerTest extends TestCase
         $event = $this->prophesize(ProductMenuBuilderEvent::class);
         $event->getMenu()->willReturn($menu->reveal());
 
-        (new ProductFormMenuListener())($event->reveal());
+        (new ProductFormMenuSubscriber())->addVideosTab($event->reveal());
     }
 }

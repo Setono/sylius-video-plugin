@@ -5,13 +5,9 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\DependencyInjection;
 
 use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\EmbedVideoInterface;
 use Setono\SyliusVideoPlugin\Model\FileVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\UrlVideo;
-use Setono\SyliusVideoPlugin\Model\UrlVideoInterface;
 use Setono\SyliusVideoPlugin\Repository\ProductVideoRepository;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Sylius\Component\Resource\Factory\Factory;
@@ -69,7 +65,6 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(ProductVideo::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('interface')->defaultValue(ProductVideoInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('repository')->defaultValue(ProductVideoRepository::class)->cannotBeEmpty()->end()
                                         ->scalarNode('factory')->defaultValue(Factory::class)->cannotBeEmpty()->end()
                                     ->end()
@@ -84,7 +79,6 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(FileVideo::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('interface')->defaultValue(FileVideoInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('factory')->defaultValue(Factory::class)->cannotBeEmpty()->end()
                                     ->end()
                                 ->end()
@@ -98,7 +92,6 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(UrlVideo::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('interface')->defaultValue(UrlVideoInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('factory')->defaultValue(Factory::class)->cannotBeEmpty()->end()
                                     ->end()
                                 ->end()
@@ -112,7 +105,6 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                         ->scalarNode('model')->defaultValue(EmbedVideo::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('interface')->defaultValue(EmbedVideoInterface::class)->cannotBeEmpty()->end()
                                         ->scalarNode('factory')->defaultValue(Factory::class)->cannotBeEmpty()->end()
                                     ->end()
                                 ->end()

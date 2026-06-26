@@ -7,13 +7,11 @@
     <class name="Setono\SyliusVideoPlugin\Model\UrlVideo">
         <property name="url">
             <constraint name="NotBlank">
-                <option name="message">setono_sylius_video.url_video.url.not_blank</option>
                 <option name="groups">
                     <value>sylius</value>
                 </option>
             </constraint>
             <constraint name="Url">
-                <option name="message">setono_sylius_video.url_video.url.invalid</option>
                 <option name="groups">
                     <value>sylius</value>
                 </option>

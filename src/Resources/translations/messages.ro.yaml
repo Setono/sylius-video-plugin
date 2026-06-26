@@ -7,30 +7,20 @@ setono_sylius_video:
         video:
             type: 'Tip'
             url: 'URL-ul videoclipului'
-            code: 'Cod de încorporare'
+            html: 'Cod de încorporare'
             file: 'Fișier video'
             poster: 'Imagine de previzualizare'
             help:
                 type: 'Alegeți cum este furnizat acest videoclip.'
                 file: 'Încărcați un fișier video, de ex. MP4 sau WebM.'
                 url: 'Link către un fișier video sau o pagină video precum YouTube sau Vimeo.'
-                code: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
+                html: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
                 poster: 'Imagine de previzualizare opțională, afișată înainte de redarea videoclipului.'
     type:
         file: 'Încărcare fișier'
         url: 'URL extern'
         embed: 'Cod de încorporare'
         youtube: 'YouTube'
-    product_video:
-        type:
-            invalid: 'Alegeți un tip de videoclip valid.'
     file_video:
         file:
             not_blank: 'Încărcați un fișier video.'
-    url_video:
-        url:
-            not_blank: 'Introduceți URL-ul videoclipului.'
-            invalid: 'Această valoare nu este un URL valid.'
-    embed_video:
-        code:
-            not_blank: 'Introduceți codul de încorporare.'

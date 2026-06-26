@@ -36,8 +36,7 @@ return [
 
 ### 3. Make your `Product` own its videos
 
-The inverse `videos` association is mapped automatically onto any `Product` implementing
-`ProductVideosAwareInterface` — you only need to implement the interface and use the trait:
+Implement `ProductVideosAwareInterface` and use the trait on your `Product`:
 
 ```php
 # src/Entity/Product/Product.php
@@ -67,6 +66,30 @@ class Product extends BaseProduct implements ProductVideosAwareInterface
 }
 ```
 
+The plugin deliberately does **not** map the inverse `videos` association for you — you own your
+`Product` mapping, so you add it. The owning `ManyToOne` lives on `ProductVideo`, so you only need
+the inverse `OneToMany`. The `videos` property comes from the trait, so map it with XML/YAML rather
+than attributes (attributes can't target a trait's property):
+
+```xml
+<!-- config/doctrine/Product.orm.xml -->
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="App\Entity\Product\Product" table="sylius_product">
+        <one-to-many field="videos" target-entity="Setono\SyliusVideoPlugin\Model\ProductVideo" mapped-by="product" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+            <order-by>
+                <order-by-field name="position" direction="ASC"/>
+            </order-by>
+        </one-to-many>
+    </entity>
+</doctrine-mapping>
+```
+
 Point the product resource at your class (skip if you already override it):
 
 ```yaml
@@ -81,13 +104,16 @@ sylius_product:
 
 ### 4. Update the database
 
+The plugin does not ship migrations — generate one against your own schema and run it:
+
 ```bash
+bin/console doctrine:migrations:diff
 bin/console doctrine:migrations:migrate
 ```
 
-The plugin ships a migration creating the single `setono_sylius_video__product_video` table. The
-discriminator listener and the association listener add the STI map and the `videos` association
-at runtime, so no extra mapping is needed.
+This creates the single `setono_sylius_video__product_video` table. The discriminator listener
+adds the Single Table Inheritance map at runtime (keyed on each subtype's `getType()`), so no extra
+mapping is needed beyond the `videos` association you added in step 3.
 
 ### 5. Install assets
 
@@ -143,10 +169,8 @@ setono_sylius_video:
 ## Overriding
 
 - **Models:** swap any subtype via the `setono_sylius_video.resources.*.classes.model` config —
-  the discriminator keys stay stable because they are derived from the subtype interfaces.
+  the discriminator keys stay stable because they are derived from each model's `getType()`.
 - **Renderer templates:** override at `templates/bundles/SetonoSyliusVideoPlugin/shop/renderer/<type>.html.twig`.
-- **Embed sanitizing:** decorate `Setono\SyliusVideoPlugin\Sanitizer\EmbedSanitizerInterface`
-  (the default passes the embed code through unchanged — admins are trusted).
 - **Uploads:** decorate the `setono_sylius_video.uploader` service, or point `filesystem.adapter`
   at any Flysystem/Gaufrette adapter Sylius exposes.
 
@@ -191,9 +215,9 @@ class YoutubeVideo extends ProductVideo implements YoutubeVideoInterface
 **2. ORM mapping** — only needed if the kind adds a *new* column. Reusing the existing `url`
 column needs none.
 
-**3. Discriminator + resource** — register the subtype as a resource so the discriminator listener
-picks it up, and teach the listener the `interface → 'youtube'` mapping (decorate
-`ProductVideoDiscriminatorMapListener`):
+**3. Discriminator + resource** — register the subtype as a resource. The discriminator listener
+picks it up automatically and derives the discriminator key from the model's `getType()` (here
+`'youtube'`) — no listener decoration needed:
 
 ```yaml
 setono_sylius_video:
@@ -201,7 +225,6 @@ setono_sylius_video:
         youtube_video:
             classes:
                 model: App\Entity\Video\YoutubeVideo
-                interface: App\Entity\Video\YoutubeVideoInterface
 ```
 
 **4. Renderer + poster** — implement `VideoRendererInterface` (`instanceof YoutubeVideoInterface`),

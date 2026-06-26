@@ -40,14 +40,7 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
 
     public function prepend(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('kernel.bundles')) {
-            return;
-        }
-
-        /** @var array<string, mixed> $bundles */
-        $bundles = (array) $container->getParameter('kernel.bundles');
-
-        if (isset($bundles['SyliusUiBundle'])) {
+        if ($container->hasExtension('sylius_ui')) {
             // Render the product's videos on the shop product page. The `content` event always
             // fires on the product show page (unlike `before_thumbnails`, which only fires when a
             // product has more than one image). Disable by setting `enabled: false` on this block.

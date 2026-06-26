@@ -4,4 +4,4 @@ sylius_product:
     resources:
         product:
             classes:
-                model: Setono\SyliusVideoPlugin\Tests\Application\Entity\Product\Product
+                model: Setono\SyliusVideoPlugin\Tests\Application\Entity\Product

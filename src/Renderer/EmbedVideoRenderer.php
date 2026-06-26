@@ -7,14 +7,12 @@ namespace Setono\SyliusVideoPlugin\Renderer;
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
 use Setono\SyliusVideoPlugin\Model\EmbedVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
-use Setono\SyliusVideoPlugin\Sanitizer\EmbedSanitizerInterface;
 use Twig\Environment;
 
 final class EmbedVideoRenderer implements VideoRendererInterface
 {
     public function __construct(
         private readonly Environment $twig,
-        private readonly EmbedSanitizerInterface $sanitizer,
         private readonly string $template = '@SetonoSyliusVideoPlugin/shop/renderer/embed.html.twig',
     ) {
     }
@@ -30,11 +28,9 @@ final class EmbedVideoRenderer implements VideoRendererInterface
             throw new UnsupportedVideoException($video);
         }
 
-        $code = $video->getCode();
-
         return $this->twig->render($this->template, array_merge([
             'video' => $video,
-            'code' => null === $code ? '' : $this->sanitizer->sanitize($code),
+            'html' => $video->getHtml() ?? '',
         ], $context));
     }
 }

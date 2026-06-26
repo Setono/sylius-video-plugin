@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\EventListener\Doctrine;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Setono\SyliusVideoPlugin\Model\EmbedVideoInterface;
-use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
-use Setono\SyliusVideoPlugin\Model\UrlVideoInterface;
 
 /**
  * Populates the Single Table Inheritance discriminator map on the base ProductVideo entity at
- * the moment Doctrine loads its metadata. The map keys are the TYPE_* discriminator values used
- * throughout the plugin; they are stable across app-level subclassing because they are derived
- * from the plugin's own subtype interfaces, not from the (overridable) concrete class names.
+ * the moment Doctrine loads its metadata. The discriminator value for each subtype is resolved
+ * dynamically from the model itself ({@see ProductVideoInterface::getType()}), so the map keys
+ * are stable across app-level subclassing and adding a kind never requires editing this listener.
  *
  * The plugin's ORM XML declares `inheritance-type="SINGLE_TABLE"` and the discriminator column
  * on ProductVideo, but omits the map because the concrete subtype classes may be overridden by
@@ -61,38 +58,17 @@ final class ProductVideoDiscriminatorMapListener
                 continue;
             }
 
-            $key = $this->getDiscriminatorKey($model);
-
-            if (null === $key) {
+            try {
+                // The base class is abstract by convention and throws here; the concrete subtypes
+                // return their own discriminator value.
+                $type = (new $model())->getType();
+            } catch (\Throwable) {
                 continue;
             }
 
-            $map[$key] = $model;
+            $map[$type] = $model;
         }
 
         return $map;
-    }
-
-    /**
-     * @param class-string $class
-     */
-    private function getDiscriminatorKey(string $class): ?string
-    {
-        // The three subtype interfaces explicitly map to the discriminator values used
-        // throughout the plugin (form field value, spec language). Anything that is not one of
-        // the known subtypes is skipped — the base ProductVideo class itself is not in the map.
-        if (is_a($class, FileVideoInterface::class, true)) {
-            return ProductVideoInterface::TYPE_FILE;
-        }
-
-        if (is_a($class, UrlVideoInterface::class, true)) {
-            return ProductVideoInterface::TYPE_URL;
-        }
-
-        if (is_a($class, EmbedVideoInterface::class, true)) {
-            return ProductVideoInterface::TYPE_EMBED;
-        }
-
-        return null;
     }
 }

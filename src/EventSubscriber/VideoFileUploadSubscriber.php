@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusVideoPlugin\EventListener;
+namespace Setono\SyliusVideoPlugin\EventSubscriber;
 
 use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  * Uploads pending video files and posters when a product is created or updated — mirrors Sylius's
  * own {@see \Sylius\Bundle\CoreBundle\EventListener\ImagesUploadListener}.
  */
-final class VideoFileUploadListener implements EventSubscriberInterface
+final class VideoFileUploadSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly VideoFileUploaderInterface $uploader,
