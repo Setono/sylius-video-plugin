@@ -1,7 +1,0 @@
-# Overrides the product model so it owns the inverse ProductVideo association — exactly the step
-# the README asks adopting applications to perform.
-sylius_product:
-    resources:
-        product:
-            classes:
-                model: Setono\SyliusVideoPlugin\Tests\Application\Entity\Product

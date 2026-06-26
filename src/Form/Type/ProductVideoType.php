@@ -76,7 +76,7 @@ final class ProductVideoType extends AbstractType
             $video = $event->getData();
 
             if ($video instanceof ProductVideoInterface) {
-                $this->addKindField($form, $video->getType());
+                $this->addKindField($form, $video::getType());
 
                 return;
             }
@@ -94,7 +94,7 @@ final class ProductVideoType extends AbstractType
             $video = $event->getData();
 
             if ($video instanceof ProductVideoInterface) {
-                $event->getForm()->get('type')->setData($video->getType());
+                $event->getForm()->get('type')->setData($video::getType());
             }
         });
 
@@ -108,7 +108,7 @@ final class ProductVideoType extends AbstractType
 
             $existing = $form->getData();
             $type = $existing instanceof ProductVideoInterface
-                ? $existing->getType()
+                ? $existing::getType()
                 : ($data['type'] ?? null);
 
             if (!is_string($type) || !$this->kindRegistry->has($type)) {

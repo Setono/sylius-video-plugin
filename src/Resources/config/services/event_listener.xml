@@ -6,7 +6,7 @@
 
     <services>
         <service id="Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMapListener">
-            <argument>%setono_sylius_video.resources%</argument>
+            <argument>%sylius.resources%</argument>
             <tag name="doctrine.event_listener" event="loadClassMetadata"/>
         </service>
     </services>

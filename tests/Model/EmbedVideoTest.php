@@ -15,7 +15,7 @@ final class EmbedVideoTest extends TestCase
      */
     public function it_has_the_embed_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_EMBED, (new EmbedVideo())->getType());
+        self::assertSame(ProductVideoInterface::TYPE_EMBED, EmbedVideo::getType());
     }
 
     /**

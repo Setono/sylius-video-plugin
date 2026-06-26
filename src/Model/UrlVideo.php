@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Model;
 
+use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
+
+#[AsVideoKind(label: 'setono_sylius_video.type.url', field: 'url')]
 class UrlVideo extends ProductVideo implements UrlVideoInterface
 {
     protected ?string $url = null;
 
-    public function getType(): string
+    public static function getType(): string
     {
         return self::TYPE_URL;
     }

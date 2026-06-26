@@ -15,7 +15,7 @@ final class FileVideoTest extends TestCase
      */
     public function it_has_the_file_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_FILE, (new FileVideo())->getType());
+        self::assertSame(ProductVideoInterface::TYPE_FILE, FileVideo::getType());
     }
 
     /**

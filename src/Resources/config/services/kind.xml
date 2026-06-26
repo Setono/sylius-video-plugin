@@ -4,37 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                https://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
-        Declarative metadata about the built-in video kinds. Each entry references the resource
-        factory auto-registered by sylius_resource (setono_sylius_video.factory.<name>) and the
-        model class parameter (setono_sylius_video.model.<name>.class). To add a kind, register a
-        subtype resource and add an entry here (or decorate this service).
-    -->
     <services>
+        <!--
+            The kinds argument is populated by RegisterVideoKindsPass, which scans the registered
+            Sylius resources for models carrying #[AsVideoKind]. To add a kind, register a subtype
+            resource and annotate its model — no entry is needed here.
+        -->
         <service id="Setono\SyliusVideoPlugin\Kind\VideoKindRegistry">
-            <argument type="collection">
-                <argument type="collection">
-                    <argument key="type">file</argument>
-                    <argument key="label">setono_sylius_video.type.file</argument>
-                    <argument key="field">file</argument>
-                    <argument key="model">%setono_sylius_video.model.file_video.class%</argument>
-                    <argument key="factory" type="service" id="setono_sylius_video.factory.file_video"/>
-                </argument>
-                <argument type="collection">
-                    <argument key="type">url</argument>
-                    <argument key="label">setono_sylius_video.type.url</argument>
-                    <argument key="field">url</argument>
-                    <argument key="model">%setono_sylius_video.model.url_video.class%</argument>
-                    <argument key="factory" type="service" id="setono_sylius_video.factory.url_video"/>
-                </argument>
-                <argument type="collection">
-                    <argument key="type">embed</argument>
-                    <argument key="label">setono_sylius_video.type.embed</argument>
-                    <argument key="field">html</argument>
-                    <argument key="model">%setono_sylius_video.model.embed_video.class%</argument>
-                    <argument key="factory" type="service" id="setono_sylius_video.factory.embed_video"/>
-                </argument>
-            </argument>
+            <argument type="collection"/>
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Kind\VideoKindRegistryInterface"
