@@ -1,0 +1,36 @@
+setono_sylius_video:
+    ui:
+        videos: 'Videa'
+    form:
+        product:
+            videos: 'Videa'
+        video:
+            type: 'Typ'
+            url: 'URL videa'
+            code: 'Kód pro vložení'
+            file: 'Soubor videa'
+            poster: 'Náhledový obrázek'
+            help:
+                type: 'Zvolte, jak je toto video poskytováno.'
+                file: 'Nahrajte soubor videa, např. MP4 nebo WebM.'
+                url: 'Odkaz na soubor videa nebo na stránku videa, jako je YouTube nebo Vimeo.'
+                code: 'Vložte kód pro vložení (iframe) od poskytovatele videa.'
+                poster: 'Volitelný náhledový obrázek zobrazený před přehráním videa.'
+    type:
+        file: 'Nahrání souboru'
+        url: 'Externí URL'
+        embed: 'Kód pro vložení'
+        youtube: 'YouTube'
+    product_video:
+        type:
+            invalid: 'Vyberte platný typ videa.'
+    file_video:
+        file:
+            not_blank: 'Nahrajte soubor videa.'
+    url_video:
+        url:
+            not_blank: 'Zadejte URL videa.'
+            invalid: 'Tato hodnota není platná URL.'
+    embed_video:
+        code:
+            not_blank: 'Zadejte kód pro vložení.'

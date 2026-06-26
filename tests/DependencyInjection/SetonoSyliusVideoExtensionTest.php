@@ -4,38 +4,43 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\DependencyInjection;
 
-use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
+use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMapListener;
+use Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer;
+use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 
-/**
- * See examples of tests and configuration options here: https://github.com/SymfonyTest/SymfonyDependencyInjectionTest
- */
 final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
 {
-    protected function getContainerExtensions(): array
-    {
-        return [
-            new SetonoSyliusVideoExtension(),
-        ];
-    }
-
     /**
-     * @return array<string, mixed>
+     * @test
      */
-    protected function getMinimalConfiguration(): array
+    public function it_sets_the_filesystem_parameter_and_alias(): void
     {
-        return [
-            'option' => 'option_value',
-        ];
+        $this->load();
+
+        $this->assertContainerBuilderHasParameter('setono_sylius_video.filesystem.public_url_prefix', '/media/image');
+        $this->assertContainerBuilderHasAlias('setono_sylius_video.filesystem', FilesystemAdapterInterface::class);
     }
 
     /**
      * @test
      */
-    public function after_loading_the_correct_parameter_has_been_set(): void
+    public function it_registers_the_plugin_services(): void
     {
         $this->load();
 
-        $this->assertContainerBuilderHasParameter('setono_sylius_video.option', 'option_value');
+        $this->assertContainerBuilderHasService(ProductVideoDiscriminatorMapListener::class);
+        $this->assertContainerBuilderHasService(CompositeVideoRenderer::class);
+    }
+
+    /**
+     * @return list<SetonoSyliusVideoExtension>
+     */
+    protected function getContainerExtensions(): array
+    {
+        return [
+            new SetonoSyliusVideoExtension(),
+        ];
     }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+        CompositeVideoPosterResolver is populated by setono/composite-compiler-pass from every
+        service tagged `setono_sylius_video.poster_resolver` (priority ordered). The composite
+        stays untagged so it is not added to itself.
+    -->
+    <services>
+        <service id="Setono\SyliusVideoPlugin\Poster\CompositeVideoPosterResolver"/>
+
+        <service id="Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface"
+                 alias="Setono\SyliusVideoPlugin\Poster\CompositeVideoPosterResolver"/>
+
+        <service id="Setono\SyliusVideoPlugin\Poster\StoredPosterResolver">
+            <argument type="service" id="Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface"/>
+            <tag name="setono_sylius_video.poster_resolver" priority="100"/>
+        </service>
+    </services>
+</container>

@@ -12,3 +12,12 @@ doctrine:
         charset: UTF8
 
         url: '%env(resolve:DATABASE_URL)%'
+
+    orm:
+        mappings:
+            SetonoSyliusVideoApp:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/Entity'
+                prefix: 'Setono\SyliusVideoPlugin\Tests\Application\Entity'
+                alias: SetonoSyliusVideoApp

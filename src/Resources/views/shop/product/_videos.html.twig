@@ -1,0 +1,12 @@
+{# Rendered on the shop product page via the `sylius.shop.product.show.content` event.
+   Guarded so it is a no-op until the application's Product implements ProductVideosAwareInterface. #}
+{% if product is defined and product is not null and attribute(product, 'videos') is defined %}
+    {% set videos = product.videos %}
+    {% if videos|length > 0 %}
+        <div class="setono-sylius-video-list">
+            {% for video in videos %}
+                {{ setono_sylius_video_render(video) }}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endif %}

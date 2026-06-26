@@ -22,3 +22,16 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
+
+    # Our entity convention is "nullable PHP property, NOT NULL DB column" — the value is populated
+    # (constructor, gedmo timestampable, uploader, controller) before flush. The plugin also types
+    # relation properties with interfaces (ProductInterface) while phpstan-doctrine resolves
+    # relations to the concrete app-level entity class. phpstan-doctrine's rules cannot express
+    # either split, so we silence them for the model layer only.
+    ignoreErrors:
+        -
+            identifier: doctrine.columnType
+            path: src/Model/*
+        -
+            identifier: doctrine.associationType
+            path: src/Model/*

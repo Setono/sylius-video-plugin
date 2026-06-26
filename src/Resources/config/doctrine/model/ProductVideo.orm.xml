@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <!--
+        The base ProductVideo resource uses Single Table Inheritance. The discriminator-map is
+        NOT declared here because the concrete subtype classes are only known at runtime (they
+        come from `sylius_resource.resources.*.classes.model`). A Doctrine loadClassMetadata
+        listener (ProductVideoDiscriminatorMapListener) populates the map when Doctrine loads
+        this metadata. This keeps the plugin compatible with apps that override a subtype class.
+    -->
+    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\ProductVideo"
+                       table="setono_sylius_video__product_video"
+                       inheritance-type="SINGLE_TABLE">
+        <discriminator-column name="type" type="string" length="20"/>
+
+        <indexes>
+            <index name="setono_sylius_video_type_idx" columns="type"/>
+        </indexes>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="position" type="integer" nullable="true"/>
+        <field name="posterPath" type="string" length="255" column="poster_path" nullable="true"/>
+
+        <field name="createdAt" type="datetime_immutable" column="created_at">
+            <gedmo:timestampable on="create"/>
+        </field>
+        <field name="updatedAt" type="datetime_immutable" column="updated_at">
+            <gedmo:timestampable on="update"/>
+        </field>
+
+        <many-to-one field="product" target-entity="Sylius\Component\Core\Model\ProductInterface" inversed-by="videos">
+            <join-column name="product_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </many-to-one>
+    </mapped-superclass>
+
+</doctrine-mapping>

@@ -1,0 +1,8 @@
+{% set poster = setono_sylius_video_poster(video) %}
+<div class="setono-sylius-video setono-sylius-video--file">
+    {% if url is not null %}
+        <video class="setono-sylius-video__player" controls preload="metadata"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
+            <source src="{{ url }}">
+        </video>
+    {% endif %}
+</div>

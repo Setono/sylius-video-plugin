@@ -1,4 +1,6 @@
 doctrine_migrations:
+    migrations_paths:
+        'Setono\SyliusVideoPlugin\Migrations': '%kernel.project_dir%/../../migrations'
     storage:
         table_storage:
             table_name: sylius_migrations

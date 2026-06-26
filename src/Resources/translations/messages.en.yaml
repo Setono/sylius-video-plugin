@@ -1,0 +1,36 @@
+setono_sylius_video:
+    ui:
+        videos: 'Videos'
+    form:
+        product:
+            videos: 'Videos'
+        video:
+            type: 'Type'
+            url: 'Video URL'
+            code: 'Embed code'
+            file: 'Video file'
+            poster: 'Poster image'
+            help:
+                type: 'Choose how this video is provided.'
+                file: 'Upload a video file, e.g. MP4 or WebM.'
+                url: 'Link to a video file or a video page such as YouTube or Vimeo.'
+                code: 'Paste the embed code (iframe) from the video provider.'
+                poster: 'Optional preview image shown before the video plays.'
+    type:
+        file: 'File upload'
+        url: 'External URL'
+        embed: 'Embed code'
+        youtube: 'YouTube'
+    product_video:
+        type:
+            invalid: 'Please choose a valid video type.'
+    file_video:
+        file:
+            not_blank: 'Please upload a video file.'
+    url_video:
+        url:
+            not_blank: 'Please enter the video URL.'
+            invalid: 'This value is not a valid URL.'
+    embed_video:
+        code:
+            not_blank: 'Please enter the embed code.'
