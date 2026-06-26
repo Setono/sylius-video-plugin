@@ -38,15 +38,13 @@ final class ProductTypeExtensionTest extends TestCase
     {
         $builder = $this->prophesize(FormBuilderInterface::class);
         $builder
-            ->add('videos', CollectionType::class, Argument::that(static function (array $options): bool {
-                return ProductVideoType::class === $options['entry_type'] &&
-                    true === $options['allow_add'] &&
-                    true === $options['allow_delete'] &&
-                    false === $options['by_reference'] &&
-                    'setono_sylius_video.form.product.videos' === $options['label'] &&
-                    // Required for Sylius's enhanced collection widget (add/remove buttons).
-                    'entry' === $options['block_name'];
-            }))
+            ->add('videos', CollectionType::class, Argument::that(static fn (array $options): bool => ProductVideoType::class === $options['entry_type'] &&
+                true === $options['allow_add'] &&
+                true === $options['allow_delete'] &&
+                false === $options['by_reference'] &&
+                'setono_sylius_video.form.product.videos' === $options['label'] &&
+                // Required for Sylius's enhanced collection widget (add/remove buttons).
+                'entry' === $options['block_name']))
             ->shouldBeCalledOnce()
             ->willReturn($builder)
         ;
