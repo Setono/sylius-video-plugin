@@ -35,3 +35,9 @@ parameters:
         -
             identifier: doctrine.associationType
             path: src/Model/*
+        # Twig resolves `[RuntimeClass::class, 'method']` lazily via the runtime loader, so the
+        # instance-method array is the correct way to declare a runtime function. Older Twig
+        # versions (the `lowest` dependency job) type the callable parameter strictly and flag it.
+        -
+            message: '#Parameter \#2 \$callable of class Twig\\TwigFunction constructor expects#'
+            path: src/Twig/VideoTwigExtension.php
