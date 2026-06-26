@@ -1,0 +1,11 @@
+# Coverage is reported but does not block the build. The plugin intentionally leaves framework
+# glue (DI extension, compiler passes, bundle, Twig wiring) without unit tests, so neither the
+# project total nor a patch needs to hit a hard coverage threshold to merge.
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
