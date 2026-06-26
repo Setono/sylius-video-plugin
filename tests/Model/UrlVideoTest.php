@@ -15,7 +15,7 @@ final class UrlVideoTest extends TestCase
      */
     public function it_has_the_url_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_URL, (new UrlVideo())->getType());
+        self::assertSame(ProductVideoInterface::TYPE_URL, UrlVideo::getType());
     }
 
     /**

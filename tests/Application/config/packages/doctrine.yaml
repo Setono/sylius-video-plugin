@@ -20,4 +20,4 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/doctrine'
                 prefix: 'Setono\SyliusVideoPlugin\Tests\Application\Entity'
-                alias: SetonoSyliusVideoApp
+                alias: App

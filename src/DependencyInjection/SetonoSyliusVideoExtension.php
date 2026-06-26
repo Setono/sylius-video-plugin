@@ -21,9 +21,6 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
         /** @var array{resources: array<string, mixed>, filesystem: array{adapter: string, public_url_prefix: string}} $config */
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        // Exposed for the discriminator-map listener — it needs the model class of each resource
-        // so it can wire up the STI map at loadClassMetadata time.
-        $container->setParameter('setono_sylius_video.resources', $config['resources']);
         $container->setParameter('setono_sylius_video.filesystem.public_url_prefix', $config['filesystem']['public_url_prefix']);
         $container->setAlias('setono_sylius_video.filesystem', $config['filesystem']['adapter']);
 

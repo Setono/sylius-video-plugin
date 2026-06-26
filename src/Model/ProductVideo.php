@@ -27,7 +27,7 @@ class ProductVideo implements ProductVideoInterface
         return $this->id;
     }
 
-    public function getType(): string
+    public static function getType(): string
     {
         // The base class is abstract by convention (Sylius resource bundle limitation); real
         // instances are always FileVideo, UrlVideo or EmbedVideo, all of which override this.

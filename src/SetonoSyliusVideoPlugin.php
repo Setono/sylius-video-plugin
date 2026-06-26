@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin;
 
 use Setono\CompositeCompilerPass\CompositeCompilerPass;
+use Setono\SyliusVideoPlugin\DependencyInjection\Compiler\RegisterVideoKindsPass;
 use Setono\SyliusVideoPlugin\Poster\CompositeVideoPosterResolver;
 use Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer;
 use Sylius\Bundle\CoreBundle\Application\SyliusPluginTrait;
@@ -46,5 +47,8 @@ final class SetonoSyliusVideoPlugin extends AbstractResourceBundle
             CompositeVideoPosterResolver::class,
             'setono_sylius_video.poster_resolver',
         ));
+
+        // Builds the video kind registry from resources whose model carries #[AsVideoKind].
+        $container->addCompilerPass(new RegisterVideoKindsPass());
     }
 }

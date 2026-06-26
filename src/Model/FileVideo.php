@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Model;
 
+use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
+
+#[AsVideoKind(label: 'setono_sylius_video.type.file', field: 'file')]
 class FileVideo extends ProductVideo implements FileVideoInterface
 {
     protected ?string $path = null;
 
     protected ?\SplFileInfo $file = null;
 
-    public function getType(): string
+    public static function getType(): string
     {
         return self::TYPE_FILE;
     }

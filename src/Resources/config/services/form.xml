@@ -12,7 +12,7 @@
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Form\Extension\ProductTypeExtension">
-            <tag name="form.type_extension" extended-type="Sylius\Bundle\ProductBundle\Form\Type\ProductType"/>
+            <tag name="form.type_extension"/>
         </service>
     </services>
 </container>

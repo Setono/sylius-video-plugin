@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Model;
 
+use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
+
+#[AsVideoKind(label: 'setono_sylius_video.type.embed', field: 'html')]
 class EmbedVideo extends ProductVideo implements EmbedVideoInterface
 {
     protected ?string $html = null;
 
-    public function getType(): string
+    public static function getType(): string
     {
         return self::TYPE_EMBED;
     }

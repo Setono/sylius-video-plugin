@@ -20,7 +20,7 @@ final class ProductVideoTest extends TestCase
     {
         $this->expectException(\LogicException::class);
 
-        (new ProductVideo())->getType();
+        ProductVideo::getType();
     }
 
     /**

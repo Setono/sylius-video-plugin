@@ -18,8 +18,11 @@ interface ProductVideoInterface extends ResourceInterface
     /**
      * Returns the Single Table Inheritance discriminator value for this video (one of the
      * TYPE_* constants). The base class throws; every concrete subtype overrides it.
+     *
+     * It is static because the type is a class-level fact, letting callers (the discriminator
+     * map listener, the kind compiler pass) resolve it from the class without instantiating.
      */
-    public function getType(): string;
+    public static function getType(): string;
 
     public function getProduct(): ?ProductInterface;
 

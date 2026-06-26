@@ -180,11 +180,14 @@ Worked example: a `youtube` kind that reuses the `url` column (parse the id from
 its thumbnail from the YouTube CDN. Because it reuses an existing column **no migration is
 needed**.
 
-**1. Subtype model + interface**
+**1. Subtype model + interface** — the `#[AsVideoKind]` attribute makes it a selectable kind in
+the admin form (`label` is a translation key, `field` is the form field carrying its source).
+`getType()` is `static` — it is the single source of truth for the discriminator value.
 
 ```php
 namespace App\Entity\Video;
 
+use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
@@ -195,11 +198,12 @@ interface YoutubeVideoInterface extends ProductVideoInterface
     public function getVideoId(): ?string;
 }
 
+#[AsVideoKind(label: 'app.video.type.youtube', field: 'url')]
 class YoutubeVideo extends ProductVideo implements YoutubeVideoInterface
 {
     protected ?string $url = null;
 
-    public function getType(): string { return 'youtube'; }
+    public static function getType(): string { return 'youtube'; }
     public function getUrl(): ?string { return $this->url; }
     public function setUrl(?string $url): void { $this->url = $url; }
 
@@ -215,14 +219,15 @@ class YoutubeVideo extends ProductVideo implements YoutubeVideoInterface
 **2. ORM mapping** — only needed if the kind adds a *new* column. Reusing the existing `url`
 column needs none.
 
-**3. Discriminator + resource** — register the subtype as a resource. The discriminator listener
-picks it up automatically and derives the discriminator key from the model's `getType()` (here
-`'youtube'`) — no listener decoration needed:
+**3. Register it as a resource** — that is all the wiring needed. The plugin scans every Sylius
+resource whose model implements `ProductVideoInterface`: the discriminator listener adds it to the
+STI map (keyed by `getType()`) and `RegisterVideoKindsPass` adds it to the kind selector (from the
+`#[AsVideoKind]` attribute). No plugin configuration to edit, no listener to decorate:
 
 ```yaml
-setono_sylius_video:
+sylius_resource:
     resources:
-        youtube_video:
+        app.youtube_video:
             classes:
                 model: App\Entity\Video\YoutubeVideo
 ```
@@ -251,11 +256,12 @@ final class YoutubePosterResolver implements VideoPosterResolverInterface
 }
 ```
 
-**5. Form** — add the kind to the `VideoKindRegistry` (label + factory + field name); reuse the
-adaptive entry form. A kind reusing the `url` field renders the existing URL widget automatically.
+**5. Form** — nothing to do: the adaptive entry form reads the kind from the `#[AsVideoKind]`
+attribute declared in step 1. A kind reusing the `url` field renders the existing URL widget
+automatically.
 
-**6. Validation + translations** — add a per-subtype validation file and the kind's label /
-message keys to the `messages` translation files.
+**6. Validation + translations** — add a per-subtype validation file and the kind's label
+translation key (the `label` you passed to `#[AsVideoKind]`).
 
 ## Development & quality gates
 
