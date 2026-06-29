@@ -7,10 +7,10 @@ namespace Setono\SyliusVideoPlugin\Tests\DependencyInjection\Compiler;
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusVideoPlugin\DependencyInjection\Compiler\RegisterVideoKindsPass;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,9 +26,9 @@ final class RegisterVideoKindsPassTest extends TestCase
             // The base (no #[AsVideoKind]) and unrelated resources must be skipped without error.
             'setono_sylius_video.product_video' => ProductVideo::class,
             'app.unrelated' => \stdClass::class,
-            'setono_sylius_video.file_video' => FileVideo::class,
-            'setono_sylius_video.url_video' => UrlVideo::class,
-            'setono_sylius_video.embed_video' => EmbedVideo::class,
+            'setono_sylius_video.file_video' => FileProductVideo::class,
+            'setono_sylius_video.url_video' => UrlProductVideo::class,
+            'setono_sylius_video.embed_video' => EmbedProductVideo::class,
         ]);
 
         (new RegisterVideoKindsPass())->process($container);
@@ -45,7 +45,7 @@ final class RegisterVideoKindsPassTest extends TestCase
 
         self::assertSame('setono_sylius_video.type.file', $byType['file']['label']);
         self::assertSame('file', $byType['file']['field']);
-        self::assertSame(FileVideo::class, $byType['file']['model']);
+        self::assertSame(FileProductVideo::class, $byType['file']['model']);
         self::assertSame('setono_sylius_video.factory.file_video', (string) $byType['file']['factory']);
 
         self::assertSame('url', $byType['url']['field']);
@@ -59,7 +59,7 @@ final class RegisterVideoKindsPassTest extends TestCase
     public function it_skips_a_kind_whose_factory_service_is_missing(): void
     {
         $container = $this->containerWithResources([
-            'setono_sylius_video.file_video' => FileVideo::class,
+            'setono_sylius_video.file_video' => FileProductVideo::class,
         ]);
         $container->removeDefinition('setono_sylius_video.factory.file_video');
 

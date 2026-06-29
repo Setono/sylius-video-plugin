@@ -6,11 +6,11 @@ namespace Setono\SyliusVideoPlugin\Renderer;
 
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
 use Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface;
-use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
+use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Twig\Environment;
 
-final class FileVideoRenderer implements VideoRendererInterface
+final class FileProductVideoRenderer implements VideoRendererInterface
 {
     public function __construct(
         private readonly Environment $twig,
@@ -21,12 +21,12 @@ final class FileVideoRenderer implements VideoRendererInterface
 
     public function supports(ProductVideoInterface $video): bool
     {
-        return $video instanceof FileVideoInterface;
+        return $video instanceof FileProductVideoInterface;
     }
 
     public function render(ProductVideoInterface $video, array $context = []): string
     {
-        if (!$video instanceof FileVideoInterface) {
+        if (!$video instanceof FileProductVideoInterface) {
             throw new UnsupportedVideoException($video);
         }
 

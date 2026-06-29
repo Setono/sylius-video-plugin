@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Uploader;
 
-use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
+use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Sylius\Component\Core\Filesystem\Exception\FileNotFoundException;
@@ -24,7 +24,7 @@ final class VideoFileUploader implements VideoFileUploaderInterface
     ) {
     }
 
-    public function upload(FileVideoInterface $video): void
+    public function upload(FileProductVideoInterface $video): void
     {
         if (!$video->hasFile()) {
             return;

@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Model;
 use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
 
 #[AsVideoKind(label: 'setono_sylius_video.type.url', field: 'url')]
-class UrlVideo extends ProductVideo implements UrlVideoInterface
+class UrlProductVideo extends ProductVideo implements UrlProductVideoInterface
 {
     protected ?string $url = null;
 

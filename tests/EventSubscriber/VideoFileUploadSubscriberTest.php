@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\EventSubscriber\VideoFileUploadSubscriber;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Tests\Application\Entity\Product;
 use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -34,7 +34,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
      */
     public function it_uploads_a_pending_file_video(): void
     {
-        $video = new FileVideo();
+        $video = new FileProductVideo();
         $video->setFile(new \SplFileInfo(__FILE__));
 
         $product = new Product();
@@ -56,7 +56,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
      */
     public function it_uploads_a_pending_poster_for_any_video_kind(): void
     {
-        $video = new EmbedVideo();
+        $video = new EmbedProductVideo();
         $video->setPosterFile(new \SplFileInfo(__FILE__));
 
         $product = new Product();
@@ -73,7 +73,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
      */
     public function it_removes_a_file_video_whose_upload_produced_no_path(): void
     {
-        $video = new FileVideo();
+        $video = new FileProductVideo();
         $video->setFile(new \SplFileInfo(__FILE__));
 
         $product = new Product();

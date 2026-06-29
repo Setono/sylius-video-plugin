@@ -15,18 +15,18 @@
         <service id="Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface"
                  alias="Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer"/>
 
-        <service id="Setono\SyliusVideoPlugin\Renderer\FileVideoRenderer">
+        <service id="Setono\SyliusVideoPlugin\Renderer\FileProductVideoRenderer">
             <argument type="service" id="twig"/>
             <argument type="service" id="Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface"/>
             <tag name="setono_sylius_video.renderer"/>
         </service>
 
-        <service id="Setono\SyliusVideoPlugin\Renderer\UrlVideoRenderer">
+        <service id="Setono\SyliusVideoPlugin\Renderer\UrlProductVideoRenderer">
             <argument type="service" id="twig"/>
             <tag name="setono_sylius_video.renderer"/>
         </service>
 
-        <service id="Setono\SyliusVideoPlugin\Renderer\EmbedVideoRenderer">
+        <service id="Setono\SyliusVideoPlugin\Renderer\EmbedProductVideoRenderer">
             <argument type="service" id="twig"/>
             <tag name="setono_sylius_video.renderer"/>
         </service>

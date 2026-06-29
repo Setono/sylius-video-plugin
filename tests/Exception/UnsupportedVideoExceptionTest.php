@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Exception;
 
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 
 final class UnsupportedVideoExceptionTest extends TestCase
 {
@@ -15,9 +15,9 @@ final class UnsupportedVideoExceptionTest extends TestCase
      */
     public function it_names_the_unsupported_video_class_in_the_message(): void
     {
-        $exception = new UnsupportedVideoException(new UrlVideo());
+        $exception = new UnsupportedVideoException(new UrlProductVideo());
 
-        self::assertStringContainsString(UrlVideo::class, $exception->getMessage());
+        self::assertStringContainsString(UrlProductVideo::class, $exception->getMessage());
     }
 
     /**
@@ -27,7 +27,7 @@ final class UnsupportedVideoExceptionTest extends TestCase
     {
         $previous = new \RuntimeException('boom');
 
-        $exception = new UnsupportedVideoException(new UrlVideo(), $previous);
+        $exception = new UnsupportedVideoException(new UrlProductVideo(), $previous);
 
         self::assertSame($previous, $exception->getPrevious());
     }

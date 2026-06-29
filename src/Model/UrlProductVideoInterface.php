@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Model;
 
-interface UrlVideoInterface extends ProductVideoInterface
+interface UrlProductVideoInterface extends ProductVideoInterface
 {
     public function getUrl(): ?string;
 

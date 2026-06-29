@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Poster;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Poster\StoredPosterResolver;
 
 final class StoredPosterResolverTest extends TestCase
@@ -21,8 +21,8 @@ final class StoredPosterResolverTest extends TestCase
     {
         $resolver = new StoredPosterResolver($this->prophesize(MediaUrlGeneratorInterface::class)->reveal());
 
-        $without = new EmbedVideo();
-        $with = new EmbedVideo();
+        $without = new EmbedProductVideo();
+        $with = new EmbedProductVideo();
         $with->setPosterPath('video/poster/ab/cd.jpg');
 
         self::assertFalse($resolver->supports($without));
@@ -39,7 +39,7 @@ final class StoredPosterResolverTest extends TestCase
 
         $resolver = new StoredPosterResolver($generator->reveal());
 
-        $video = new EmbedVideo();
+        $video = new EmbedProductVideo();
         $video->setPosterPath('video/poster/ab/cd.jpg');
 
         self::assertSame('/media/image/video/poster/ab/cd.jpg', $resolver->resolve($video));
@@ -52,6 +52,6 @@ final class StoredPosterResolverTest extends TestCase
     {
         $resolver = new StoredPosterResolver($this->prophesize(MediaUrlGeneratorInterface::class)->reveal());
 
-        self::assertNull($resolver->resolve(new EmbedVideo()));
+        self::assertNull($resolver->resolve(new EmbedProductVideo()));
     }
 }

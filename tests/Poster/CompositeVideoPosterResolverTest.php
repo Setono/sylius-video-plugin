@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Poster;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Poster\CompositeVideoPosterResolver;
 use Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface;
 
@@ -19,7 +19,7 @@ final class CompositeVideoPosterResolverTest extends TestCase
      */
     public function it_returns_the_first_supporting_resolvers_url(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $first = $this->prophesize(VideoPosterResolverInterface::class);
         $first->supports($video)->willReturn(false);
@@ -42,7 +42,7 @@ final class CompositeVideoPosterResolverTest extends TestCase
      */
     public function it_returns_null_when_no_resolver_supports_the_video(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $resolver = $this->prophesize(VideoPosterResolverInterface::class);
         $resolver->supports($video)->willReturn(false);

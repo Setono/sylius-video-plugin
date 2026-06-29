@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Renderer;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer;
 use Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface;
 
@@ -20,7 +20,7 @@ final class CompositeVideoRendererTest extends TestCase
      */
     public function it_delegates_to_the_first_supporting_renderer(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $first = $this->prophesize(VideoRendererInterface::class);
         $first->supports($video)->willReturn(false);
@@ -47,7 +47,7 @@ final class CompositeVideoRendererTest extends TestCase
      */
     public function it_throws_when_no_renderer_supports_the_video(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $renderer = $this->prophesize(VideoRendererInterface::class);
         $renderer->supports($video)->willReturn(false);

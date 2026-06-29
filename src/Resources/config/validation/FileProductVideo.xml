@@ -9,7 +9,7 @@
         here. At validation time a brand-new file video carries a pending upload (hasFile()),
         while a persisted one already has a path; either satisfies the rule.
     -->
-    <class name="Setono\SyliusVideoPlugin\Model\FileVideo">
+    <class name="Setono\SyliusVideoPlugin\Model\FileProductVideo">
         <constraint name="Expression">
             <option name="expression">this.getPath() !== null or this.hasFile()</option>
             <option name="message">setono_sylius_video.file_video.file.not_blank</option>

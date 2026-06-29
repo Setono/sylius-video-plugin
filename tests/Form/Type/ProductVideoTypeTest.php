@@ -6,10 +6,10 @@ namespace Setono\SyliusVideoPlugin\Tests\Form\Type;
 
 use Setono\SyliusVideoPlugin\Form\Type\ProductVideoType;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
@@ -34,7 +34,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         self::assertTrue($form->isSynchronized());
 
         $data = $form->getData();
-        self::assertInstanceOf(UrlVideo::class, $data);
+        self::assertInstanceOf(UrlProductVideo::class, $data);
         self::assertSame('https://example.com/video', $data->getUrl());
         self::assertSame(2, $data->getPosition());
     }
@@ -54,7 +54,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         self::assertTrue($form->isSynchronized());
 
         $data = $form->getData();
-        self::assertInstanceOf(EmbedVideo::class, $data);
+        self::assertInstanceOf(EmbedProductVideo::class, $data);
         self::assertSame('<iframe></iframe>', $data->getHtml());
     }
 
@@ -63,7 +63,7 @@ final class ProductVideoTypeTest extends TypeTestCase
      */
     public function it_shows_the_kind_field_and_selected_type_for_an_existing_video(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
         $video->setUrl('https://example.com/video');
 
         $form = $this->factory->create(ProductVideoType::class, $video);
@@ -79,13 +79,13 @@ final class ProductVideoTypeTest extends TypeTestCase
      */
     public function it_keeps_an_existing_videos_subtype_even_if_another_type_is_submitted(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
         $video->setUrl('https://example.com/old');
 
         $form = $this->factory->create(ProductVideoType::class, $video);
 
         // The user tampered with the (effectively read-only) type select; the row must remain a
-        // UrlVideo and only its own column may change.
+        // UrlProductVideo and only its own column may change.
         $form->submit([
             'type' => 'embed',
             'url' => 'https://example.com/new',
@@ -93,7 +93,7 @@ final class ProductVideoTypeTest extends TypeTestCase
         ]);
 
         self::assertTrue($form->isSynchronized());
-        self::assertInstanceOf(UrlVideo::class, $form->getData());
+        self::assertInstanceOf(UrlProductVideo::class, $form->getData());
         self::assertSame('https://example.com/new', $form->getData()->getUrl());
     }
 
@@ -131,9 +131,9 @@ final class ProductVideoTypeTest extends TypeTestCase
     protected function getExtensions(): array
     {
         $registry = new VideoKindRegistry([
-            ['type' => 'file', 'label' => 'setono_sylius_video.type.file', 'field' => 'file', 'model' => FileVideo::class, 'factory' => new Factory(FileVideo::class)],
-            ['type' => 'url', 'label' => 'setono_sylius_video.type.url', 'field' => 'url', 'model' => UrlVideo::class, 'factory' => new Factory(UrlVideo::class)],
-            ['type' => 'embed', 'label' => 'setono_sylius_video.type.embed', 'field' => 'html', 'model' => EmbedVideo::class, 'factory' => new Factory(EmbedVideo::class)],
+            ['type' => 'file', 'label' => 'setono_sylius_video.type.file', 'field' => 'file', 'model' => FileProductVideo::class, 'factory' => new Factory(FileProductVideo::class)],
+            ['type' => 'url', 'label' => 'setono_sylius_video.type.url', 'field' => 'url', 'model' => UrlProductVideo::class, 'factory' => new Factory(UrlProductVideo::class)],
+            ['type' => 'embed', 'label' => 'setono_sylius_video.type.embed', 'field' => 'html', 'model' => EmbedProductVideo::class, 'factory' => new Factory(EmbedProductVideo::class)],
         ]);
 
         return [

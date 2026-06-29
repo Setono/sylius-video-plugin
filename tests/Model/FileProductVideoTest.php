@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
-final class FileVideoTest extends TestCase
+final class FileProductVideoTest extends TestCase
 {
     /**
      * @test
      */
     public function it_has_the_file_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_FILE, FileVideo::getType());
+        self::assertSame(ProductVideoInterface::TYPE_FILE, FileProductVideo::getType());
     }
 
     /**
@@ -23,7 +23,7 @@ final class FileVideoTest extends TestCase
      */
     public function it_holds_a_stored_path(): void
     {
-        $video = new FileVideo();
+        $video = new FileProductVideo();
 
         self::assertNull($video->getPath());
 
@@ -37,7 +37,7 @@ final class FileVideoTest extends TestCase
      */
     public function it_carries_a_pending_file(): void
     {
-        $video = new FileVideo();
+        $video = new FileProductVideo();
 
         self::assertFalse($video->hasFile());
         self::assertNull($video->getFile());

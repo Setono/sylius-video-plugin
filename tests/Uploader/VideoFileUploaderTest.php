@@ -7,8 +7,8 @@ namespace Setono\SyliusVideoPlugin\Tests\Uploader;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Uploader\VideoFileUploader;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Sylius\Component\Core\Filesystem\Exception\FileNotFoundException;
@@ -41,7 +41,7 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem->has(Argument::type('string'))->willReturn(false);
         $filesystem->write(Argument::type('string'), 'video-bytes')->shouldBeCalledOnce();
 
-        $video = new FileVideo();
+        $video = new FileProductVideo();
         $video->setFile(new \SplFileInfo($this->tmpFile));
 
         (new VideoFileUploader($filesystem->reveal()))->upload($video);
@@ -59,7 +59,7 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem->has(Argument::type('string'))->willReturn(false);
         $filesystem->write(Argument::type('string'), 'video-bytes')->shouldBeCalledOnce();
 
-        $video = new EmbedVideo();
+        $video = new EmbedProductVideo();
         $video->setPosterFile(new \SplFileInfo($this->tmpFile));
 
         (new VideoFileUploader($filesystem->reveal()))->uploadPoster($video);
@@ -76,7 +76,7 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
         $filesystem->write(Argument::cetera())->shouldNotBeCalled();
 
-        $video = new FileVideo();
+        $video = new FileProductVideo();
 
         (new VideoFileUploader($filesystem->reveal()))->upload($video);
 
@@ -94,7 +94,7 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem->has(Argument::not('video/old/path.mp4'))->willReturn(false);
         $filesystem->write(Argument::type('string'), 'video-bytes')->shouldBeCalledOnce();
 
-        $video = new FileVideo();
+        $video = new FileProductVideo();
         $video->setPath('video/old/path.mp4');
         $video->setFile(new \SplFileInfo($this->tmpFile));
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Model;
 
-interface FileVideoInterface extends ProductVideoInterface
+interface FileProductVideoInterface extends ProductVideoInterface
 {
     /**
      * Path of the stored video file on the media filesystem.

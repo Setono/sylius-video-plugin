@@ -6,7 +6,7 @@
 
     <!-- html is nullable at the DB level because STI rows of other types do not have embed
          markup; the application-layer validator enforces NotBlank for embed videos. -->
-    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\EmbedVideo">
+    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\EmbedProductVideo">
         <field name="html" type="text" column="html" nullable="true"/>
     </mapped-superclass>
 
