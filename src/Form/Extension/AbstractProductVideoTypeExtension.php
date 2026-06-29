@@ -19,10 +19,10 @@ use Symfony\Component\Form\FormInterface;
  * to the plugin's form is needed.
  *
  * A subtype only declares its discriminator type ({@see getType()}) and its field(s)
- * ({@see fields()}); the shared mechanics — reveal the field(s) for an existing row of this type,
+ * ({@see getFields()}); the shared mechanics — reveal the field(s) for an existing row of this type,
  * carry them on a new row / the collection prototype so the client-side toggle can switch between
  * types, and strip them again on submit when another type is selected — live here and are driven
- * off that single `fields()` definition.
+ * off that single `getFields()` definition.
  */
 abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
 {
@@ -64,7 +64,7 @@ abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
 
             // Another type is selected — drop our field(s) and their submitted values so binding
             // maps cleanly onto the chosen subtype.
-            foreach (array_keys($this->fields()) as $name) {
+            foreach (array_keys($this->getFields()) as $name) {
                 if ($form->has($name)) {
                     $form->remove($name);
                 }
@@ -87,7 +87,7 @@ abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
      *
      * @return array<string, array{class-string, array<string, mixed>}>
      */
-    abstract protected function fields(): array;
+    abstract protected function getFields(): array;
 
     /**
      * Adds this type's field(s) to the form, idempotently (so it is safe to call from both
@@ -97,7 +97,7 @@ abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
      */
     private function addFields(FormInterface $form): void
     {
-        foreach ($this->fields() as $name => [$type, $options]) {
+        foreach ($this->getFields() as $name => [$type, $options]) {
             if (!$form->has($name)) {
                 $form->add($name, $type, $options);
             }
