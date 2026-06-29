@@ -14,7 +14,7 @@ final class FileProductVideoTypeExtension extends AbstractProductVideoTypeExtens
         return FileProductVideo::getType();
     }
 
-    protected function fields(): array
+    protected function getFields(): array
     {
         return [
             'file' => [FileType::class, [

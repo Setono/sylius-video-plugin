@@ -14,7 +14,7 @@ final class EmbedProductVideoTypeExtension extends AbstractProductVideoTypeExten
         return EmbedProductVideo::getType();
     }
 
-    protected function fields(): array
+    protected function getFields(): array
     {
         return [
             'html' => [TextareaType::class, [

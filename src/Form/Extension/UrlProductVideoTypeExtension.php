@@ -14,7 +14,7 @@ final class UrlProductVideoTypeExtension extends AbstractProductVideoTypeExtensi
         return UrlProductVideo::getType();
     }
 
-    protected function fields(): array
+    protected function getFields(): array
     {
         return [
             'url' => [UrlType::class, [
