@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Einbettungscode'
             file: 'Videodatei'
             poster: 'Vorschaubild'
+            position: 'Position'
             help:
                 type: 'Wählen Sie, wie dieses Video bereitgestellt wird.'
                 file: 'Laden Sie eine Videodatei hoch, z. B. MP4 oder WebM.'
                 url: 'Link zu einer Videodatei oder einer Videoseite wie YouTube oder Vimeo.'
                 html: 'Fügen Sie den Einbettungscode (iframe) des Videoanbieters ein.'
                 poster: 'Optionales Vorschaubild, das vor der Videowiedergabe angezeigt wird.'
+                position: 'Videos werden nach dieser Zahl sortiert, niedrigste zuerst.'
     type:
         file: 'Datei-Upload'
         url: 'Externe URL'

@@ -121,13 +121,14 @@ mapping is needed beyond the `videos` association you added in step 3.
 bin/console assets:install
 ```
 
-This publishes the small dependency-free JavaScript controller that powers the adaptive entry
-form (toggling the kind-specific field, collection add/remove and drag reordering).
+This publishes the small dependency-free JavaScript controller that toggles the kind-specific
+field on the adaptive entry form to match the selected type.
 
 ## Usage
 
 - **Admin:** open any product's edit page and switch to the **Videos** tab. Add videos, pick a
-  kind (file / url / embed) per row, optionally attach a poster image, and reorder by dragging.
+  kind (file / url / embed) per row, optionally attach a poster image, and order them with the
+  per-row **position** field (lowest first).
 - **Shop:** the product's videos render on the product page via the `sylius.shop.product.show.content`
   event (it always fires, unlike `before_thumbnails`, which only fires for products with more
   than one image). Disable the block with:

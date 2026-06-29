@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Beágyazási kód'
             file: 'Videófájl'
             poster: 'Előnézeti kép'
+            position: 'Pozíció'
             help:
                 type: 'Válassza ki, hogyan érhető el ez a videó.'
                 file: 'Töltsön fel egy videófájlt, pl. MP4 vagy WebM.'
                 url: 'Hivatkozás egy videófájlra vagy videóoldalra, például YouTube vagy Vimeo.'
                 html: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
                 poster: 'Választható előnézeti kép, amely a videó lejátszása előtt jelenik meg.'
+                position: 'A videók e szám szerint vannak rendezve, a legkisebbtől.'
     type:
         file: 'Fájlfeltöltés'
         url: 'Külső URL'

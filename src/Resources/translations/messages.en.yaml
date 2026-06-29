@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Embed code'
             file: 'Video file'
             poster: 'Poster image'
+            position: 'Position'
             help:
                 type: 'Choose how this video is provided.'
                 file: 'Upload a video file, e.g. MP4 or WebM.'
                 url: 'Link to a video file or a video page such as YouTube or Vimeo.'
                 html: 'Paste the embed code (iframe) from the video provider.'
                 poster: 'Optional preview image shown before the video plays.'
+                position: 'Videos are ordered by this number, lowest first.'
     type:
         file: 'File upload'
         url: 'External URL'

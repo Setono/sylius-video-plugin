@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Cod de încorporare'
             file: 'Fișier video'
             poster: 'Imagine de previzualizare'
+            position: 'Poziție'
             help:
                 type: 'Alegeți cum este furnizat acest videoclip.'
                 file: 'Încărcați un fișier video, de ex. MP4 sau WebM.'
                 url: 'Link către un fișier video sau o pagină video precum YouTube sau Vimeo.'
                 html: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
                 poster: 'Imagine de previzualizare opțională, afișată înainte de redarea videoclipului.'
+                position: 'Videoclipurile sunt ordonate după acest număr, crescător.'
     type:
         file: 'Încărcare fișier'
         url: 'URL extern'

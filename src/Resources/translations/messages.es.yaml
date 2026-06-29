@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Código de inserción'
             file: 'Archivo de vídeo'
             poster: 'Imagen de portada'
+            position: 'Posición'
             help:
                 type: 'Elija cómo se proporciona este vídeo.'
                 file: 'Suba un archivo de vídeo, p. ej. MP4 o WebM.'
                 url: 'Enlace a un archivo de vídeo o a una página de vídeo como YouTube o Vimeo.'
                 html: 'Pegue el código de inserción (iframe) del proveedor del vídeo.'
                 poster: 'Imagen de vista previa opcional que se muestra antes de reproducir el vídeo.'
+                position: 'Los vídeos se ordenan por este número, de menor a mayor.'
     type:
         file: 'Subida de archivo'
         url: 'URL externa'

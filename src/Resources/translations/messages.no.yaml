@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Innbyggingskode'
             file: 'Videofil'
             poster: 'Plakatbilde'
+            position: 'Posisjon'
             help:
                 type: 'Velg hvordan denne videoen leveres.'
                 file: 'Last opp en videofil, f.eks. MP4 eller WebM.'
                 url: 'Lenke til en videofil eller en videoside som YouTube eller Vimeo.'
                 html: 'Lim inn innbyggingskoden (iframe) fra videoleverandøren.'
                 poster: 'Valgfritt forhåndsvisningsbilde som vises før videoen spilles av.'
+                position: 'Videoer sorteres etter dette tallet, laveste først.'
     type:
         file: 'Filopplasting'
         url: 'Ekstern URL'

@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Codice di incorporamento'
             file: 'File video'
             poster: 'Immagine di anteprima'
+            position: 'Posizione'
             help:
                 type: 'Scegli come viene fornito questo video.'
                 file: 'Carica un file video, ad es. MP4 o WebM.'
                 url: 'Link a un file video o a una pagina video come YouTube o Vimeo.'
                 html: 'Incolla il codice di incorporamento (iframe) del provider del video.'
                 poster: 'Immagine di anteprima facoltativa mostrata prima della riproduzione del video.'
+                position: 'I video sono ordinati per questo numero, dal più basso.'
     type:
         file: 'Caricamento file'
         url: 'URL esterno'
