@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusVideoPlugin\Kind;
+namespace Setono\SyliusVideoPlugin\Type;
 
-use Sylius\Component\Resource\Factory\FactoryInterface;
+use Sylius\Resource\Factory\FactoryInterface;
 
 /**
- * The registered video kinds (file/url/embed and any extension kinds). It backs the `type`
- * selector and the new-row factory in the admin form; the per-kind input fields are contributed
+ * The registered video types (file/url/embed and any extension types). It backs the `type`
+ * selector and the new-row factory in the admin form; the per-type input fields are contributed
  * separately by {@see \Setono\SyliusVideoPlugin\Form\Extension\AbstractProductVideoTypeExtension}
  * subtypes.
  */
-interface VideoKindRegistryInterface
+interface VideoTypeRegistryInterface
 {
     /**
      * Choices for a ChoiceType: a map of translation-key label => discriminator type.
@@ -29,8 +29,8 @@ interface VideoKindRegistryInterface
     public function getTypes(): array;
 
     /**
-     * The resource factory for the kind. It is the generic Sylius factory, so it produces an
-     * `object`; callers narrow the result to {@see \Setono\SyliusVideoPlugin\Model\ProductVideoInterface}.
+     * The resource factory for the type. It produces an `object`; callers narrow the result to
+     * {@see \Setono\SyliusVideoPlugin\Model\ProductVideoInterface}.
      *
      * @return FactoryInterface<object>
      */

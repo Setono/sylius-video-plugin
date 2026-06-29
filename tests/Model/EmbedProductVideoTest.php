@@ -6,7 +6,6 @@ namespace Setono\SyliusVideoPlugin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
 final class EmbedProductVideoTest extends TestCase
 {
@@ -15,7 +14,7 @@ final class EmbedProductVideoTest extends TestCase
      */
     public function it_has_the_embed_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_EMBED, EmbedProductVideo::getType());
+        self::assertSame('embed', EmbedProductVideo::getType());
     }
 
     /**

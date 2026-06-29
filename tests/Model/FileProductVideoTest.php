@@ -6,7 +6,6 @@ namespace Setono\SyliusVideoPlugin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
 final class FileProductVideoTest extends TestCase
 {
@@ -15,7 +14,7 @@ final class FileProductVideoTest extends TestCase
      */
     public function it_has_the_file_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_FILE, FileProductVideo::getType());
+        self::assertSame('file', FileProductVideo::getType());
     }
 
     /**

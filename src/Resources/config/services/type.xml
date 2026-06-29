@@ -6,16 +6,16 @@
 
     <services>
         <!--
-            The kinds argument is populated by RegisterVideoKindsPass, which scans the registered
-            Sylius resources for models implementing ProductVideoInterface. To add a kind, register
+            The types argument is populated by RegisterVideoTypesPass, which scans the registered
+            Sylius resources for models implementing ProductVideoInterface. To add a type, register
             a subtype resource and ship a ProductVideoType extension for its field(s) — no entry is
             needed here.
         -->
-        <service id="Setono\SyliusVideoPlugin\Kind\VideoKindRegistry">
+        <service id="Setono\SyliusVideoPlugin\Type\VideoTypeRegistry">
             <argument type="collection"/>
         </service>
 
-        <service id="Setono\SyliusVideoPlugin\Kind\VideoKindRegistryInterface"
-                 alias="Setono\SyliusVideoPlugin\Kind\VideoKindRegistry"/>
+        <service id="Setono\SyliusVideoPlugin\Type\VideoTypeRegistryInterface"
+                 alias="Setono\SyliusVideoPlugin\Type\VideoTypeRegistry"/>
     </services>
 </container>

@@ -16,7 +16,7 @@ interface VideoFileUploaderInterface
     public function upload(FileProductVideoInterface $video): void;
 
     /**
-     * Stores a pending poster image (ProductVideo::getPosterFile()) for any kind of video and
+     * Stores a pending poster image (ProductVideo::getPosterFile()) for any type of video and
      * writes the resulting path back onto the video.
      */
     public function uploadPoster(ProductVideoInterface $video): void;

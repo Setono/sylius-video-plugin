@@ -40,7 +40,7 @@ class ProductVideo implements ProductVideoInterface
 
         if ('' === $prefix) {
             throw new \LogicException(sprintf(
-                'Cannot derive a video type for "%s". Name the subtype "<Kind>ProductVideo" or override getType().',
+                'Cannot derive a video type for "%s". Name the subtype "<Type>ProductVideo" or override getType().',
                 static::class,
             ));
         }

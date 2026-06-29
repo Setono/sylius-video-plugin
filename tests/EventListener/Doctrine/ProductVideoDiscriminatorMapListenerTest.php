@@ -13,7 +13,6 @@ use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMap
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Tests\EventListener\Doctrine\Fixtures\CustomFileProductVideo;
 
@@ -31,9 +30,9 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
         $this->listener()->loadClassMetadata($this->eventArgs($metadata));
 
         self::assertSame([
-            ProductVideoInterface::TYPE_FILE => FileProductVideo::class,
-            ProductVideoInterface::TYPE_URL => UrlProductVideo::class,
-            ProductVideoInterface::TYPE_EMBED => EmbedProductVideo::class,
+            'file' => FileProductVideo::class,
+            'url' => UrlProductVideo::class,
+            'embed' => EmbedProductVideo::class,
         ], $metadata->discriminatorMap);
     }
 

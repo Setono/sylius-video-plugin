@@ -54,7 +54,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
     /**
      * @test
      */
-    public function it_uploads_a_pending_poster_for_any_video_kind(): void
+    public function it_uploads_a_pending_poster_for_any_video_type(): void
     {
         $video = new EmbedProductVideo();
         $video->setPosterFile(new \SplFileInfo(__FILE__));

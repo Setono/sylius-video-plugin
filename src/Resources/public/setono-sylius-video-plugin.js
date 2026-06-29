@@ -1,7 +1,7 @@
 /*
  * Dependency-light controller for the admin product "Videos" tab.
  *
- * Sole responsibility: reveal only the kind-specific field(s) matching the selected type, hiding
+ * Sole responsibility: reveal only the type-specific field(s) matching the selected type, hiding
  * and disabling the others. Ordering is handled by the plain `position` integer field, so there
  * is no JavaScript involved in reordering.
  *
@@ -31,7 +31,7 @@
             return;
         }
         var activeType = select.value;
-        // Each kind's field(s) carry `data-video-fields="<type>"`; reveal the selected kind's and
+        // Each type's field(s) carry `data-video-fields="<type>"`; reveal the selected type's and
         // hide (and disable, so it is not submitted) the rest.
         item.querySelectorAll('[data-video-fields]').forEach(function (input) {
             var matches = input.getAttribute('data-video-fields') === activeType;
@@ -87,7 +87,7 @@
             }
             list.__setonoVideoBound = true;
 
-            // Newly added prototype rows need their kind-specific field revealed too.
+            // Newly added prototype rows need their type-specific field revealed too.
             new MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
                     mutation.addedNodes.forEach(function (node) {

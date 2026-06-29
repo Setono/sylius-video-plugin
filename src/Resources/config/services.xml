@@ -15,7 +15,7 @@
         <import resource="services/event_subscriber.xml"/>
         <import resource="services/filesystem.xml"/>
         <import resource="services/form.xml"/>
-        <import resource="services/kind.xml"/>
+        <import resource="services/type.xml"/>
         <import resource="services/poster.xml"/>
         <import resource="services/renderer.xml"/>
         <import resource="services/twig.xml"/>

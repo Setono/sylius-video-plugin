@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Form\Extension;
 
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormInterface;
 
@@ -12,7 +12,7 @@ final class UrlProductVideoTypeExtension extends AbstractProductVideoTypeExtensi
 {
     protected function getType(): string
     {
-        return ProductVideoInterface::TYPE_URL;
+        return UrlProductVideo::getType();
     }
 
     protected function fieldNames(): array
@@ -31,7 +31,7 @@ final class UrlProductVideoTypeExtension extends AbstractProductVideoTypeExtensi
             'help' => 'setono_sylius_video.form.video.help.url',
             'required' => false,
             'default_protocol' => 'https',
-            'attr' => ['data-video-fields' => ProductVideoInterface::TYPE_URL],
+            'attr' => ['data-video-fields' => $this->getType()],
         ]);
     }
 }

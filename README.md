@@ -6,7 +6,7 @@
 [![Code Coverage][ico-code-coverage]][link-code-coverage]
 
 Adds a **Videos** tab to the admin product create/edit page so editors can attach videos to a
-product through three built-in kinds — **file upload**, **external URL** and **direct embed
+product through three built-in types — **file upload**, **external URL** and **direct embed
 code** — and renders them on the shop product page.
 
 Videos are stored with **Single Table Inheritance** (a base `ProductVideo` plus `FileProductVideo` /
@@ -121,13 +121,13 @@ mapping is needed beyond the `videos` association you added in step 3.
 bin/console assets:install
 ```
 
-This publishes the small dependency-free JavaScript controller that toggles the kind-specific
+This publishes the small dependency-free JavaScript controller that toggles the type-specific
 field on the adaptive entry form to match the selected type.
 
 ## Usage
 
 - **Admin:** open any product's edit page and switch to the **Videos** tab. Add videos, pick a
-  kind (file / url / embed) per row, and optionally attach a poster image. Ordering uses the
+  type (file / url / embed) per row, and optionally attach a poster image. Ordering uses the
   per-row **position** field (lowest first); positions are maintained per-product by the Gedmo
   Sortable extension Sylius already enables, so a new row left blank is appended automatically.
 - **Shop:** the product's videos render on the product page via the `sylius.shop.product.show.content`
@@ -176,13 +176,13 @@ setono_sylius_video:
 - **Uploads:** decorate the `setono_sylius_video.uploader` service, or point `filesystem.adapter`
   at any Flysystem/Gaufrette adapter Sylius exposes.
 
-## Extending — adding a new video kind
+## Extending — adding a new video type
 
-Worked example: a `youtube` kind that reuses the `url` column (parse the id from it) and computes
+Worked example: a `youtube` type that reuses the `url` column (parse the id from it) and computes
 its thumbnail from the YouTube CDN. Because it reuses an existing column **no migration is
 needed**.
 
-**1. Subtype model + interface** — name it `<Kind>ProductVideo` and the static `getType()`
+**1. Subtype model + interface** — name it `<Type>ProductVideo` and the static `getType()`
 derives the discriminator (`YoutubeProductVideo` → `youtube`); override it only for a
 non-conventional name.
 
@@ -215,11 +215,11 @@ class YoutubeProductVideo extends ProductVideo implements YoutubeProductVideoInt
 }
 ```
 
-**2. ORM mapping** — only needed if the kind adds a *new* column. Reusing the existing `url`
+**2. ORM mapping** — only needed if the type adds a *new* column. Reusing the existing `url`
 column needs none.
 
 **3. Register it as a resource** — the plugin scans every Sylius resource whose model implements
-`ProductVideoInterface`: the discriminator listener adds it to the STI map and the kind selector
+`ProductVideoInterface`: the discriminator listener adds it to the STI map and the type selector
 picks it up (label derived as `setono_sylius_video.ui.types.<type>`). No plugin config to edit, no
 listener to decorate:
 
@@ -255,9 +255,9 @@ final class YoutubePosterResolver implements VideoPosterResolverInterface
 }
 ```
 
-**5. Form fields** — ship a `ProductVideoType` extension for the kind's input(s) by extending
+**5. Form fields** — ship a `ProductVideoType` extension for the type's input(s) by extending
 `AbstractProductVideoTypeExtension` and tagging it `form.type_extension`. It can add as many fields
-as the kind needs; the base class reveals/hides and strips them per the selected type:
+as the type needs; the base class reveals/hides and strips them per the selected type:
 
 ```php
 final class YoutubeProductVideoTypeExtension extends AbstractProductVideoTypeExtension
@@ -274,7 +274,7 @@ final class YoutubeProductVideoTypeExtension extends AbstractProductVideoTypeExt
         $form->add('url', UrlType::class, [
             'label' => 'app.form.video.url',
             'required' => false,
-            'attr' => ['data-video-fields' => 'youtube'], // groups the field under this kind for the JS toggle
+            'attr' => ['data-video-fields' => 'youtube'], // groups the field under this type for the JS toggle
         ]);
     }
 }
