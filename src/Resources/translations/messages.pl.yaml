@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Kod osadzania'
             file: 'Plik wideo'
             poster: 'Obraz miniatury'
+            position: 'Pozycja'
             help:
                 type: 'Wybierz, w jaki sposób ten film jest dostarczany.'
                 file: 'Prześlij plik wideo, np. MP4 lub WebM.'
                 url: 'Link do pliku wideo lub strony wideo, takiej jak YouTube lub Vimeo.'
                 html: 'Wklej kod osadzania (iframe) od dostawcy wideo.'
                 poster: 'Opcjonalny obraz podglądu wyświetlany przed odtworzeniem filmu.'
+                position: 'Filmy są sortowane według tego numeru, od najniższego.'
     type:
         file: 'Przesłanie pliku'
         url: 'Zewnętrzny adres URL'

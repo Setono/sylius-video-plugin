@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Indlejringskode'
             file: 'Videofil'
             poster: 'Posterbillede'
+            position: 'Position'
             help:
                 type: 'Vælg, hvordan denne video leveres.'
                 file: 'Upload en videofil, f.eks. MP4 eller WebM.'
                 url: 'Link til en videofil eller en videoside som YouTube eller Vimeo.'
                 html: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'
                 poster: 'Valgfrit forhåndsvisningsbillede, der vises, før videoen afspilles.'
+                position: 'Videoer sorteres efter dette tal, laveste først.'
     type:
         file: 'Filupload'
         url: 'Ekstern URL'

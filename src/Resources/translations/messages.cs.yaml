@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Kód pro vložení'
             file: 'Soubor videa'
             poster: 'Náhledový obrázek'
+            position: 'Pozice'
             help:
                 type: 'Zvolte, jak je toto video poskytováno.'
                 file: 'Nahrajte soubor videa, např. MP4 nebo WebM.'
                 url: 'Odkaz na soubor videa nebo na stránku videa, jako je YouTube nebo Vimeo.'
                 html: 'Vložte kód pro vložení (iframe) od poskytovatele videa.'
                 poster: 'Volitelný náhledový obrázek zobrazený před přehráním videa.'
+                position: 'Videa jsou seřazena podle tohoto čísla, od nejnižšího.'
     type:
         file: 'Nahrání souboru'
         url: 'Externí URL'

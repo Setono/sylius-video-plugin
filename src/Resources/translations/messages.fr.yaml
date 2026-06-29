@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Code d’intégration'
             file: 'Fichier vidéo'
             poster: 'Image d’aperçu'
+            position: 'Position'
             help:
                 type: 'Choisissez comment cette vidéo est fournie.'
                 file: 'Téléversez un fichier vidéo, par ex. MP4 ou WebM.'
                 url: 'Lien vers un fichier vidéo ou une page vidéo comme YouTube ou Vimeo.'
                 html: 'Collez le code d’intégration (iframe) fourni par l’hébergeur de la vidéo.'
                 poster: 'Image d’aperçu facultative affichée avant la lecture de la vidéo.'
+                position: 'Les vidéos sont triées par ce nombre, du plus petit au plus grand.'
     type:
         file: 'Téléversement de fichier'
         url: 'URL externe'

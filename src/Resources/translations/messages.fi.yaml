@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Upotuskoodi'
             file: 'Videotiedosto'
             poster: 'Esikatselukuva'
+            position: 'Sijainti'
             help:
                 type: 'Valitse, miten tämä video toimitetaan.'
                 file: 'Lataa videotiedosto, esim. MP4 tai WebM.'
                 url: 'Linkki videotiedostoon tai videosivulle, kuten YouTube tai Vimeo.'
                 html: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
                 poster: 'Valinnainen esikatselukuva, joka näytetään ennen videon toistoa.'
+                position: 'Videot järjestetään tämän numeron mukaan, pienin ensin.'
     type:
         file: 'Tiedoston lataus'
         url: 'Ulkoinen URL-osoite'

@@ -1,15 +1,13 @@
 /*
  * Dependency-light controller for the admin product "Videos" tab.
  *
- * Responsibilities:
- *  - reveal only the kind-specific field (path/url/html) matching the selected type, hiding and
- *    disabling the others (works with or without JavaScript on the server side);
- *  - let editors reorder rows by dragging a handle, writing the new order into the hidden
- *    position inputs (also renumbered on submit as a safety net);
- *  - keep working for rows added through Sylius's data-form-collection prototype (observed).
+ * Sole responsibility: reveal only the kind-specific field (path/url/html) matching the selected
+ * type, hiding and disabling the others. Ordering is handled by the plain `position` integer
+ * field, so there is no JavaScript involved in reordering.
  *
  * It hooks into Sylius's own collection markup (`[data-form-collection="item"]`) so it needs no
- * custom form theme, and uses no framework so it can ship as-is in Resources/public.
+ * custom form theme, works for rows added through the collection prototype (observed), and uses
+ * no framework so it can ship as-is in Resources/public.
  */
 (function () {
     'use strict';
@@ -41,100 +39,20 @@
         });
     }
 
-    function addDragHandle(item) {
-        if (item.querySelector('[data-video-drag-handle]')) {
-            return;
-        }
-        var handle = document.createElement('a');
-        handle.setAttribute('href', '#');
-        handle.setAttribute('data-video-drag-handle', '');
-        handle.setAttribute('draggable', 'true');
-        handle.className = 'ui basic icon button';
-        handle.style.cssText = 'cursor: move; margin-bottom: 1em;';
-        handle.innerHTML = '<i class="bars icon"></i>';
-        handle.addEventListener('click', function (event) {
-            event.preventDefault();
-        });
-        item.insertBefore(handle, item.firstChild);
-    }
-
-    function prepareItem(item) {
-        if (!isVideoItem(item)) {
-            return;
-        }
-        toggle(item);
-        addDragHandle(item);
-    }
-
     function initItems(root) {
         root = root || document;
         // A node added through the collection prototype IS the item itself, so check it directly
         // in addition to any descendant items (e.g. when initialising the whole document).
-        if (root.matches && root.matches('[data-form-collection="item"]')) {
-            prepareItem(root);
+        if (root.matches && root.matches('[data-form-collection="item"]') && isVideoItem(root)) {
+            toggle(root);
         }
         if (root.querySelectorAll) {
-            root.querySelectorAll('[data-form-collection="item"]').forEach(prepareItem);
-        }
-    }
-
-    function renumber() {
-        document.querySelectorAll('[data-form-collection="list"]').forEach(function (list) {
-            var index = 0;
-            list.querySelectorAll(':scope > [data-form-collection="item"]').forEach(function (item) {
-                if (!isVideoItem(item)) {
-                    return;
+            root.querySelectorAll('[data-form-collection="item"]').forEach(function (item) {
+                if (isVideoItem(item)) {
+                    toggle(item);
                 }
-                var position = item.querySelector('[data-video-position]');
-                if (position) {
-                    position.value = index;
-                }
-                index += 1;
             });
-        });
-    }
-
-    function itemOf(node) {
-        return node && node.closest ? node.closest('[data-form-collection="item"]') : null;
-    }
-
-    function wireDragAndDrop(list) {
-        var dragged = null;
-
-        list.addEventListener('dragstart', function (event) {
-            var handle = event.target.closest ? event.target.closest('[data-video-drag-handle]') : null;
-            if (!handle) {
-                return;
-            }
-            dragged = itemOf(handle);
-            if (dragged && event.dataTransfer) {
-                event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('text/plain', '');
-            }
-        });
-
-        list.addEventListener('dragover', function (event) {
-            if (!dragged) {
-                return;
-            }
-            var target = itemOf(event.target);
-            if (!target || target === dragged || target.parentNode !== list) {
-                return;
-            }
-            event.preventDefault();
-            var rect = target.getBoundingClientRect();
-            var after = (event.clientY - rect.top) > (rect.height / 2);
-            list.insertBefore(dragged, after ? target.nextSibling : target);
-        });
-
-        list.addEventListener('drop', function (event) {
-            if (!dragged) {
-                return;
-            }
-            event.preventDefault();
-            renumber();
-            dragged = null;
-        });
+        }
     }
 
     document.addEventListener('change', function (event) {
@@ -156,8 +74,7 @@
             }
             list.__setonoVideoBound = true;
 
-            wireDragAndDrop(list);
-
+            // Newly added prototype rows need their kind-specific field revealed too.
             new MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
                     mutation.addedNodes.forEach(function (node) {
@@ -167,12 +84,6 @@
                     });
                 });
             }).observe(list, { childList: true });
-
-            var form = list.closest('form');
-            if (form && !form.__setonoVideoRenumber) {
-                form.__setonoVideoRenumber = true;
-                form.addEventListener('submit', renumber);
-            }
         });
     }
 

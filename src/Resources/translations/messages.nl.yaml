@@ -10,12 +10,14 @@ setono_sylius_video:
             html: 'Insluitcode'
             file: 'Videobestand'
             poster: 'Posterafbeelding'
+            position: 'Positie'
             help:
                 type: 'Kies hoe deze video wordt aangeleverd.'
                 file: 'Upload een videobestand, bijv. MP4 of WebM.'
                 url: 'Link naar een videobestand of een videopagina zoals YouTube of Vimeo.'
                 html: 'Plak de insluitcode (iframe) van de videoaanbieder.'
                 poster: 'Optionele voorbeeldafbeelding die wordt getoond voordat de video wordt afgespeeld.'
+                position: 'Gesorteerd op dit nummer, laagste eerst.'
     type:
         file: 'Bestand uploaden'
         url: 'Externe URL'
