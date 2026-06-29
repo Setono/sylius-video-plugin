@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Model;
 use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
 
 #[AsVideoKind(label: 'setono_sylius_video.type.file', field: 'file')]
-class FileVideo extends ProductVideo implements FileVideoInterface
+class FileProductVideo extends ProductVideo implements FileProductVideoInterface
 {
     protected ?string $path = null;
 

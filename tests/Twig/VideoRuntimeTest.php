@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Twig;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface;
 use Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface;
 use Setono\SyliusVideoPlugin\Twig\VideoRuntime;
@@ -20,7 +20,7 @@ final class VideoRuntimeTest extends TestCase
      */
     public function it_delegates_rendering_to_the_renderer(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $renderer = $this->prophesize(VideoRendererInterface::class);
         $renderer->render($video, ['foo' => 'bar'])->willReturn('<video></video>');
@@ -35,7 +35,7 @@ final class VideoRuntimeTest extends TestCase
      */
     public function it_delegates_poster_resolution_to_the_resolver(): void
     {
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $resolver = $this->prophesize(VideoPosterResolverInterface::class);
         $resolver->resolve($video)->willReturn('https://example.com/poster.jpg');

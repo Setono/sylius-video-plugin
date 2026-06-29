@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Model;
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareTrait;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Sylius\Component\Core\Model\Product;
 
 final class ProductVideosAwareTraitTest extends TestCase
@@ -18,7 +18,7 @@ final class ProductVideosAwareTraitTest extends TestCase
     public function it_adds_a_video_and_sets_its_product(): void
     {
         $product = new ProductWithVideos();
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $product->addVideo($video);
 
@@ -32,7 +32,7 @@ final class ProductVideosAwareTraitTest extends TestCase
     public function it_does_not_add_the_same_video_twice(): void
     {
         $product = new ProductWithVideos();
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
 
         $product->addVideo($video);
         $product->addVideo($video);
@@ -46,7 +46,7 @@ final class ProductVideosAwareTraitTest extends TestCase
     public function it_removes_a_video_and_unsets_its_product(): void
     {
         $product = new ProductWithVideos();
-        $video = new UrlVideo();
+        $video = new UrlProductVideo();
         $product->addVideo($video);
 
         $product->removeVideo($video);
@@ -62,8 +62,8 @@ final class ProductVideosAwareTraitTest extends TestCase
     {
         $product = new ProductWithVideos();
 
-        $first = new UrlVideo();
-        $second = new UrlVideo();
+        $first = new UrlProductVideo();
+        $second = new UrlProductVideo();
 
         $product->addVideo($first);
         $product->addVideo($second);

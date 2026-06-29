@@ -6,10 +6,10 @@ namespace Setono\SyliusVideoPlugin\Renderer;
 
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
-use Setono\SyliusVideoPlugin\Model\UrlVideoInterface;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideoInterface;
 use Twig\Environment;
 
-final class UrlVideoRenderer implements VideoRendererInterface
+final class UrlProductVideoRenderer implements VideoRendererInterface
 {
     /** @var list<string> */
     private const DIRECT_FILE_EXTENSIONS = ['mp4', 'webm', 'ogg', 'ogv', 'mov', 'm4v'];
@@ -22,12 +22,12 @@ final class UrlVideoRenderer implements VideoRendererInterface
 
     public function supports(ProductVideoInterface $video): bool
     {
-        return $video instanceof UrlVideoInterface;
+        return $video instanceof UrlProductVideoInterface;
     }
 
     public function render(ProductVideoInterface $video, array $context = []): string
     {
-        if (!$video instanceof UrlVideoInterface) {
+        if (!$video instanceof UrlProductVideoInterface) {
             throw new UnsupportedVideoException($video);
         }
 

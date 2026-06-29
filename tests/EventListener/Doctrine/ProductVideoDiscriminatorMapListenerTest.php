@@ -10,11 +10,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMapListener;
-use Setono\SyliusVideoPlugin\Model\EmbedVideo;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
+use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 
 final class ProductVideoDiscriminatorMapListenerTest extends TestCase
 {
@@ -30,9 +30,9 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
         $this->listener()->loadClassMetadata($this->eventArgs($metadata));
 
         self::assertSame([
-            ProductVideoInterface::TYPE_FILE => FileVideo::class,
-            ProductVideoInterface::TYPE_URL => UrlVideo::class,
-            ProductVideoInterface::TYPE_EMBED => EmbedVideo::class,
+            ProductVideoInterface::TYPE_FILE => FileProductVideo::class,
+            ProductVideoInterface::TYPE_URL => UrlProductVideo::class,
+            ProductVideoInterface::TYPE_EMBED => EmbedProductVideo::class,
         ], $metadata->discriminatorMap);
     }
 
@@ -54,9 +54,9 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
             // The base resource and unrelated resources must be skipped.
             'product_video' => ['classes' => ['model' => ProductVideo::class]],
             'unrelated' => ['classes' => ['model' => \stdClass::class]],
-            'file_video' => ['classes' => ['model' => FileVideo::class]],
-            'url_video' => ['classes' => ['model' => UrlVideo::class]],
-            'embed_video' => ['classes' => ['model' => EmbedVideo::class]],
+            'file_video' => ['classes' => ['model' => FileProductVideo::class]],
+            'url_video' => ['classes' => ['model' => UrlProductVideo::class]],
+            'embed_video' => ['classes' => ['model' => EmbedProductVideo::class]],
         ]);
     }
 

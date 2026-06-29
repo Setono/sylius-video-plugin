@@ -30,7 +30,7 @@ class ProductVideo implements ProductVideoInterface
     public static function getType(): string
     {
         // The base class is abstract by convention (Sylius resource bundle limitation); real
-        // instances are always FileVideo, UrlVideo or EmbedVideo, all of which override this.
+        // instances are always FileProductVideo, UrlProductVideo or EmbedProductVideo, all of which override this.
         throw new \LogicException(sprintf(
             'Video type is not defined for %s. Subclasses must override getType().',
             static::class,

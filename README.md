@@ -9,8 +9,8 @@ Adds a **Videos** tab to the admin product create/edit page so editors can attac
 product through three built-in kinds — **file upload**, **external URL** and **direct embed
 code** — and renders them on the shop product page.
 
-Videos are stored with **Single Table Inheritance** (a base `ProductVideo` plus `FileVideo` /
-`UrlVideo` / `EmbedVideo` subtypes) and presented through **tagged composite renderers**, so the
+Videos are stored with **Single Table Inheritance** (a base `ProductVideo` plus `FileProductVideo` /
+`UrlProductVideo` / `EmbedProductVideo` subtypes) and presented through **tagged composite renderers**, so the
 plugin is extended exactly like [`setono/sylius-qr-code-plugin`](https://github.com/Setono/sylius-qr-code-plugin):
 add a subtype + a resource entry + a renderer and the discriminator map picks it up — no edits to
 the plugin's mapping required.
@@ -191,7 +191,7 @@ use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
-interface YoutubeVideoInterface extends ProductVideoInterface
+interface YoutubeProductVideoInterface extends ProductVideoInterface
 {
     public function getUrl(): ?string;
     public function setUrl(?string $url): void;
@@ -199,7 +199,7 @@ interface YoutubeVideoInterface extends ProductVideoInterface
 }
 
 #[AsVideoKind(label: 'app.video.type.youtube', field: 'url')]
-class YoutubeVideo extends ProductVideo implements YoutubeVideoInterface
+class YoutubeProductVideo extends ProductVideo implements YoutubeProductVideoInterface
 {
     protected ?string $url = null;
 
@@ -229,10 +229,10 @@ sylius_resource:
     resources:
         app.youtube_video:
             classes:
-                model: App\Entity\Video\YoutubeVideo
+                model: App\Entity\Video\YoutubeProductVideo
 ```
 
-**4. Renderer + poster** — implement `VideoRendererInterface` (`instanceof YoutubeVideoInterface`),
+**4. Renderer + poster** — implement `VideoRendererInterface` (`instanceof YoutubeProductVideoInterface`),
 tag it `setono_sylius_video.renderer`, and add a `shop/renderer/youtube.html.twig` template. Add a
 poster resolver that builds the thumbnail from the parsed id and tag it
 `setono_sylius_video.poster_resolver`:
@@ -242,12 +242,12 @@ final class YoutubePosterResolver implements VideoPosterResolverInterface
 {
     public function supports(ProductVideoInterface $video): bool
     {
-        return $video instanceof YoutubeVideoInterface && null !== $video->getVideoId();
+        return $video instanceof YoutubeProductVideoInterface && null !== $video->getVideoId();
     }
 
     public function resolve(ProductVideoInterface $video): ?string
     {
-        \assert($video instanceof YoutubeVideoInterface);
+        \assert($video instanceof YoutubeProductVideoInterface);
 
         return null === $video->getVideoId()
             ? null

@@ -4,10 +4,10 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <!-- path is nullable at the DB level because STI rows of other types do not have a file
-         path; the application-layer validator enforces a path/file for file videos. -->
-    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\FileVideo">
-        <field name="path" type="string" length="255" column="path" nullable="true"/>
+    <!-- url is nullable at the DB level because STI rows of other types do not have a url; the
+         application-layer validator enforces NotBlank + Url for url videos. -->
+    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\UrlProductVideo">
+        <field name="url" type="string" length="2048" column="url" nullable="true"/>
     </mapped-superclass>
 
 </doctrine-mapping>

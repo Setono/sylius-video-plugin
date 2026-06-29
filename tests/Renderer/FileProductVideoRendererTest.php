@@ -7,13 +7,13 @@ namespace Setono\SyliusVideoPlugin\Tests\Renderer;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
-use Setono\SyliusVideoPlugin\Renderer\FileVideoRenderer;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
+use Setono\SyliusVideoPlugin\Renderer\FileProductVideoRenderer;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 
-final class FileVideoRendererTest extends TestCase
+final class FileProductVideoRendererTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -22,8 +22,8 @@ final class FileVideoRendererTest extends TestCase
      */
     public function it_supports_only_file_videos(): void
     {
-        self::assertTrue($this->renderer(new Environment(new ArrayLoader()))->supports(new FileVideo()));
-        self::assertFalse($this->renderer(new Environment(new ArrayLoader()))->supports(new UrlVideo()));
+        self::assertTrue($this->renderer(new Environment(new ArrayLoader()))->supports(new FileProductVideo()));
+        self::assertFalse($this->renderer(new Environment(new ArrayLoader()))->supports(new UrlProductVideo()));
     }
 
     /**
@@ -36,10 +36,10 @@ final class FileVideoRendererTest extends TestCase
 
         $twig = new Environment(new ArrayLoader(['renderer' => '{{ url }}']));
 
-        $video = new FileVideo();
+        $video = new FileProductVideo();
         $video->setPath('video/ab/cd.mp4');
 
-        $renderer = new FileVideoRenderer($twig, $generator->reveal(), 'renderer');
+        $renderer = new FileProductVideoRenderer($twig, $generator->reveal(), 'renderer');
 
         self::assertSame('/media/image/video/ab/cd.mp4', $renderer->render($video));
     }
@@ -51,11 +51,11 @@ final class FileVideoRendererTest extends TestCase
     {
         $this->expectException(\Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException::class);
 
-        $this->renderer(new Environment(new ArrayLoader(['renderer' => ''])))->render(new UrlVideo());
+        $this->renderer(new Environment(new ArrayLoader(['renderer' => ''])))->render(new UrlProductVideo());
     }
 
-    private function renderer(Environment $twig): FileVideoRenderer
+    private function renderer(Environment $twig): FileProductVideoRenderer
     {
-        return new FileVideoRenderer($twig, $this->prophesize(MediaUrlGeneratorInterface::class)->reveal(), 'renderer');
+        return new FileProductVideoRenderer($twig, $this->prophesize(MediaUrlGeneratorInterface::class)->reveal(), 'renderer');
     }
 }

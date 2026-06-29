@@ -4,14 +4,9 @@
                     xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
                                         https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
-    <class name="Setono\SyliusVideoPlugin\Model\UrlVideo">
-        <property name="url">
+    <class name="Setono\SyliusVideoPlugin\Model\EmbedProductVideo">
+        <property name="html">
             <constraint name="NotBlank">
-                <option name="groups">
-                    <value>sylius</value>
-                </option>
-            </constraint>
-            <constraint name="Url">
                 <option name="groups">
                     <value>sylius</value>
                 </option>

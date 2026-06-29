@@ -7,8 +7,8 @@ namespace Setono\SyliusVideoPlugin\Tests\Kind;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
-use Setono\SyliusVideoPlugin\Model\FileVideo;
-use Setono\SyliusVideoPlugin\Model\UrlVideo;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 final class VideoKindRegistryTest extends TestCase
@@ -35,7 +35,7 @@ final class VideoKindRegistryTest extends TestCase
 
         self::assertSame('file', $registry->getFieldName('file'));
         self::assertSame('url', $registry->getFieldName('url'));
-        self::assertSame(FileVideo::class, $registry->getModelClass('file'));
+        self::assertSame(FileProductVideo::class, $registry->getModelClass('file'));
         self::assertSame(['file', 'url'], $registry->getTypes());
         self::assertTrue($registry->has('file'));
         self::assertFalse($registry->has('embed'));
@@ -58,14 +58,14 @@ final class VideoKindRegistryTest extends TestCase
                 'type' => 'file',
                 'label' => 'setono_sylius_video.type.file',
                 'field' => 'file',
-                'model' => FileVideo::class,
+                'model' => FileProductVideo::class,
                 'factory' => $this->prophesize(FactoryInterface::class)->reveal(),
             ],
             [
                 'type' => 'url',
                 'label' => 'setono_sylius_video.type.url',
                 'field' => 'url',
-                'model' => UrlVideo::class,
+                'model' => UrlProductVideo::class,
                 'factory' => $this->prophesize(FactoryInterface::class)->reveal(),
             ],
         ]);

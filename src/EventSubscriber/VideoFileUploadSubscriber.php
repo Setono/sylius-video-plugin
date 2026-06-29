@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\EventSubscriber;
 
-use Setono\SyliusVideoPlugin\Model\FileVideoInterface;
+use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
 use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -43,7 +43,7 @@ final class VideoFileUploadSubscriber implements EventSubscriberInterface
         $videos = $subject->getVideos();
 
         foreach ($videos as $video) {
-            if ($video instanceof FileVideoInterface && $video->hasFile()) {
+            if ($video instanceof FileProductVideoInterface && $video->hasFile()) {
                 $this->uploader->upload($video);
             }
 
@@ -53,7 +53,7 @@ final class VideoFileUploadSubscriber implements EventSubscriberInterface
             }
 
             // A file video whose upload produced no path is unusable — drop it.
-            if ($video instanceof FileVideoInterface && null === $video->getPath()) {
+            if ($video instanceof FileProductVideoInterface && null === $video->getPath()) {
                 $videos->removeElement($video);
             }
         }
