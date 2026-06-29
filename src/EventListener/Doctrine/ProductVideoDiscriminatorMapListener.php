@@ -12,13 +12,13 @@ use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
  * Populates the Single Table Inheritance discriminator map on the base ProductVideo entity at
  * the moment Doctrine loads its metadata. The discriminator value for each subtype is resolved
  * dynamically from the model itself ({@see ProductVideoInterface::getType()}), so the map keys
- * are stable across app-level subclassing and adding a kind never requires editing this listener.
+ * are stable across app-level subclassing and adding a type never requires editing this listener.
  *
  * The plugin's ORM XML declares `inheritance-type="SINGLE_TABLE"` and the discriminator column
  * on ProductVideo, but omits the map because the concrete subtype classes may be overridden or
  * extended by the adopting application. The listener scans *all* registered Sylius resources
  * (`%sylius.resources%`) and keeps the ones whose model implements ProductVideoInterface, so a
- * new video kind registered as a plain resource is picked up without any plugin configuration.
+ * new video type registered as a plain resource is picked up without any plugin configuration.
  */
 final class ProductVideoDiscriminatorMapListener
 {

@@ -9,18 +9,12 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 
 interface ProductVideoInterface extends ResourceInterface
 {
-    public const TYPE_FILE = 'file';
-
-    public const TYPE_URL = 'url';
-
-    public const TYPE_EMBED = 'embed';
-
     /**
-     * Returns the Single Table Inheritance discriminator value for this video (one of the
-     * TYPE_* constants). The base class throws; every concrete subtype overrides it.
+     * Returns the Single Table Inheritance discriminator value for this video (e.g. `url`). The
+     * base class throws; ProductVideo derives it from the class name and subtypes may override.
      *
      * It is static because the type is a class-level fact, letting callers (the discriminator
-     * map listener, the kind compiler pass) resolve it from the class without instantiating.
+     * map listener, the type compiler pass) resolve it from the class without instantiating.
      */
     public static function getType(): string;
 
@@ -33,7 +27,7 @@ interface ProductVideoInterface extends ResourceInterface
     public function setPosition(?int $position): void;
 
     /**
-     * Path of the stored poster image on the media filesystem (kind-agnostic, optional).
+     * Path of the stored poster image on the media filesystem (type-agnostic, optional).
      */
     public function getPosterPath(): ?string;
 

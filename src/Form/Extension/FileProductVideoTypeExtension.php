@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Form\Extension;
 
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
+use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormInterface;
 
@@ -12,7 +12,7 @@ final class FileProductVideoTypeExtension extends AbstractProductVideoTypeExtens
 {
     protected function getType(): string
     {
-        return ProductVideoInterface::TYPE_FILE;
+        return FileProductVideo::getType();
     }
 
     protected function fieldNames(): array
@@ -30,7 +30,7 @@ final class FileProductVideoTypeExtension extends AbstractProductVideoTypeExtens
             'label' => 'setono_sylius_video.form.video.file',
             'help' => 'setono_sylius_video.form.video.help.file',
             'required' => false,
-            'attr' => ['data-video-fields' => ProductVideoInterface::TYPE_FILE],
+            'attr' => ['data-video-fields' => $this->getType()],
         ]);
     }
 }

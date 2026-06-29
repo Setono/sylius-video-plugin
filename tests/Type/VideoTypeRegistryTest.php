@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusVideoPlugin\Tests\Kind;
+namespace Setono\SyliusVideoPlugin\Tests\Type;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
+use Setono\SyliusVideoPlugin\Type\VideoTypeRegistry;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
-final class VideoKindRegistryTest extends TestCase
+final class VideoTypeRegistryTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -39,16 +39,16 @@ final class VideoKindRegistryTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_for_an_unknown_kind(): void
+    public function it_throws_for_an_unknown_type(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         $this->registry()->getFactory('unknown');
     }
 
-    private function registry(): VideoKindRegistry
+    private function registry(): VideoTypeRegistry
     {
-        return new VideoKindRegistry([
+        return new VideoTypeRegistry([
             [
                 'type' => 'file',
                 'label' => 'setono_sylius_video.ui.types.file',

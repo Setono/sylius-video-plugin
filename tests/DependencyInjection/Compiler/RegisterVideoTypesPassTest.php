@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\DependencyInjection\Compiler;
 
 use PHPUnit\Framework\TestCase;
-use Setono\SyliusVideoPlugin\DependencyInjection\Compiler\RegisterVideoKindsPass;
-use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
+use Setono\SyliusVideoPlugin\DependencyInjection\Compiler\RegisterVideoTypesPass;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
+use Setono\SyliusVideoPlugin\Type\VideoTypeRegistry;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class RegisterVideoKindsPassTest extends TestCase
+final class RegisterVideoTypesPassTest extends TestCase
 {
     /**
      * @test
@@ -31,14 +31,14 @@ final class RegisterVideoKindsPassTest extends TestCase
             'setono_sylius_video.embed_video' => EmbedProductVideo::class,
         ]);
 
-        (new RegisterVideoKindsPass())->process($container);
+        (new RegisterVideoTypesPass())->process($container);
 
-        /** @var array<array-key, array{type: string, label: string, factory: Reference}> $kinds */
-        $kinds = $container->getDefinition(VideoKindRegistry::class)->getArgument(0);
+        /** @var array<array-key, array{type: string, label: string, factory: Reference}> $types */
+        $types = $container->getDefinition(VideoTypeRegistry::class)->getArgument(0);
 
         $byType = [];
-        foreach ($kinds as $kind) {
-            $byType[$kind['type']] = $kind;
+        foreach ($types as $type) {
+            $byType[$type['type']] = $type;
         }
 
         self::assertSame(['file', 'url', 'embed'], array_keys($byType));
@@ -55,16 +55,16 @@ final class RegisterVideoKindsPassTest extends TestCase
     /**
      * @test
      */
-    public function it_skips_a_kind_whose_factory_service_is_missing(): void
+    public function it_skips_a_type_whose_factory_service_is_missing(): void
     {
         $container = $this->containerWithResources([
             'setono_sylius_video.file_video' => FileProductVideo::class,
         ]);
         $container->removeDefinition('setono_sylius_video.factory.file_video');
 
-        (new RegisterVideoKindsPass())->process($container);
+        (new RegisterVideoTypesPass())->process($container);
 
-        self::assertSame([], $container->getDefinition(VideoKindRegistry::class)->getArgument(0));
+        self::assertSame([], $container->getDefinition(VideoTypeRegistry::class)->getArgument(0));
     }
 
     /**
@@ -75,9 +75,9 @@ final class RegisterVideoKindsPassTest extends TestCase
         $container = new ContainerBuilder();
         $container->setParameter('sylius.resources', []);
 
-        (new RegisterVideoKindsPass())->process($container);
+        (new RegisterVideoTypesPass())->process($container);
 
-        self::assertFalse($container->hasDefinition(VideoKindRegistry::class));
+        self::assertFalse($container->hasDefinition(VideoTypeRegistry::class));
     }
 
     /**
@@ -86,7 +86,7 @@ final class RegisterVideoKindsPassTest extends TestCase
     private function containerWithResources(array $models): ContainerBuilder
     {
         $container = new ContainerBuilder();
-        $container->register(VideoKindRegistry::class, VideoKindRegistry::class)->setArgument(0, []);
+        $container->register(VideoTypeRegistry::class, VideoTypeRegistry::class)->setArgument(0, []);
 
         $resources = [];
         foreach ($models as $alias => $model) {

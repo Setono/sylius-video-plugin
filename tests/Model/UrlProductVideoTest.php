@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 
 final class UrlProductVideoTest extends TestCase
@@ -15,7 +14,7 @@ final class UrlProductVideoTest extends TestCase
      */
     public function it_has_the_url_discriminator_type(): void
     {
-        self::assertSame(ProductVideoInterface::TYPE_URL, UrlProductVideo::getType());
+        self::assertSame('url', UrlProductVideo::getType());
     }
 
     /**

@@ -30,7 +30,7 @@ final class EmbedProductVideoRenderer implements VideoRendererInterface
 
         return $this->twig->render($this->template, [
             'video' => $video,
-            'html' => $video->getHtml() ?? '',
+            'html' => $video->getHtml(),
         ]);
     }
 }

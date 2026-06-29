@@ -47,7 +47,7 @@ final class VideoFileUploadSubscriber implements EventSubscriberInterface
                 $this->uploader->upload($video);
             }
 
-            // The poster upload is kind-agnostic: any video (file/url/embed) may carry one.
+            // The poster upload is type-agnostic: any video (file/url/embed) may carry one.
             if ($video->hasPosterFile()) {
                 $this->uploader->uploadPoster($video);
             }
