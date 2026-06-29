@@ -1,13 +1,18 @@
 /*
  * Dependency-light controller for the admin product "Videos" tab.
  *
- * Sole responsibility: reveal only the kind-specific field (path/url/html) matching the selected
- * type, hiding and disabling the others. Ordering is handled by the plain `position` integer
- * field, so there is no JavaScript involved in reordering.
+ * Sole responsibility: reveal only the kind-specific field(s) matching the selected type, hiding
+ * and disabling the others. Ordering is handled by the plain `position` integer field, so there
+ * is no JavaScript involved in reordering.
+ *
+ * Sylius admin upgrades the `type` <select> into a Semantic UI dropdown, which emits its change
+ * through jQuery's trigger() rather than as a native DOM event; a native `change` listener never
+ * sees it. We therefore also bind through jQuery when it is present (it always is in the Sylius
+ * admin), while keeping the native listener so the plugin still works with a plain <select>.
  *
  * It hooks into Sylius's own collection markup (`[data-form-collection="item"]`) so it needs no
  * custom form theme, works for rows added through the collection prototype (observed), and uses
- * no framework so it can ship as-is in Resources/public.
+ * no framework of its own.
  */
 (function () {
     'use strict';
@@ -51,18 +56,30 @@
         }
     }
 
+    function handleTypeChange(select) {
+        var item = select && select.closest ? select.closest('[data-form-collection="item"]') : null;
+        if (item) {
+            toggle(item);
+        }
+    }
+
+    // Native change — covers a plain <select> and works without jQuery.
     document.addEventListener('change', function (event) {
         var target = event.target;
         if (target && target.matches && target.matches('[data-video-type-select]')) {
-            var item = target.closest('[data-form-collection="item"]');
-            if (item) {
-                toggle(item);
-            }
+            handleTypeChange(target);
         }
     });
 
     function boot() {
         initItems(document);
+
+        // Semantic UI dropdown changes only surface through jQuery (see file header).
+        if (window.jQuery) {
+            window.jQuery(document).on('change', '[data-video-type-select]', function () {
+                handleTypeChange(this);
+            });
+        }
 
         document.querySelectorAll('[data-form-collection="list"]').forEach(function (list) {
             if (list.__setonoVideoBound) {
