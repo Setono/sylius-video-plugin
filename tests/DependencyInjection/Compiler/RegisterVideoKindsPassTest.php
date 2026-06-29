@@ -20,10 +20,10 @@ final class RegisterVideoKindsPassTest extends TestCase
     /**
      * @test
      */
-    public function it_builds_the_registry_from_resources_carrying_the_attribute(): void
+    public function it_builds_the_registry_from_resources_implementing_the_interface(): void
     {
         $container = $this->containerWithResources([
-            // The base (no #[AsVideoKind]) and unrelated resources must be skipped without error.
+            // The base (getType() throws) and unrelated resources must be skipped without error.
             'setono_sylius_video.product_video' => ProductVideo::class,
             'app.unrelated' => \stdClass::class,
             'setono_sylius_video.file_video' => FileProductVideo::class,
@@ -33,7 +33,7 @@ final class RegisterVideoKindsPassTest extends TestCase
 
         (new RegisterVideoKindsPass())->process($container);
 
-        /** @var array<array-key, array{type: string, label: string, field: string, model: class-string, factory: Reference}> $kinds */
+        /** @var array<array-key, array{type: string, label: string, factory: Reference}> $kinds */
         $kinds = $container->getDefinition(VideoKindRegistry::class)->getArgument(0);
 
         $byType = [];
@@ -43,13 +43,12 @@ final class RegisterVideoKindsPassTest extends TestCase
 
         self::assertSame(['file', 'url', 'embed'], array_keys($byType));
 
-        self::assertSame('setono_sylius_video.type.file', $byType['file']['label']);
-        self::assertSame('file', $byType['file']['field']);
-        self::assertSame(FileProductVideo::class, $byType['file']['model']);
-        self::assertSame('setono_sylius_video.factory.file_video', (string) $byType['file']['factory']);
+        // The label is derived from the type.
+        self::assertSame('setono_sylius_video.ui.types.file', $byType['file']['label']);
+        self::assertSame('setono_sylius_video.ui.types.embed', $byType['embed']['label']);
 
-        self::assertSame('url', $byType['url']['field']);
-        self::assertSame('html', $byType['embed']['field']);
+        // The factory is resolved from the resource alias.
+        self::assertSame('setono_sylius_video.factory.file_video', (string) $byType['file']['factory']);
         self::assertSame('setono_sylius_video.factory.embed_video', (string) $byType['embed']['factory']);
     }
 

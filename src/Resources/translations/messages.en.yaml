@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videos'
+        types:
+            file: 'File upload'
+            url: 'External URL'
+            embed: 'Embed code'
     form:
         product:
             videos: 'Videos'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Paste the embed code (iframe) from the video provider.'
                 poster: 'Optional preview image shown before the video plays.'
                 position: 'Videos are ordered by this number, lowest first.'
-    type:
-        file: 'File upload'
-        url: 'External URL'
-        embed: 'Embed code'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Please upload a video file.'

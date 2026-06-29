@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Video’s'
+        types:
+            file: 'Bestand uploaden'
+            url: 'Externe URL'
+            embed: 'Insluitcode'
     form:
         product:
             videos: 'Video’s'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Plak de insluitcode (iframe) van de videoaanbieder.'
                 poster: 'Optionele voorbeeldafbeelding die wordt getoond voordat de video wordt afgespeeld.'
                 position: 'Gesorteerd op dit nummer, laagste eerst.'
-    type:
-        file: 'Bestand uploaden'
-        url: 'Externe URL'
-        embed: 'Insluitcode'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Upload een videobestand.'

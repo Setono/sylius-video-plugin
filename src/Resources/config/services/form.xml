@@ -14,5 +14,16 @@
         <service id="Setono\SyliusVideoPlugin\Form\Extension\ProductTypeExtension">
             <tag name="form.type_extension"/>
         </service>
+
+        <!-- Per-kind extensions of ProductVideoType: each contributes one kind's input field(s). -->
+        <service id="Setono\SyliusVideoPlugin\Form\Extension\FileProductVideoTypeExtension">
+            <tag name="form.type_extension"/>
+        </service>
+        <service id="Setono\SyliusVideoPlugin\Form\Extension\UrlProductVideoTypeExtension">
+            <tag name="form.type_extension"/>
+        </service>
+        <service id="Setono\SyliusVideoPlugin\Form\Extension\EmbedProductVideoTypeExtension">
+            <tag name="form.type_extension"/>
+        </service>
     </services>
 </container>

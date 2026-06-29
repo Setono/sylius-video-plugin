@@ -43,7 +43,7 @@ final class SetonoSyliusVideoPlugin extends AbstractResourceBundle
             'setono_sylius_video.poster_resolver',
         ));
 
-        // Builds the video kind registry from resources whose model carries #[AsVideoKind].
+        // Builds the video kind registry from resources whose model implements ProductVideoInterface.
         $container->addCompilerPass(new RegisterVideoKindsPass());
     }
 }

@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videoclipuri'
+        types:
+            file: 'Încărcare fișier'
+            url: 'URL extern'
+            embed: 'Cod de încorporare'
     form:
         product:
             videos: 'Videoclipuri'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
                 poster: 'Imagine de previzualizare opțională, afișată înainte de redarea videoclipului.'
                 position: 'Videoclipurile sunt ordonate după acest număr, crescător.'
-    type:
-        file: 'Încărcare fișier'
-        url: 'URL extern'
-        embed: 'Cod de încorporare'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Încărcați un fișier video.'

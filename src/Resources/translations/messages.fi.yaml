@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videot'
+        types:
+            file: 'Tiedoston lataus'
+            url: 'Ulkoinen URL-osoite'
+            embed: 'Upotuskoodi'
     form:
         product:
             videos: 'Videot'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
                 poster: 'Valinnainen esikatselukuva, joka näytetään ennen videon toistoa.'
                 position: 'Videot järjestetään tämän numeron mukaan, pienin ensin.'
-    type:
-        file: 'Tiedoston lataus'
-        url: 'Ulkoinen URL-osoite'
-        embed: 'Upotuskoodi'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Lataa videotiedosto.'

@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Vidéos'
+        types:
+            file: 'Téléversement de fichier'
+            url: 'URL externe'
+            embed: 'Code d’intégration'
     form:
         product:
             videos: 'Vidéos'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Collez le code d’intégration (iframe) fourni par l’hébergeur de la vidéo.'
                 poster: 'Image d’aperçu facultative affichée avant la lecture de la vidéo.'
                 position: 'Les vidéos sont triées par ce nombre, du plus petit au plus grand.'
-    type:
-        file: 'Téléversement de fichier'
-        url: 'URL externe'
-        embed: 'Code d’intégration'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Veuillez téléverser un fichier vidéo.'

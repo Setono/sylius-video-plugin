@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Vídeos'
+        types:
+            file: 'Carregamento de ficheiro'
+            url: 'URL externo'
+            embed: 'Código de incorporação'
     form:
         product:
             videos: 'Vídeos'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Cole o código de incorporação (iframe) do fornecedor do vídeo.'
                 poster: 'Imagem de pré-visualização opcional mostrada antes de o vídeo ser reproduzido.'
                 position: 'Os vídeos são ordenados por este número, do menor para o maior.'
-    type:
-        file: 'Carregamento de ficheiro'
-        url: 'URL externo'
-        embed: 'Código de incorporação'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Carregue um ficheiro de vídeo.'

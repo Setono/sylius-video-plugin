@@ -16,12 +16,6 @@
         return input.closest('.field') || input.parentNode;
     }
 
-    function activeFieldOf(select) {
-        var option = select.options[select.selectedIndex];
-
-        return option ? option.getAttribute('data-video-field-target') : null;
-    }
-
     function isVideoItem(item) {
         return !!item.querySelector('[data-video-type-select]');
     }
@@ -31,9 +25,11 @@
         if (!select) {
             return;
         }
-        var activeField = activeFieldOf(select);
-        item.querySelectorAll('[data-video-field]').forEach(function (input) {
-            var matches = input.getAttribute('data-video-field') === activeField;
+        var activeType = select.value;
+        // Each kind's field(s) carry `data-video-fields="<type>"`; reveal the selected kind's and
+        // hide (and disable, so it is not submitted) the rest.
+        item.querySelectorAll('[data-video-fields]').forEach(function (input) {
+            var matches = input.getAttribute('data-video-fields') === activeType;
             wrapperOf(input).style.display = matches ? '' : 'none';
             input.disabled = !matches;
         });
