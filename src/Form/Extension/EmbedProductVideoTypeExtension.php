@@ -6,7 +6,6 @@ namespace Setono\SyliusVideoPlugin\Form\Extension;
 
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormInterface;
 
 final class EmbedProductVideoTypeExtension extends AbstractProductVideoTypeExtension
 {
@@ -15,22 +14,15 @@ final class EmbedProductVideoTypeExtension extends AbstractProductVideoTypeExten
         return EmbedProductVideo::getType();
     }
 
-    protected function fieldNames(): array
+    protected function fields(): array
     {
-        return ['html'];
-    }
-
-    protected function addFields(FormInterface $form): void
-    {
-        if ($form->has('html')) {
-            return;
-        }
-
-        $form->add('html', TextareaType::class, [
-            'label' => 'setono_sylius_video.form.video.html',
-            'help' => 'setono_sylius_video.form.video.help.html',
-            'required' => false,
-            'attr' => ['data-video-fields' => $this->getType(), 'rows' => 4],
-        ]);
+        return [
+            'html' => [TextareaType::class, [
+                'label' => 'setono_sylius_video.form.video.html',
+                'help' => 'setono_sylius_video.form.video.help.html',
+                'required' => false,
+                'attr' => ['data-video-fields' => $this->getType(), 'rows' => 4],
+            ]],
+        ];
     }
 }

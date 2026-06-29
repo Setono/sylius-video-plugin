@@ -18,10 +18,11 @@ use Symfony\Component\Form\FormInterface;
  * own as many fields as it likes and apps can add a type by shipping their own extension — no edit
  * to the plugin's form is needed.
  *
- * The shared mechanics (reveal the field(s) for an existing row of this type, carry them on a new
- * row / the collection prototype so the client-side toggle can switch between types, and strip
- * them again on submit when another type is selected) live here; subclasses only declare their
- * type and build their field(s).
+ * A subtype only declares its discriminator type ({@see getType()}) and its field(s)
+ * ({@see fields()}); the shared mechanics — reveal the field(s) for an existing row of this type,
+ * carry them on a new row / the collection prototype so the client-side toggle can switch between
+ * types, and strip them again on submit when another type is selected — live here and are driven
+ * off that single `fields()` definition.
  */
 abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
 {
@@ -63,7 +64,7 @@ abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
 
             // Another type is selected — drop our field(s) and their submitted values so binding
             // maps cleanly onto the chosen subtype.
-            foreach ($this->fieldNames() as $name) {
+            foreach (array_keys($this->fields()) as $name) {
                 if ($form->has($name)) {
                     $form->remove($name);
                 }
@@ -81,17 +82,25 @@ abstract class AbstractProductVideoTypeExtension extends AbstractTypeExtension
     abstract protected function getType(): string;
 
     /**
-     * The names of the field(s) this extension adds, used to strip them when another type wins.
+     * This type's field(s), as a map of child name => [form type, options]. The single source of
+     * truth for both adding the fields and stripping them when another type wins.
      *
-     * @return list<string>
+     * @return array<string, array{class-string, array<string, mixed>}>
      */
-    abstract protected function fieldNames(): array;
+    abstract protected function fields(): array;
 
     /**
-     * Adds this type's field(s) to the form. Must be idempotent (guard each child with `has()`),
-     * as it can be called from both PRE_SET_DATA and PRE_SUBMIT.
+     * Adds this type's field(s) to the form, idempotently (so it is safe to call from both
+     * PRE_SET_DATA and PRE_SUBMIT).
      *
      * @param FormInterface<mixed> $form
      */
-    abstract protected function addFields(FormInterface $form): void;
+    private function addFields(FormInterface $form): void
+    {
+        foreach ($this->fields() as $name => [$type, $options]) {
+            if (!$form->has($name)) {
+                $form->add($name, $type, $options);
+            }
+        }
+    }
 }
