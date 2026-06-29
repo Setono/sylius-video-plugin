@@ -25,7 +25,9 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="position" type="integer" nullable="true"/>
+        <field name="position" type="integer">
+            <gedmo:sortable-position/>
+        </field>
         <field name="posterPath" type="string" length="255" column="poster_path" nullable="true"/>
 
         <field name="createdAt" type="datetime_immutable" column="created_at">
@@ -37,6 +39,8 @@
 
         <many-to-one field="product" target-entity="Sylius\Component\Core\Model\ProductInterface" inversed-by="videos">
             <join-column name="product_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+            <!-- Positions are maintained per-product by the Gedmo Sortable listener (enabled by Sylius). -->
+            <gedmo:sortable-group/>
         </many-to-one>
     </mapped-superclass>
 
