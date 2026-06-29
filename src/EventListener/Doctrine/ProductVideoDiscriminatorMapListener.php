@@ -67,6 +67,18 @@ final class ProductVideoDiscriminatorMapListener
                 continue;
             }
 
+            // Two models claiming the same discriminator (e.g. a subtype extending a concrete one
+            // without overriding getType()) would silently shadow each other in the STI map and
+            // break hydration — fail loudly instead.
+            if (isset($map[$type]) && $map[$type] !== $model) {
+                throw new \LogicException(sprintf(
+                    'Video types must be unique, but "%s" and "%s" both resolve to "%s". Override getType() on one of them.',
+                    $map[$type],
+                    $model,
+                    $type,
+                ));
+            }
+
             $map[$type] = $model;
         }
 

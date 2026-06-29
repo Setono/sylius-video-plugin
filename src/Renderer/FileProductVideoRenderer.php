@@ -24,7 +24,7 @@ final class FileProductVideoRenderer implements VideoRendererInterface
         return $video instanceof FileProductVideoInterface;
     }
 
-    public function render(ProductVideoInterface $video, array $context = []): string
+    public function render(ProductVideoInterface $video): string
     {
         if (!$video instanceof FileProductVideoInterface) {
             throw new UnsupportedVideoException($video);
@@ -32,9 +32,9 @@ final class FileProductVideoRenderer implements VideoRendererInterface
 
         $path = $video->getPath();
 
-        return $this->twig->render($this->template, array_merge([
+        return $this->twig->render($this->template, [
             'video' => $video,
             'url' => null === $path ? null : $this->mediaUrlGenerator->generate($path),
-        ], $context));
+        ]);
     }
 }

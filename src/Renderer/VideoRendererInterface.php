@@ -10,8 +10,5 @@ interface VideoRendererInterface
 {
     public function supports(ProductVideoInterface $video): bool;
 
-    /**
-     * @param array<string, mixed> $context
-     */
-    public function render(ProductVideoInterface $video, array $context = []): string;
+    public function render(ProductVideoInterface $video): string;
 }

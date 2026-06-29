@@ -27,14 +27,25 @@ class ProductVideo implements ProductVideoInterface
         return $this->id;
     }
 
+    /**
+     * Derives the Single Table Inheritance discriminator value from the class name: the part
+     * before the `ProductVideo` suffix, snake-cased (e.g. `UrlProductVideo` => `url`,
+     * `EmbedProductVideo` => `embed`). Subtypes only need to override this for a non-conventional
+     * name. The base class itself has no type and throws.
+     */
     public static function getType(): string
     {
-        // The base class is abstract by convention (Sylius resource bundle limitation); real
-        // instances are always FileProductVideo, UrlProductVideo or EmbedProductVideo, all of which override this.
-        throw new \LogicException(sprintf(
-            'Video type is not defined for %s. Subclasses must override getType().',
-            static::class,
-        ));
+        $name = (new \ReflectionClass(static::class))->getShortName();
+        $prefix = (string) preg_replace('/ProductVideo$/', '', $name);
+
+        if ('' === $prefix) {
+            throw new \LogicException(sprintf(
+                'Cannot derive a video type for "%s". Name the subtype "<Kind>ProductVideo" or override getType().',
+                static::class,
+            ));
+        }
+
+        return strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $prefix));
     }
 
     public function getProduct(): ?ProductInterface

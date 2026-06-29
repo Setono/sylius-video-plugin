@@ -11,11 +11,6 @@ class UrlProductVideo extends ProductVideo implements UrlProductVideoInterface
 {
     protected ?string $url = null;
 
-    public static function getType(): string
-    {
-        return self::TYPE_URL;
-    }
-
     public function getUrl(): ?string
     {
         return $this->url;

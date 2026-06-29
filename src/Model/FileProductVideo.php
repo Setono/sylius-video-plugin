@@ -13,11 +13,6 @@ class FileProductVideo extends ProductVideo implements FileProductVideoInterface
 
     protected ?\SplFileInfo $file = null;
 
-    public static function getType(): string
-    {
-        return self::TYPE_FILE;
-    }
-
     public function getPath(): ?string
     {
         return $this->path;

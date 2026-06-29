@@ -17,10 +17,6 @@
                        inheritance-type="SINGLE_TABLE">
         <discriminator-column name="type" type="string" length="20"/>
 
-        <indexes>
-            <index name="setono_sylius_video_type_idx" columns="type"/>
-        </indexes>
-
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>

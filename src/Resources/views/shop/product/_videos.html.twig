@@ -1,5 +1,3 @@
-{# Rendered on the shop product page via the `sylius.shop.product.show.content` event.
-   Assumes the application's Product implements ProductVideosAwareInterface (see the README). #}
 {% set videos = product.videos %}
 {% if videos|length > 0 %}
     <div class="setono-sylius-video-list">

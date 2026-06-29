@@ -23,11 +23,11 @@ final class VideoRuntimeTest extends TestCase
         $video = new UrlProductVideo();
 
         $renderer = $this->prophesize(VideoRendererInterface::class);
-        $renderer->render($video, ['foo' => 'bar'])->willReturn('<video></video>');
+        $renderer->render($video)->willReturn('<video></video>');
 
         $runtime = new VideoRuntime($renderer->reveal(), $this->prophesize(VideoPosterResolverInterface::class)->reveal());
 
-        self::assertSame('<video></video>', $runtime->render($video, ['foo' => 'bar']));
+        self::assertSame('<video></video>', $runtime->render($video));
     }
 
     /**

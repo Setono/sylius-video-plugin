@@ -19,7 +19,7 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
     public function load(array $configs, ContainerBuilder $container): void
     {
         /** @var array{resources: array<string, mixed>, filesystem: array{adapter: string, public_url_prefix: string}} $config */
-        $config = $this->processConfiguration(new Configuration(), $configs);
+        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
         $container->setParameter('setono_sylius_video.filesystem.public_url_prefix', $config['filesystem']['public_url_prefix']);
         $container->setAlias('setono_sylius_video.filesystem', $config['filesystem']['adapter']);
