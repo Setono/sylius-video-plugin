@@ -15,6 +15,7 @@ use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
+use Setono\SyliusVideoPlugin\Tests\EventListener\Doctrine\Fixtures\CustomFileProductVideo;
 
 final class ProductVideoDiscriminatorMapListenerTest extends TestCase
 {
@@ -46,6 +47,21 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
         $this->listener()->loadClassMetadata($this->eventArgs($metadata));
 
         self::assertSame([], $metadata->discriminatorMap);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_when_two_models_resolve_to_the_same_type(): void
+    {
+        $listener = new ProductVideoDiscriminatorMapListener([
+            'file_video' => ['classes' => ['model' => FileProductVideo::class]],
+            'custom_file_video' => ['classes' => ['model' => CustomFileProductVideo::class]],
+        ]);
+
+        $this->expectException(\LogicException::class);
+
+        $listener->loadClassMetadata($this->eventArgs(new ClassMetadata(ProductVideo::class)));
     }
 
     private function listener(): ProductVideoDiscriminatorMapListener

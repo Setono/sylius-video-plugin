@@ -279,11 +279,7 @@ jobs:
                 with:
                     dependency-versions: "${{ matrix.dependencies }}"
 
-            # Infection still runs and reports the MSI, but does not block the build: the plugin
-            # intentionally leaves framework glue (DI extension, compiler passes, bundle) without
-            # unit tests, so the 100% MSI target is aspirational rather than a hard gate.
             -   name: "Run infection"
-                continue-on-error: true
                 run: "vendor/bin/infection"
                 env:
                     STRYKER_DASHBOARD_API_KEY: "${{ secrets.STRYKER_DASHBOARD_API_KEY }}"

@@ -27,11 +27,6 @@ final class SetonoSyliusVideoPlugin extends AbstractResourceBundle
         ];
     }
 
-    protected function getModelNamespace(): string
-    {
-        return 'Setono\SyliusVideoPlugin\Model';
-    }
-
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);

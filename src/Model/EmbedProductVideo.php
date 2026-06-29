@@ -11,11 +11,6 @@ class EmbedProductVideo extends ProductVideo implements EmbedProductVideoInterfa
 {
     protected ?string $html = null;
 
-    public static function getType(): string
-    {
-        return self::TYPE_EMBED;
-    }
-
     public function getHtml(): ?string
     {
         return $this->html;

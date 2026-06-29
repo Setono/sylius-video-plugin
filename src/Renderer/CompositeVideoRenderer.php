@@ -28,11 +28,11 @@ final class CompositeVideoRenderer extends CompositeService implements VideoRend
         return false;
     }
 
-    public function render(ProductVideoInterface $video, array $context = []): string
+    public function render(ProductVideoInterface $video): string
     {
         foreach ($this->services as $renderer) {
             if ($renderer->supports($video)) {
-                return $renderer->render($video, $context);
+                return $renderer->render($video);
             }
         }
 

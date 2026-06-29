@@ -17,12 +17,9 @@ final class VideoRuntime implements RuntimeExtensionInterface
     ) {
     }
 
-    /**
-     * @param array<string, mixed> $context
-     */
-    public function render(ProductVideoInterface $video, array $context = []): string
+    public function render(ProductVideoInterface $video): string
     {
-        return $this->renderer->render($video, $context);
+        return $this->renderer->render($video);
     }
 
     public function poster(ProductVideoInterface $video): ?string

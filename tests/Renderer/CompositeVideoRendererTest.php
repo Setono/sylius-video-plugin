@@ -24,11 +24,11 @@ final class CompositeVideoRendererTest extends TestCase
 
         $first = $this->prophesize(VideoRendererInterface::class);
         $first->supports($video)->willReturn(false);
-        $first->render($video, [])->shouldNotBeCalled();
+        $first->render($video)->shouldNotBeCalled();
 
         $second = $this->prophesize(VideoRendererInterface::class);
         $second->supports($video)->willReturn(true);
-        $second->render($video, [])->willReturn('<video></video>');
+        $second->render($video)->willReturn('<video></video>');
 
         $third = $this->prophesize(VideoRendererInterface::class);
         $third->supports($video)->shouldNotBeCalled();

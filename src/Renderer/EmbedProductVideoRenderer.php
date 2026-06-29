@@ -22,15 +22,15 @@ final class EmbedProductVideoRenderer implements VideoRendererInterface
         return $video instanceof EmbedProductVideoInterface;
     }
 
-    public function render(ProductVideoInterface $video, array $context = []): string
+    public function render(ProductVideoInterface $video): string
     {
         if (!$video instanceof EmbedProductVideoInterface) {
             throw new UnsupportedVideoException($video);
         }
 
-        return $this->twig->render($this->template, array_merge([
+        return $this->twig->render($this->template, [
             'video' => $video,
             'html' => $video->getHtml() ?? '',
-        ], $context));
+        ]);
     }
 }
