@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videók'
+        types:
+            file: 'Fájlfeltöltés'
+            url: 'Külső URL'
+            embed: 'Beágyazási kód'
     form:
         product:
             videos: 'Videók'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
                 poster: 'Választható előnézeti kép, amely a videó lejátszása előtt jelenik meg.'
                 position: 'A videók e szám szerint vannak rendezve, a legkisebbtől.'
-    type:
-        file: 'Fájlfeltöltés'
-        url: 'Külső URL'
-        embed: 'Beágyazási kód'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Töltsön fel egy videófájlt.'

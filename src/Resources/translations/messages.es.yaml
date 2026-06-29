@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Vídeos'
+        types:
+            file: 'Subida de archivo'
+            url: 'URL externa'
+            embed: 'Código de inserción'
     form:
         product:
             videos: 'Vídeos'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Pegue el código de inserción (iframe) del proveedor del vídeo.'
                 poster: 'Imagen de vista previa opcional que se muestra antes de reproducir el vídeo.'
                 position: 'Los vídeos se ordenan por este número, de menor a mayor.'
-    type:
-        file: 'Subida de archivo'
-        url: 'URL externa'
-        embed: 'Código de inserción'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Suba un archivo de vídeo.'

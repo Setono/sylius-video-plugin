@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\Form\Type;
 
+use Setono\SyliusVideoPlugin\Form\Extension\EmbedProductVideoTypeExtension;
+use Setono\SyliusVideoPlugin\Form\Extension\FileProductVideoTypeExtension;
+use Setono\SyliusVideoPlugin\Form\Extension\UrlProductVideoTypeExtension;
 use Setono\SyliusVideoPlugin\Form\Type\ProductVideoType;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
@@ -131,13 +134,20 @@ final class ProductVideoTypeTest extends TypeTestCase
     protected function getExtensions(): array
     {
         $registry = new VideoKindRegistry([
-            ['type' => 'file', 'label' => 'setono_sylius_video.type.file', 'field' => 'file', 'model' => FileProductVideo::class, 'factory' => new Factory(FileProductVideo::class)],
-            ['type' => 'url', 'label' => 'setono_sylius_video.type.url', 'field' => 'url', 'model' => UrlProductVideo::class, 'factory' => new Factory(UrlProductVideo::class)],
-            ['type' => 'embed', 'label' => 'setono_sylius_video.type.embed', 'field' => 'html', 'model' => EmbedProductVideo::class, 'factory' => new Factory(EmbedProductVideo::class)],
+            ['type' => 'file', 'label' => 'setono_sylius_video.ui.types.file', 'factory' => new Factory(FileProductVideo::class)],
+            ['type' => 'url', 'label' => 'setono_sylius_video.ui.types.url', 'factory' => new Factory(UrlProductVideo::class)],
+            ['type' => 'embed', 'label' => 'setono_sylius_video.ui.types.embed', 'factory' => new Factory(EmbedProductVideo::class)],
         ]);
 
         return [
-            new PreloadedExtension([new ProductVideoType($registry, ProductVideo::class)], []),
+            new PreloadedExtension(
+                [new ProductVideoType($registry, ProductVideo::class)],
+                [ProductVideoType::class => [
+                    new FileProductVideoTypeExtension(),
+                    new UrlProductVideoTypeExtension(),
+                    new EmbedProductVideoTypeExtension(),
+                ]],
+            ),
             new ValidatorExtension(Validation::createValidator()),
         ];
     }

@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videoer'
+        types:
+            file: 'Filupload'
+            url: 'Ekstern URL'
+            embed: 'Indlejringskode'
     form:
         product:
             videos: 'Videoer'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'
                 poster: 'Valgfrit forhåndsvisningsbillede, der vises, før videoen afspilles.'
                 position: 'Videoer sorteres efter dette tal, laveste først.'
-    type:
-        file: 'Filupload'
-        url: 'Ekstern URL'
-        embed: 'Indlejringskode'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Upload en videofil.'

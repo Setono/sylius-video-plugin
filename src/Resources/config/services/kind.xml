@@ -7,8 +7,9 @@
     <services>
         <!--
             The kinds argument is populated by RegisterVideoKindsPass, which scans the registered
-            Sylius resources for models carrying #[AsVideoKind]. To add a kind, register a subtype
-            resource and annotate its model — no entry is needed here.
+            Sylius resources for models implementing ProductVideoInterface. To add a kind, register
+            a subtype resource and ship a ProductVideoType extension for its field(s) — no entry is
+            needed here.
         -->
         <service id="Setono\SyliusVideoPlugin\Kind\VideoKindRegistry">
             <argument type="collection"/>

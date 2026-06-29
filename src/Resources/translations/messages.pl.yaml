@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Filmy'
+        types:
+            file: 'Przesłanie pliku'
+            url: 'Zewnętrzny adres URL'
+            embed: 'Kod osadzania'
     form:
         product:
             videos: 'Filmy'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Wklej kod osadzania (iframe) od dostawcy wideo.'
                 poster: 'Opcjonalny obraz podglądu wyświetlany przed odtworzeniem filmu.'
                 position: 'Filmy są sortowane według tego numeru, od najniższego.'
-    type:
-        file: 'Przesłanie pliku'
-        url: 'Zewnętrzny adres URL'
-        embed: 'Kod osadzania'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Prześlij plik wideo.'

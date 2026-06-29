@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videa'
+        types:
+            file: 'Nahrání souboru'
+            url: 'Externí URL'
+            embed: 'Kód pro vložení'
     form:
         product:
             videos: 'Videa'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Vložte kód pro vložení (iframe) od poskytovatele videa.'
                 poster: 'Volitelný náhledový obrázek zobrazený před přehráním videa.'
                 position: 'Videa jsou seřazena podle tohoto čísla, od nejnižšího.'
-    type:
-        file: 'Nahrání souboru'
-        url: 'Externí URL'
-        embed: 'Kód pro vložení'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Nahrajte soubor videa.'

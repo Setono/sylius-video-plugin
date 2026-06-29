@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\DependencyInjection\Compiler;
 
-use Setono\SyliusVideoPlugin\Kind\AsVideoKind;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -12,10 +11,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Builds the {@see VideoKindRegistry} from every registered Sylius resource whose model
- * implements {@see ProductVideoInterface} and carries an {@see AsVideoKind} attribute. The kind
- * metadata therefore lives next to the entity it describes — adding a kind is "subtype +
- * #[AsVideoKind] + a resource entry", with no plugin configuration to edit.
+ * Builds the {@see VideoKindRegistry} from every registered Sylius resource whose model implements
+ * {@see ProductVideoInterface}. The discriminator type comes from the model's getType() and the
+ * choice label is derived from it, so adding a kind is just "register a resource" — the input
+ * fields are contributed by a per-kind ProductVideoType extension.
  */
 final class RegisterVideoKindsPass implements CompilerPassInterface
 {
@@ -41,9 +40,11 @@ final class RegisterVideoKindsPass implements CompilerPassInterface
                 continue;
             }
 
-            $attributes = (new \ReflectionClass($model))->getAttributes(AsVideoKind::class);
-
-            if ([] === $attributes) {
+            try {
+                // The base ProductVideo has no discriminator type and throws; concrete subtypes
+                // derive one from their class name.
+                $type = $model::getType();
+            } catch (\Throwable) {
                 continue;
             }
 
@@ -53,14 +54,9 @@ final class RegisterVideoKindsPass implements CompilerPassInterface
                 continue;
             }
 
-            $kind = $attributes[0]->newInstance();
-
             $kinds[] = [
-                // Single source of truth for the discriminator value (see the model's getType()).
-                'type' => $model::getType(),
-                'label' => $kind->label,
-                'field' => $kind->field,
-                'model' => $model,
+                'type' => $type,
+                'label' => sprintf('setono_sylius_video.ui.types.%s', $type),
                 'factory' => new Reference($factoryId),
             ];
         }

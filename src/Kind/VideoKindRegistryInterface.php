@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Kind;
 
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 /**
- * Declarative metadata about the registered video kinds (file/url/embed and any extension
- * kinds), consumed by the adaptive collection entry form.
+ * The registered video kinds (file/url/embed and any extension kinds). It backs the `type`
+ * selector and the new-row factory in the admin form; the per-kind input fields are contributed
+ * separately by {@see \Setono\SyliusVideoPlugin\Form\Extension\AbstractProductVideoTypeExtension}
+ * subtypes.
  */
 interface VideoKindRegistryInterface
 {
@@ -29,19 +30,9 @@ interface VideoKindRegistryInterface
 
     /**
      * The resource factory for the kind. It is the generic Sylius factory, so it produces an
-     * `object`; callers narrow the result to {@see ProductVideoInterface}.
+     * `object`; callers narrow the result to {@see \Setono\SyliusVideoPlugin\Model\ProductVideoInterface}.
      *
      * @return FactoryInterface<object>
      */
     public function getFactory(string $type): FactoryInterface;
-
-    /**
-     * @return class-string<ProductVideoInterface>
-     */
-    public function getModelClass(string $type): string;
-
-    /**
-     * The form field name carrying the kind-specific source (e.g. `path`/`url`/`code`).
-     */
-    public function getFieldName(string $type): string;
 }

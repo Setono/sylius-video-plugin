@@ -1,6 +1,10 @@
 setono_sylius_video:
     ui:
         videos: 'Videor'
+        types:
+            file: 'Filuppladdning'
+            url: 'Extern URL'
+            embed: 'Inbäddningskod'
     form:
         product:
             videos: 'Videor'
@@ -18,11 +22,6 @@ setono_sylius_video:
                 html: 'Klistra in inbäddningskoden (iframe) från videoleverantören.'
                 poster: 'Valfri förhandsvisningsbild som visas innan videon spelas upp.'
                 position: 'Videor sorteras efter detta nummer, lägsta först.'
-    type:
-        file: 'Filuppladdning'
-        url: 'Extern URL'
-        embed: 'Inbäddningskod'
-        youtube: 'YouTube'
     file_video:
         file:
             not_blank: 'Ladda upp en videofil.'

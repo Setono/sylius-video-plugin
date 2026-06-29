@@ -7,8 +7,6 @@ namespace Setono\SyliusVideoPlugin\Tests\Kind;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Kind\VideoKindRegistry;
-use Setono\SyliusVideoPlugin\Model\FileProductVideo;
-use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 final class VideoKindRegistryTest extends TestCase
@@ -21,21 +19,18 @@ final class VideoKindRegistryTest extends TestCase
     public function it_exposes_choices_as_label_to_type(): void
     {
         self::assertSame([
-            'setono_sylius_video.type.file' => 'file',
-            'setono_sylius_video.type.url' => 'url',
+            'setono_sylius_video.ui.types.file' => 'file',
+            'setono_sylius_video.ui.types.url' => 'url',
         ], $this->registry()->getChoices());
     }
 
     /**
      * @test
      */
-    public function it_resolves_field_name_model_and_types(): void
+    public function it_resolves_types_and_membership(): void
     {
         $registry = $this->registry();
 
-        self::assertSame('file', $registry->getFieldName('file'));
-        self::assertSame('url', $registry->getFieldName('url'));
-        self::assertSame(FileProductVideo::class, $registry->getModelClass('file'));
         self::assertSame(['file', 'url'], $registry->getTypes());
         self::assertTrue($registry->has('file'));
         self::assertFalse($registry->has('embed'));
@@ -56,16 +51,12 @@ final class VideoKindRegistryTest extends TestCase
         return new VideoKindRegistry([
             [
                 'type' => 'file',
-                'label' => 'setono_sylius_video.type.file',
-                'field' => 'file',
-                'model' => FileProductVideo::class,
+                'label' => 'setono_sylius_video.ui.types.file',
                 'factory' => $this->prophesize(FactoryInterface::class)->reveal(),
             ],
             [
                 'type' => 'url',
-                'label' => 'setono_sylius_video.type.url',
-                'field' => 'url',
-                'model' => UrlProductVideo::class,
+                'label' => 'setono_sylius_video.ui.types.url',
                 'factory' => $this->prophesize(FactoryInterface::class)->reveal(),
             ],
         ]);
