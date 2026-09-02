@@ -2,3 +2,20 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en_US
+
+services:
+    # The README's worked example of an application-defined video type: a form extension for its
+    # field, a renderer that outranks the plugin's URL renderer, and a poster resolver.
+    Setono\SyliusVideoPlugin\Tests\Application\Form\YoutubeProductVideoTypeExtension:
+        tags:
+            - { name: form.type_extension }
+
+    Setono\SyliusVideoPlugin\Tests\Application\Renderer\YoutubeProductVideoRenderer:
+        arguments:
+            - '@twig'
+        tags:
+            - { name: setono_sylius_video.renderer, priority: 10 }
+
+    Setono\SyliusVideoPlugin\Tests\Application\Poster\YoutubePosterResolver:
+        tags:
+            - { name: setono_sylius_video.poster_resolver }

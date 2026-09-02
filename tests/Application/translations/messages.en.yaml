@@ -1,0 +1,13 @@
+setono_sylius_video:
+    ui:
+        types:
+            youtube: 'YouTube'
+app:
+    form:
+        video:
+            youtube_url: 'YouTube URL'
+            help:
+                youtube_url: 'A youtube.com or youtu.be link; the video id is parsed from it.'
+    video:
+        youtube:
+            url: 'Please use a YouTube link.'

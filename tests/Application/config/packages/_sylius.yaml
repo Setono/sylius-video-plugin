@@ -21,3 +21,11 @@ sylius_product:
         product:
             classes:
                 model: Setono\SyliusVideoPlugin\Tests\Application\Entity\Product
+
+# The README's worked example of an application-defined video type (see tests/Application/Entity/Video).
+# Registering the model as a resource is all the plugin needs to add it to the STI map and the type selector.
+sylius_resource:
+    resources:
+        app.youtube_video:
+            classes:
+                model: Setono\SyliusVideoPlugin\Tests\Application\Entity\Video\YoutubeProductVideo
