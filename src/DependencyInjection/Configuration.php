@@ -64,9 +64,10 @@ final class Configuration implements ConfigurationInterface
                                 ->arrayNode('classes')
                                     ->addDefaultsIfNotSet()
                                     ->children()
+                                        // The base class is abstract, so it deliberately has no factory: only the
+                                        // concrete subtype resources below can create videos.
                                         ->scalarNode('model')->defaultValue(ProductVideo::class)->cannotBeEmpty()->end()
                                         ->scalarNode('repository')->defaultValue(ProductVideoRepository::class)->cannotBeEmpty()->end()
-                                        ->scalarNode('factory')->defaultValue(Factory::class)->cannotBeEmpty()->end()
                                     ->end()
                                 ->end()
                             ->end()

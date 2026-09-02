@@ -40,7 +40,12 @@ final class ProductVideoDiscriminatorMapListener
             return;
         }
 
-        $metadata->discriminatorMap = $this->buildDiscriminatorMap();
+        // Doctrine has already filled in its default map (short class names, including the abstract
+        // base) by the time this event fires; replace it wholesale, going through the setter so the
+        // subclass list and discriminator values stay consistent with the map.
+        $metadata->discriminatorMap = [];
+        $metadata->subClasses = [];
+        $metadata->setDiscriminatorMap($this->buildDiscriminatorMap());
     }
 
     /**

@@ -28,7 +28,7 @@ final class ProductVideoTest extends TestCase
      */
     public function it_holds_a_product(): void
     {
-        $video = new ProductVideo();
+        $video = $this->video();
         $product = $this->prophesize(ProductInterface::class)->reveal();
 
         $video->setProduct($product);
@@ -41,7 +41,7 @@ final class ProductVideoTest extends TestCase
      */
     public function it_holds_a_position(): void
     {
-        $video = new ProductVideo();
+        $video = $this->video();
 
         self::assertNull($video->getPosition());
 
@@ -55,7 +55,7 @@ final class ProductVideoTest extends TestCase
      */
     public function it_holds_a_stored_poster_path(): void
     {
-        $video = new ProductVideo();
+        $video = $this->video();
 
         self::assertNull($video->getPosterPath());
 
@@ -69,7 +69,7 @@ final class ProductVideoTest extends TestCase
      */
     public function it_carries_a_pending_poster_file(): void
     {
-        $video = new ProductVideo();
+        $video = $this->video();
 
         self::assertFalse($video->hasPosterFile());
         self::assertNull($video->getPosterFile());
@@ -86,7 +86,7 @@ final class ProductVideoTest extends TestCase
      */
     public function it_exposes_timestamps(): void
     {
-        $video = new ProductVideo();
+        $video = $this->video();
         $createdAt = new \DateTimeImmutable('2026-01-01 00:00:00');
         $updatedAt = new \DateTimeImmutable('2026-01-02 00:00:00');
 
@@ -96,5 +96,11 @@ final class ProductVideoTest extends TestCase
         self::assertSame($createdAt, $video->getCreatedAt());
         self::assertSame($updatedAt, $video->getUpdatedAt());
         self::assertNull($video->getId());
+    }
+
+    private function video(): ProductVideo
+    {
+        return new class() extends ProductVideo {
+        };
     }
 }

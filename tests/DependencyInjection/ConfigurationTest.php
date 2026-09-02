@@ -41,7 +41,6 @@ final class ConfigurationTest extends TestCase
                 'product_video' => ['classes' => [
                     'model' => ProductVideo::class,
                     'repository' => ProductVideoRepository::class,
-                    'factory' => Factory::class,
                 ]],
                 'file_video' => ['classes' => [
                     'model' => FileProductVideo::class,
