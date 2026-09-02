@@ -1,6 +1,7 @@
 {% set poster = setono_sylius_video_poster(video) %}
+{% set label = 'setono_sylius_video.ui.video_of'|trans({'%product%': video.product is not null ? video.product.name : ''}) %}
 <div class="setono-sylius-video setono-sylius-video--file">
-    <video class="setono-sylius-video__player" controls preload="metadata"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
+    <video class="setono-sylius-video__player" controls preload="metadata" aria-label="{{ label }}"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
         <source src="{{ url }}">
     </video>
 </div>

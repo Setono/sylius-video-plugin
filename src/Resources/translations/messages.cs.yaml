@@ -1,6 +1,7 @@
 setono_sylius_video:
     ui:
         videos: 'Videa'
+        video_of: 'Video: %product%'
         types:
             file: 'Nahrání souboru'
             url: 'Externí URL'

@@ -1,6 +1,7 @@
 setono_sylius_video:
     ui:
         videos: 'Videók'
+        video_of: 'Videó: %product%'
         types:
             file: 'Fájlfeltöltés'
             url: 'Külső URL'
