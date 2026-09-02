@@ -1,8 +1,14 @@
+{# Context: `product` (required); `show_heading` (optional, default true), e.g. via the sylius_ui block's `context`. #}
 {% set videos = product.videos %}
 {% if videos|length > 0 %}
-    <div class="setono-sylius-video-list">
+    <div class="setono-sylius-video-list" style="margin-top: 2rem;">
+        {% if show_heading|default(true) %}
+            <h3 class="ui dividing header">{{ 'setono_sylius_video.ui.videos'|trans }}</h3>
+        {% endif %}
         {% for video in videos %}
-            {{ setono_sylius_video_render(video) }}
+            <div class="setono-sylius-video-list__item" style="margin-bottom: 1.5rem;">
+                {{ setono_sylius_video_render(video) }}
+            </div>
         {% endfor %}
     </div>
 {% endif %}

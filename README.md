@@ -156,9 +156,11 @@ your own constraints for `Setono\SyliusVideoPlugin\Model\FileProductVideo` or `P
   Sortable extension Sylius already enables, so a new row left blank is appended automatically.
   Removing a video (or its product, through the orphan-removal mapping above) also deletes the
   stored video file and poster once the change is flushed.
-- **Shop:** the product's videos render on the product page via the `sylius.shop.product.show.content`
-  event (it always fires, unlike `before_thumbnails`, which only fires for products with more
-  than one image). Disable the block with:
+- **Shop:** the product's videos render on the product page as a block on the
+  `sylius.shop.product.show.content` event (it always fires, unlike `before_thumbnails`, which only
+  fires for products with more than one image), under a "Videos" heading, after the product tabs and
+  before the associations (priority 12; Sylius renders higher priorities first, tabs are 20 and
+  associations 10). Move it, drop the heading or disable it by overriding the block:
 
   ```yaml
   # config/packages/setono_sylius_video.yaml
@@ -166,7 +168,10 @@ your own constraints for `Setono\SyliusVideoPlugin\Model\FileProductVideo` or `P
       events:
           sylius.shop.product.show.content:
               blocks:
-                  setono_sylius_video: { enabled: false }
+                  setono_sylius_video:
+                      priority: 30                     # e.g. above the tabs
+                      context: { show_heading: false }
+                      # enabled: false                 # or remove it altogether
   ```
 
   Or render videos wherever you like:

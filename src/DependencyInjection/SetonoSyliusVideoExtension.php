@@ -50,13 +50,16 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
         if ($container->hasExtension('sylius_ui')) {
             // Render the product's videos on the shop product page. The `content` event always
             // fires on the product show page (unlike `before_thumbnails`, which only fires when a
-            // product has more than one image). Disable by setting `enabled: false` on this block.
+            // product has more than one image). Priority 12 places the block after the product
+            // tabs (20) and before the associations (10); apps can move it or disable it by
+            // overriding this block's `priority` / `enabled`.
             $container->prependExtensionConfig('sylius_ui', [
                 'events' => [
                     'sylius.shop.product.show.content' => [
                         'blocks' => [
                             'setono_sylius_video' => [
                                 'template' => '@SetonoSyliusVideoPlugin/shop/product/_videos.html.twig',
+                                'priority' => 12,
                             ],
                         ],
                     ],
