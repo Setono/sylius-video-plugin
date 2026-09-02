@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <!-- Shared by every subtype: the optional poster must be a real image of a web-friendly type. -->
+    <class name="Setono\SyliusVideoPlugin\Model\ProductVideo">
+        <property name="posterFile">
+            <constraint name="Image">
+                <option name="maxSize">10M</option>
+                <option name="mimeTypes">
+                    <value>image/jpeg</value>
+                    <value>image/png</value>
+                    <value>image/webp</value>
+                </option>
+                <option name="groups">
+                    <value>sylius</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
+</constraint-mapping>

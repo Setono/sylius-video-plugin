@@ -134,6 +134,12 @@ string-based, so each upload passes through PHP memory once, and the request mus
 those for the largest video you expect (a few hundred megabytes is a practical ceiling), and prefer
 attaching very large videos as an **External URL** video hosted elsewhere.
 
+Uploads are validated in the `sylius` group by the plugin's validation XML: a video file must
+sniff as `video/mp4`, `video/webm`, `video/ogg` or `video/quicktime`, and a poster must be a JPEG,
+PNG or WebP image of at most 10 MB. To tighten either (a lower video size cap, fewer types), add
+your own constraints for `Setono\SyliusVideoPlugin\Model\FileProductVideo` or `ProductVideo` in
+`config/validator/`; Symfony merges them with the plugin's.
+
 ## Usage
 
 - **Admin:** open any product's edit page and switch to the **Videos** tab. Add videos, pick a

@@ -10,6 +10,25 @@
         while a persisted one already has a path; either satisfies the rule.
     -->
     <class name="Setono\SyliusVideoPlugin\Model\FileProductVideo">
+        <!--
+            The type is sniffed from the content, not taken from the extension or the browser, so a
+            script or markup file cannot be stored under the public media root. The size is bounded
+            by the PHP upload limits; add a File constraint with maxSize in your own validation
+            config to cap it lower.
+        -->
+        <property name="file">
+            <constraint name="File">
+                <option name="mimeTypes">
+                    <value>video/mp4</value>
+                    <value>video/webm</value>
+                    <value>video/ogg</value>
+                    <value>video/quicktime</value>
+                </option>
+                <option name="groups">
+                    <value>sylius</value>
+                </option>
+            </constraint>
+        </property>
         <constraint name="Expression">
             <option name="expression">this.getPath() !== null or this.hasFile()</option>
             <option name="message">setono_sylius_video.file_video.file.not_blank</option>
