@@ -13,7 +13,9 @@
         <service id="Setono\SyliusVideoPlugin\Twig\VideoRuntime">
             <argument type="service" id="Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface"/>
             <argument type="service" id="Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface"/>
+            <argument type="service" id="logger" on-invalid="null"/>
             <tag name="twig.runtime"/>
+            <tag name="monolog.logger" channel="setono_sylius_video"/>
         </service>
     </services>
 </container>
