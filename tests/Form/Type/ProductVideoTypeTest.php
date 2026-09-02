@@ -181,6 +181,19 @@ final class ProductVideoTypeTest extends TypeTestCase
     /**
      * @test
      */
+    public function it_rejects_a_plain_http_video_url(): void
+    {
+        $form = $this->factory->create(ProductVideoType::class);
+
+        $form->submit(['type' => 'url', 'url' => 'http://example.com/video.mp4']);
+
+        self::assertFalse($form->isValid());
+        self::assertCount(1, $form->get('url')->getErrors());
+    }
+
+    /**
+     * @test
+     */
     public function it_configures_help_text_on_the_fields(): void
     {
         // A new row carries every type field, so all of them are present here.
