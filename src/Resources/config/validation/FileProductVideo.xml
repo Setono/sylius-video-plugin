@@ -4,12 +4,13 @@
                     xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
                                         https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
-    <!--
-        path is DB-nullable (shared STI table), so the "a file is required" rule is enforced
-        here. At validation time a brand-new file video carries a pending upload (hasFile()),
-        while a persisted one already has a path; either satisfies the rule.
-    -->
     <class name="Setono\SyliusVideoPlugin\Model\FileProductVideo">
+        <!-- path is DB-nullable (shared STI table), so "a file is required" is enforced here. -->
+        <constraint name="Setono\SyliusVideoPlugin\Validator\Constraints\HasVideoFile">
+            <option name="groups">
+                <value>sylius</value>
+            </option>
+        </constraint>
         <!--
             The type is sniffed from the content, not taken from the extension or the browser, so a
             script or markup file cannot be stored under the public media root. The size is bounded
@@ -29,13 +30,6 @@
                 </option>
             </constraint>
         </property>
-        <constraint name="Expression">
-            <option name="expression">this.getPath() !== null or this.hasFile()</option>
-            <option name="message">setono_sylius_video.file_video.file.not_blank</option>
-            <option name="groups">
-                <value>sylius</value>
-            </option>
-        </constraint>
     </class>
 
 </constraint-mapping>

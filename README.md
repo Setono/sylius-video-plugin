@@ -17,6 +17,13 @@ the plugin's mapping required.
 
 ## Installation
 
+### Requirements
+
+- Sylius with the Gedmo **sortable** and **timestampable** listeners enabled (Sylius core enables
+  them by default). They fill the `position`, `created_at` and `updated_at` columns of a video; an
+  application that disables `stof_doctrine_extensions` cannot insert videos.
+- No other runtime dependency beyond what Sylius already ships.
+
 ### 1. Require the plugin
 
 ```bash
