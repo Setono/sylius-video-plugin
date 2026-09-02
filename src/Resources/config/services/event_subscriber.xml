@@ -10,7 +10,7 @@
         </service>
 
         <service id="Setono\SyliusVideoPlugin\EventSubscriber\VideoFileUploadSubscriber">
-            <argument type="service" id="Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

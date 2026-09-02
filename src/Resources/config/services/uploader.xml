@@ -5,15 +5,15 @@
                                https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Setono\SyliusVideoPlugin\Uploader\VideoFileUploader">
+        <service id="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploader">
             <argument type="service" id="setono_sylius_video.filesystem"/>
         </service>
 
-        <service id="Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface"
-                 alias="Setono\SyliusVideoPlugin\Uploader\VideoFileUploader"/>
+        <service id="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface"
+                 alias="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploader"/>
 
         <!-- Public alias provided for decoration by adopting applications. -->
         <service id="setono_sylius_video.uploader"
-                 alias="Setono\SyliusVideoPlugin\Uploader\VideoFileUploader"/>
+                 alias="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploader"/>
     </services>
 </container>

@@ -15,7 +15,7 @@ use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoFilesRemovalList
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
-use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
+use Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface;
 
 final class ProductVideoFilesRemovalListenerTest extends TestCase
 {
@@ -33,7 +33,7 @@ final class ProductVideoFilesRemovalListenerTest extends TestCase
         $url = new UrlProductVideo();
         $url->setPosterPath('video/poster/cd/poster.jpg');
 
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->remove('video/ab/file.mp4')->willReturn(true)->shouldBeCalledOnce();
         $uploader->remove('video/poster/ab/poster.jpg')->willReturn(true)->shouldBeCalledOnce();
         $uploader->remove('video/poster/cd/poster.jpg')->willReturn(true)->shouldBeCalledOnce();
@@ -57,7 +57,7 @@ final class ProductVideoFilesRemovalListenerTest extends TestCase
         $second = new FileProductVideo();
         $second->setPath('video/ab/same.mp4');
 
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->remove('video/ab/same.mp4')->willReturn(true)->shouldBeCalledOnce();
 
         $listener = new ProductVideoFilesRemovalListener($uploader->reveal());
@@ -71,7 +71,7 @@ final class ProductVideoFilesRemovalListenerTest extends TestCase
      */
     public function it_ignores_removed_videos_without_stored_files(): void
     {
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->remove(Argument::any())->shouldNotBeCalled();
 
         $listener = new ProductVideoFilesRemovalListener($uploader->reveal());

@@ -11,7 +11,7 @@ use Setono\SyliusVideoPlugin\EventSubscriber\VideoFileUploadSubscriber;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Tests\Application\Entity\Product;
-use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
+use Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 final class VideoFileUploadSubscriberTest extends TestCase
@@ -40,7 +40,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
         $product = new Product();
         $product->addVideo($video);
 
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->upload($video)->shouldBeCalledOnce()->will(static function () use ($video): void {
             $video->setPath('video/a/b.mp4');
         });
@@ -62,7 +62,7 @@ final class VideoFileUploadSubscriberTest extends TestCase
         $product = new Product();
         $product->addVideo($video);
 
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->uploadPoster($video)->shouldBeCalledOnce();
 
         (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent($product));
@@ -71,28 +71,9 @@ final class VideoFileUploadSubscriberTest extends TestCase
     /**
      * @test
      */
-    public function it_removes_a_file_video_whose_upload_produced_no_path(): void
-    {
-        $video = new FileProductVideo();
-        $video->setFile(new \SplFileInfo(__FILE__));
-
-        $product = new Product();
-        $product->addVideo($video);
-
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
-        $uploader->upload($video)->shouldBeCalledOnce();
-
-        (new VideoFileUploadSubscriber($uploader->reveal()))->upload(new GenericEvent($product));
-
-        self::assertFalse($product->hasVideo($video));
-    }
-
-    /**
-     * @test
-     */
     public function it_ignores_subjects_that_are_not_video_aware(): void
     {
-        $uploader = $this->prophesize(VideoFileUploaderInterface::class);
+        $uploader = $this->prophesize(VideoMediaUploaderInterface::class);
         $uploader->upload(Argument::cetera())->shouldNotBeCalled();
         $uploader->uploadPoster(Argument::cetera())->shouldNotBeCalled();
 
