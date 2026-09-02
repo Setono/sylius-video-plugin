@@ -1,0 +1,32 @@
+/*
+ * Shop styles for the product videos block. Included on the shop layout through the
+ * `sylius.shop.layout.stylesheets` event (see SetonoSyliusVideoExtension::prepend()).
+ *
+ * The responsive box keeps a 16:9 ratio; whatever is placed inside it (our own <iframe> for URL
+ * videos, or the iframe a merchant pasted as embed code, which usually carries fixed width/height
+ * attributes) is stretched to fill it.
+ */
+.setono-sylius-video__responsive {
+    position: relative;
+    height: 0;
+    padding-bottom: 56.25%;
+    overflow: hidden;
+}
+
+.setono-sylius-video__responsive iframe,
+.setono-sylius-video__responsive video,
+.setono-sylius-video__responsive embed,
+.setono-sylius-video__responsive object {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.setono-sylius-video__player {
+    display: block;
+    width: 100%;
+    height: auto;
+}

@@ -59,6 +59,13 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
 
         self::assertSame([[
             'events' => [
+                'sylius.shop.layout.stylesheets' => [
+                    'blocks' => [
+                        'setono_sylius_video' => [
+                            'template' => '@SetonoSyliusVideoPlugin/shop/layout/_stylesheets.html.twig',
+                        ],
+                    ],
+                ],
                 'sylius.shop.product.show.content' => [
                     'blocks' => [
                         'setono_sylius_video' => [
