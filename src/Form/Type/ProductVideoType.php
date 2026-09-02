@@ -53,6 +53,7 @@ final class ProductVideoType extends AbstractResourceType
                 'label' => 'setono_sylius_video.form.video.poster',
                 'help' => 'setono_sylius_video.form.video.help.poster',
                 'required' => false,
+                'attr' => ['accept' => 'image/*'],
             ])
             ->add('type', ChoiceType::class, $this->typeOptions())
         ;

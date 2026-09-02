@@ -21,7 +21,7 @@ final class FileProductVideoTypeExtension extends AbstractProductVideoTypeExtens
                 'label' => 'setono_sylius_video.form.video.file',
                 'help' => 'setono_sylius_video.form.video.help.file',
                 'required' => false,
-                'attr' => ['data-video-fields' => $this->getType()],
+                'attr' => ['data-video-fields' => $this->getType(), 'accept' => 'video/*'],
             ]],
         ];
     }
