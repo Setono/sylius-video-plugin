@@ -4,9 +4,16 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                https://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="setono_sylius_video.form.type.product_video.validation_groups" type="collection">
+            <parameter>sylius</parameter>
+        </parameter>
+    </parameters>
+
     <services>
         <service id="Setono\SyliusVideoPlugin\Form\Type\ProductVideoType">
             <argument>%setono_sylius_video.model.product_video.class%</argument>
+            <argument>%setono_sylius_video.form.type.product_video.validation_groups%</argument>
             <argument type="service" id="Setono\SyliusVideoPlugin\Type\VideoTypeRegistryInterface"/>
             <tag name="form.type"/>
         </service>

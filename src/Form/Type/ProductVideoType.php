@@ -31,12 +31,14 @@ final class ProductVideoType extends AbstractResourceType
 {
     /**
      * @param class-string<ProductVideoInterface> $dataClass
+     * @param list<string> $validationGroups
      */
     public function __construct(
         string $dataClass,
+        array $validationGroups,
         private readonly VideoTypeRegistryInterface $typeRegistry,
     ) {
-        parent::__construct($dataClass);
+        parent::__construct($dataClass, $validationGroups);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -79,8 +81,9 @@ final class ProductVideoType extends AbstractResourceType
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            // Validate each video's own (subtype) class-metadata constraints. The data graph is
-            // only validated on the root form, so without this the per-subtype rules never fire.
+            // Validate each video's own (subtype) class-metadata constraints in the injected
+            // validation groups. The data graph is only validated on the root form, so without
+            // this the per-subtype rules never fire.
             'constraints' => [new Valid()],
             'empty_data' => function (FormInterface $form): ?ProductVideoInterface {
                 $type = $form->get('type')->getData();

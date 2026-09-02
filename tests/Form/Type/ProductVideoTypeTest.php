@@ -14,6 +14,8 @@ use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Type\VideoTypeRegistry;
 use Sylius\Component\Resource\Factory\Factory;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -116,6 +118,38 @@ final class ProductVideoTypeTest extends TypeTestCase
     /**
      * @test
      */
+    public function it_validates_in_the_injected_validation_groups(): void
+    {
+        $form = $this->factory->create(ProductVideoType::class);
+
+        self::assertSame(['sylius'], $form->getConfig()->getOption('validation_groups'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_validates_a_rows_subtype_constraints_when_nested_in_a_parent_form(): void
+    {
+        // A row is a collection entry of a parent form. With its own groups injected it validates
+        // in `sylius` whatever the parent uses; an empty list would merely inherit the parent's
+        // groups (here `Default`, in which none of the subtype constraints are declared).
+        $form = $this->factory->createBuilder(FormType::class, null, ['validation_groups' => ['Default']])
+            ->add('videos', CollectionType::class, [
+                'entry_type' => ProductVideoType::class,
+                'allow_add' => true,
+            ])
+            ->getForm()
+        ;
+
+        $form->submit(['videos' => [['type' => 'url', 'url' => '']]]);
+
+        self::assertFalse($form->isValid());
+        self::assertCount(1, $form->get('videos')->get('0')->get('url')->getErrors());
+    }
+
+    /**
+     * @test
+     */
     public function it_configures_help_text_on_the_fields(): void
     {
         // A new row carries every type field, so all of them are present here.
@@ -141,14 +175,18 @@ final class ProductVideoTypeTest extends TypeTestCase
 
         return [
             new PreloadedExtension(
-                [new ProductVideoType(ProductVideo::class, $registry)],
+                [new ProductVideoType(ProductVideo::class, ['sylius'], $registry)],
                 [ProductVideoType::class => [
                     new FileProductVideoTypeExtension(),
                     new UrlProductVideoTypeExtension(),
                     new EmbedProductVideoTypeExtension(),
                 ]],
             ),
-            new ValidatorExtension(Validation::createValidator()),
+            new ValidatorExtension(
+                Validation::createValidatorBuilder()
+                    ->addXmlMapping(__DIR__ . '/../../../src/Resources/config/validation/UrlProductVideo.xml')
+                    ->getValidator(),
+            ),
         ];
     }
 }
