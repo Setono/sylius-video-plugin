@@ -124,6 +124,14 @@ bin/console assets:install
 This publishes the small dependency-free JavaScript controller that toggles the type-specific
 field on the adaptive entry form to match the selected type.
 
+### Upload limits
+
+Video files go through the same Sylius media filesystem as product images. That adapter is
+string-based, so each upload passes through PHP memory once, and the request must fit the
+`upload_max_filesize`, `post_max_size` and `memory_limit` of the PHP that serves the admin. Size
+those for the largest video you expect (a few hundred megabytes is a practical ceiling), and prefer
+attaching very large videos as an **External URL** video hosted elsewhere.
+
 ## Usage
 
 - **Admin:** open any product's edit page and switch to the **Videos** tab. Add videos, pick a

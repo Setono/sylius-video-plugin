@@ -36,13 +36,10 @@ final class VideoFileUploader implements VideoFileUploaderInterface
             return;
         }
 
-        $currentPath = $video->getPath();
-
-        if (null !== $currentPath && $this->filesystem->has($currentPath)) {
-            $this->remove($currentPath);
-        }
-
+        // Store the replacement first so a failed write leaves the current file (and path) intact.
+        $previousPath = $video->getPath();
         $video->setPath($this->store($this->pathPrefix, $file));
+        $this->removeIfStored($previousPath);
     }
 
     public function uploadPoster(ProductVideoInterface $video): void
@@ -57,13 +54,9 @@ final class VideoFileUploader implements VideoFileUploaderInterface
             return;
         }
 
-        $currentPath = $video->getPosterPath();
-
-        if (null !== $currentPath && $this->filesystem->has($currentPath)) {
-            $this->remove($currentPath);
-        }
-
+        $previousPath = $video->getPosterPath();
         $video->setPosterPath($this->store($this->posterPathPrefix, $file));
+        $this->removeIfStored($previousPath);
     }
 
     public function remove(string $path): bool
@@ -75,6 +68,13 @@ final class VideoFileUploader implements VideoFileUploaderInterface
         }
 
         return true;
+    }
+
+    private function removeIfStored(?string $path): void
+    {
+        if (null !== $path && $this->filesystem->has($path)) {
+            $this->remove($path);
+        }
     }
 
     private function store(string $prefix, \SplFileInfo $file): string

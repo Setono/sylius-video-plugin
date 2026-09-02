@@ -86,13 +86,18 @@ final class VideoFileUploaderTest extends TestCase
     /**
      * @test
      */
-    public function it_removes_the_previously_stored_file_before_re_uploading(): void
+    public function it_removes_the_previously_stored_file_only_after_the_replacement_is_written(): void
     {
+        $calls = [];
         $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
         $filesystem->has('video/old/path.mp4')->willReturn(true);
-        $filesystem->delete('video/old/path.mp4')->shouldBeCalledOnce();
         $filesystem->has(Argument::not('video/old/path.mp4'))->willReturn(false);
-        $filesystem->write(Argument::type('string'), 'video-bytes')->shouldBeCalledOnce();
+        $filesystem->write(Argument::type('string'), 'video-bytes')->will(function () use (&$calls): void {
+            $calls[] = 'write';
+        });
+        $filesystem->delete('video/old/path.mp4')->will(function () use (&$calls): void {
+            $calls[] = 'delete';
+        });
 
         $video = new FileProductVideo();
         $video->setPath('video/old/path.mp4');
@@ -100,7 +105,55 @@ final class VideoFileUploaderTest extends TestCase
 
         (new VideoFileUploader($filesystem->reveal()))->upload($video);
 
+        self::assertSame(['write', 'delete'], $calls);
         self::assertNotSame('video/old/path.mp4', $video->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function it_keeps_the_current_file_when_storing_the_replacement_fails(): void
+    {
+        $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
+        $filesystem->has(Argument::type('string'))->willReturn(false);
+        $filesystem->write(Argument::type('string'), 'video-bytes')->willThrow(new \RuntimeException('disk full'));
+        $filesystem->delete(Argument::any())->shouldNotBeCalled();
+
+        $video = new FileProductVideo();
+        $video->setPath('video/old/path.mp4');
+        $video->setFile(new \SplFileInfo($this->tmpFile));
+
+        try {
+            (new VideoFileUploader($filesystem->reveal()))->upload($video);
+            self::fail('Expected the storage failure to propagate.');
+        } catch (\RuntimeException $e) {
+            self::assertSame('disk full', $e->getMessage());
+        }
+
+        self::assertSame('video/old/path.mp4', $video->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function it_keeps_the_current_poster_when_storing_the_replacement_fails(): void
+    {
+        $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
+        $filesystem->has(Argument::type('string'))->willReturn(false);
+        $filesystem->write(Argument::type('string'), 'video-bytes')->willThrow(new \RuntimeException('disk full'));
+        $filesystem->delete(Argument::any())->shouldNotBeCalled();
+
+        $video = new EmbedProductVideo();
+        $video->setPosterPath('video/poster/old.jpg');
+        $video->setPosterFile(new \SplFileInfo($this->tmpFile));
+
+        try {
+            (new VideoFileUploader($filesystem->reveal()))->uploadPoster($video);
+            self::fail('Expected the storage failure to propagate.');
+        } catch (\RuntimeException) {
+        }
+
+        self::assertSame('video/poster/old.jpg', $video->getPosterPath());
     }
 
     /**
