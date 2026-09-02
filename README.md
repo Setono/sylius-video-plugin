@@ -355,9 +355,9 @@ This plugin is released under the MIT License. See the bundled [LICENSE](LICENSE
 
 [ico-version]: https://poser.pugx.org/setono/sylius-video-plugin/v/stable
 [ico-license]: https://poser.pugx.org/setono/sylius-video-plugin/license
-[ico-github-actions]: https://github.com/Setono/SyliusVideoPlugin/workflows/build/badge.svg
-[ico-code-coverage]: https://codecov.io/gh/Setono/SyliusVideoPlugin/branch/1.14.x/graph/badge.svg
+[ico-github-actions]: https://github.com/Setono/sylius-video-plugin/workflows/build/badge.svg
+[ico-code-coverage]: https://codecov.io/gh/Setono/sylius-video-plugin/branch/master/graph/badge.svg
 
 [link-packagist]: https://packagist.org/packages/setono/sylius-video-plugin
-[link-github-actions]: https://github.com/Setono/SyliusVideoPlugin/actions
-[link-code-coverage]: https://codecov.io/gh/Setono/SyliusVideoPlugin
+[link-github-actions]: https://github.com/Setono/sylius-video-plugin/actions
+[link-code-coverage]: https://codecov.io/gh/Setono/sylius-video-plugin
