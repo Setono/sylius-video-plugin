@@ -10,3 +10,6 @@
 # Symfony CLI https://symfony.com/doc/current/setup/symfony_server.html#different-php-settings-per-project
 /.php-version
 /php.ini
+/tests/e2e/.auth/*.json
+/tests/Application/playwright-report/
+/tests/Application/test-results/

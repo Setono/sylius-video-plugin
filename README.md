@@ -347,6 +347,7 @@ composer fix-style     # ECS auto-fix
 composer phpunit           # PHPUnit, both suites
 composer test-unit         # tests/Unit: kernel-free tests (what Infection mutates against)
 composer test-functional   # tests/Functional: boots tests/Application (STI map, type registry, form, templates)
+composer test-e2e          # tests/e2e: Playwright UI tests against the running test application
 ```
 
 The test application lives in `tests/Application`. Admin credentials: `sylius` / `sylius`.
