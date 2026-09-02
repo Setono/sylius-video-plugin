@@ -1,6 +1,7 @@
 setono_sylius_video:
     ui:
         videos: 'Videoclipuri'
+        video_of: 'Videoclip: %product%'
         types:
             file: 'Încărcare fișier'
             url: 'URL extern'

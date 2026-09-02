@@ -1,6 +1,7 @@
 setono_sylius_video:
     ui:
         videos: 'Відео'
+        video_of: 'Відео: %product%'
         types:
             file: 'Завантаження файлу'
             url: 'Зовнішня URL-адреса'
