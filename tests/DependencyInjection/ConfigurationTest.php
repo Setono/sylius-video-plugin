@@ -33,6 +33,7 @@ final class ConfigurationTest extends TestCase
     public function it_defaults_to_the_plugin_classes_and_sylius_media_storage(): void
     {
         $this->assertProcessedConfigurationEquals([[]], [
+            'embed' => ['enabled' => true],
             'filesystem' => [
                 'adapter' => FilesystemAdapterInterface::class,
                 'public_url_prefix' => '/media/image',
