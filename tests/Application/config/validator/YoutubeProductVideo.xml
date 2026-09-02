@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <!-- The parent UrlProductVideo's NotBlank/Url constraints are inherited; this narrows the host. -->
+    <class name="Setono\SyliusVideoPlugin\Tests\Application\Entity\Video\YoutubeProductVideo">
+        <property name="url">
+            <constraint name="Regex">
+                <option name="pattern">#^https://(www\.)?(youtube\.com|youtu\.be)/#</option>
+                <option name="message">app.video.youtube.url</option>
+                <option name="groups">
+                    <value>sylius</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
+</constraint-mapping>

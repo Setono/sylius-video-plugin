@@ -43,7 +43,11 @@ return [
 
 ### 3. Make your `Product` own its videos
 
-Implement `ProductVideosAwareInterface` and use the trait on your `Product`:
+Implement `ProductVideosAwareInterface` and use the trait on your `Product`. The `videos` property
+comes from the trait, so its mapping must be declared in XML (attributes cannot target a trait's
+property), which means the `Product` entity itself must be XML-mapped: Doctrine hands a class to
+exactly one mapping driver, so a `#[ORM\Entity]` attribute on the class would make Doctrine ignore
+the XML file entirely.
 
 ```php
 # src/Entity/Product/Product.php
@@ -53,13 +57,10 @@ declare(strict_types=1);
 namespace App\Entity\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareTrait;
 use Sylius\Component\Core\Model\Product as BaseProduct;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'sylius_product')]
 class Product extends BaseProduct implements ProductVideosAwareInterface
 {
     use ProductVideosAwareTrait;
@@ -75,11 +76,10 @@ class Product extends BaseProduct implements ProductVideosAwareInterface
 
 The plugin deliberately does **not** map the inverse `videos` association for you — you own your
 `Product` mapping, so you add it. The owning `ManyToOne` lives on `ProductVideo`, so you only need
-the inverse `OneToMany`. The `videos` property comes from the trait, so map it with XML/YAML rather
-than attributes (attributes can't target a trait's property):
+the inverse `OneToMany` (everything else is inherited from Sylius's mapped superclass):
 
 ```xml
-<!-- config/doctrine/Product.orm.xml -->
+<!-- config/doctrine/Product.Product.orm.xml -->
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
@@ -97,7 +97,31 @@ than attributes (attributes can't target a trait's property):
 </doctrine-mapping>
 ```
 
-Point the product resource at your class (skip if you already override it):
+Tell Doctrine to read that directory for your `App\Entity` namespace. Sylius-Standard maps
+`App\Entity` with attributes by default; list the XML mapping **before** it so it wins for the
+classes that have a file there (the simplified XML driver expects one file per class, named after
+the class relative to the prefix, hence `Product.Product.orm.xml`), and keep attributes on the
+rest of your entities:
+
+```yaml
+# config/packages/doctrine.yaml
+doctrine:
+    orm:
+        mappings:
+            AppXml:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/doctrine'
+                prefix: 'App\Entity'
+                alias: App
+            App:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+```
+
+Then point the product resource at your class (skip if you already override it):
 
 ```yaml
 # config/packages/_sylius.yaml
@@ -108,6 +132,9 @@ sylius_product:
             classes:
                 model: App\Entity\Product\Product
 ```
+
+The test application under `tests/Application` does exactly this (`Entity/Product.php`,
+`config/doctrine/Product.orm.xml`, `config/packages/doctrine.yaml`).
 
 ### 4. Update the database
 
@@ -230,45 +257,56 @@ than "can edit products".
 
 ## Extending — adding a new video type
 
-Worked example: a `youtube` type that reuses the `url` column (parse the id from it) and computes
-its thumbnail from the YouTube CDN. Because it reuses an existing column **no migration is
-needed**.
+Worked example: a `youtube` type that extends the URL type to reuse its `url` column and accessors,
+parses the video id from the link, renders YouTube's player and computes its thumbnail from the
+YouTube CDN. Because it adds no column **no migration is needed**. The test application ships this
+exact type under `tests/Application` (`Entity/Video`, `Form`, `Renderer`, `Poster`,
+`config/doctrine`, `config/validator`, `templates/video`, `translations`), so read it as a complete
+reference.
 
 **1. Subtype model + interface** — name it `<Type>ProductVideo` and the static `getType()`
 derives the discriminator (`YoutubeProductVideo` → `youtube`); override it only for a
-non-conventional name.
+non-conventional name. Extending a concrete type is fine: the derived name (`youtube`, not `url`)
+keeps the two apart in the discriminator map.
 
 ```php
 namespace App\Entity\Video;
 
-use Setono\SyliusVideoPlugin\Model\ProductVideo;
-use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
+use Setono\SyliusVideoPlugin\Model\UrlProductVideoInterface;
 
-interface YoutubeProductVideoInterface extends ProductVideoInterface
+interface YoutubeProductVideoInterface extends UrlProductVideoInterface
 {
-    public function getUrl(): ?string;
-    public function setUrl(?string $url): void;
     public function getVideoId(): ?string;
 }
 
-class YoutubeProductVideo extends ProductVideo implements YoutubeProductVideoInterface
+class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideoInterface
 {
-    protected ?string $url = null;
-
-    public function getUrl(): ?string { return $this->url; }
-    public function setUrl(?string $url): void { $this->url = $url; }
-
     public function getVideoId(): ?string
     {
-        parse_str((string) parse_url((string) $this->url, \PHP_URL_QUERY), $query);
+        $url = (string) $this->getUrl();
 
-        return $query['v'] ?? null;
+        if (1 === preg_match('#youtu\.be/([\w-]{11})#', $url, $matches)) {
+            return $matches[1];
+        }
+
+        parse_str((string) parse_url($url, \PHP_URL_QUERY), $query);
+
+        return is_string($query['v'] ?? null) ? $query['v'] : null;
     }
 }
 ```
 
-**2. ORM mapping** — only needed if the type adds a *new* column. Reusing the existing `url`
-column needs none.
+**2. ORM mapping** — every class in the discriminator map must be known to a mapping driver, even
+one that adds no column, so always ship a mapping. Register it as a mapped superclass (Sylius turns
+the resource into an entity) and add fields only for new columns:
+
+```xml
+<!-- config/doctrine/Video.YoutubeProductVideo.orm.xml -->
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    <mapped-superclass name="App\Entity\Video\YoutubeProductVideo"/>
+</doctrine-mapping>
+```
 
 **3. Register it as a resource** — the plugin scans every Sylius resource whose model implements
 `ProductVideoInterface`: the discriminator listener adds it to the STI map and the type selector
@@ -284,9 +322,23 @@ sylius_resource:
 ```
 
 **4. Renderer + poster** — implement `VideoRendererInterface` (`instanceof YoutubeProductVideoInterface`),
-tag it `setono_sylius_video.renderer`, and add a `shop/renderer/youtube.html.twig` template. Add a
-poster resolver that builds the thumbnail from the parsed id and tag it
-`setono_sylius_video.poster_resolver`:
+tag it `setono_sylius_video.renderer` with a `priority` above 0 so it is asked before the plugin's
+URL renderer (a YouTube video is a URL video too, and the composite picks the first renderer that
+supports it), and add a template for it. Add a poster resolver that builds the thumbnail from the
+parsed id and tag it `setono_sylius_video.poster_resolver`; the plugin's stored-poster resolver runs
+at priority 100, so an uploaded poster still wins:
+
+```yaml
+# config/services.yaml
+services:
+    App\Renderer\YoutubeProductVideoRenderer:
+        arguments: ['@twig']
+        tags:
+            - { name: setono_sylius_video.renderer, priority: 10 }
+    App\Poster\YoutubePosterResolver:
+        tags:
+            - { name: setono_sylius_video.poster_resolver }
+```
 
 ```php
 final class YoutubePosterResolver implements VideoPosterResolverInterface
@@ -322,9 +374,12 @@ final class YoutubeProductVideoTypeExtension extends AbstractProductVideoTypeExt
 
     protected function getFields(): array
     {
+        // Field names must be unique across types (the plugin's URL type owns `url`), so name
+        // yours distinctly and map it onto the inherited property with `property_path`.
         return [
-            'url' => [UrlType::class, [
-                'label' => 'app.form.video.url',
+            'youtube_url' => [UrlType::class, [
+                'property_path' => 'url',
+                'label' => 'app.form.video.youtube_url',
                 'required' => false,
                 'attr' => ['data-video-fields' => $this->getType()], // groups the field under this type for the JS toggle
             ]],
