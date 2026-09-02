@@ -83,6 +83,7 @@
         "check-style": "ecs check",
         "fix-style": "ecs check --fix",
         "phpunit": "phpunit",
+        "test-e2e": "cd tests/Application && npx playwright test",
         "test-functional": "phpunit --testsuite functional",
         "test-unit": "phpunit --testsuite unit"
     }
