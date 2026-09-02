@@ -22,6 +22,4 @@
         <import resource="services/uploader.xml"/>
     </imports>
 
-    <services/>
-
 </container>

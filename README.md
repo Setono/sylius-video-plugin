@@ -256,32 +256,35 @@ final class YoutubePosterResolver implements VideoPosterResolverInterface
 ```
 
 **5. Form fields** — ship a `ProductVideoType` extension for the type's input(s) by extending
-`AbstractProductVideoTypeExtension` and tagging it `form.type_extension`. It can add as many fields
-as the type needs; the base class reveals/hides and strips them per the selected type:
+`AbstractProductVideoTypeExtension` and tagging it `form.type_extension`. Declare the type and its
+field(s) as a `name => [form type, options]` map; the base class adds them, reveals/hides them per
+the selected type and strips them on submit when another type is chosen:
 
 ```php
 final class YoutubeProductVideoTypeExtension extends AbstractProductVideoTypeExtension
 {
-    protected function getType(): string { return 'youtube'; }
-    protected function fieldNames(): array { return ['url']; }
-
-    protected function addFields(FormInterface $form): void
+    protected function getType(): string
     {
-        if ($form->has('url')) {
-            return;
-        }
+        return YoutubeProductVideo::getType();
+    }
 
-        $form->add('url', UrlType::class, [
-            'label' => 'app.form.video.url',
-            'required' => false,
-            'attr' => ['data-video-fields' => 'youtube'], // groups the field under this type for the JS toggle
-        ]);
+    protected function getFields(): array
+    {
+        return [
+            'url' => [UrlType::class, [
+                'label' => 'app.form.video.url',
+                'required' => false,
+                'attr' => ['data-video-fields' => $this->getType()], // groups the field under this type for the JS toggle
+            ]],
+        ];
     }
 }
 ```
 
-**6. Validation + translations** — add a per-subtype validation file and the `setono_sylius_video.ui.types.youtube`
-label key (plus labels for any fields your extension adds).
+**6. Validation + translations** — add a per-subtype validation file with its constraints in the
+`sylius` group (each row is validated in `%setono_sylius_video.form.type.product_video.validation_groups%`,
+`[sylius]` by default) and the `setono_sylius_video.ui.types.youtube` label key (plus labels for any
+fields your extension adds).
 
 ## Development & quality gates
 
