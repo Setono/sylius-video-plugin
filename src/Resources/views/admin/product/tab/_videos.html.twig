@@ -1,8 +1,9 @@
+{% form_theme form.videos '@SetonoSyliusVideoPlugin/admin/form/_videosTheme.html.twig' %}
+
 <div class="ui tab" data-tab="videos">
     <h3 class="ui top attached header">{{ 'setono_sylius_video.ui.videos'|trans }}</h3>
 
     <div class="ui attached segment">
-        <br>
         {{ form_row(form.videos, {'label': false}) }}
     </div>
 </div>

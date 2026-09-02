@@ -1,0 +1,67 @@
+{#
+    Form theme for the product's `videos` collection, applied to that field only (see
+    admin/product/tab/_videos.html.twig). Sylius themes the whole product form with its images
+    theme, whose three-column grid squeezes a video row into ~180px; here every video gets a full-
+    width row with the shared fields on the left and the selected type's field(s) on the right.
+#}
+
+{% block collection_widget -%}
+    {% from '@SyliusResource/Macros/notification.html.twig' import error %}
+    {% import _self as self %}
+    {% set attr = attr|merge({'class': attr.class|default ~ ' controls collection-widget'}) %}
+
+    {% apply spaceless %}
+        <div data-form-type="collection" {{ block('widget_container_attributes') }}
+            {% if prototype is defined and allow_add %}
+                data-prototype='{{ self.collection_item(prototype, allow_delete, button_delete_label, prototype.vars.name)|e }}'
+                data-prototype-name='{{ prototype.vars.name }}'
+            {%- endif -%}
+        >
+            {{ error(form.vars.errors) }}
+
+            <div data-form-collection="list" class="ui one column grid">
+                {% for child in form %}
+                    {{ self.collection_item(child, allow_delete, button_delete_label, loop.index0) }}
+                {% endfor %}
+            </div>
+
+            {% if prototype is defined and allow_add %}
+                <a href="#" class="ui labeled icon button" data-form-collection="add">
+                    <i class="plus square outline icon"></i>
+                    {{ button_add_label|trans }}
+                </a>
+            {% endif %}
+        </div>
+    {% endapply %}
+{%- endblock collection_widget %}
+
+{% macro collection_item(form, allow_delete, button_delete_label, index) %}
+    {% apply spaceless %}
+        <div data-form-collection="item" data-form-collection-index="{{ index }}" class="column">
+            <div class="ui box segment">
+                {{ form_widget(form) }}
+                {% if allow_delete %}
+                    <a href="#" data-form-collection="delete" class="ui red labeled icon button">
+                        <i class="trash icon"></i>
+                        {{ button_delete_label|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endapply %}
+{% endmacro %}
+
+{% block setono_sylius_video_product_video_widget -%}
+    {{ form_errors(form) }}
+    <div class="ui two column stackable grid">
+        <div class="column">
+            {{ form_row(form.type) }}
+            {{ form_row(form.position) }}
+            {{ form_row(form.posterFile) }}
+        </div>
+        <div class="column">
+            {# The type-specific field(s); the JavaScript controller shows only the selected type's. #}
+            {{ form_rest(form) }}
+        </div>
+    </div>
+{%- endblock %}
