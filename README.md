@@ -210,7 +210,8 @@ your own constraints for `Setono\SyliusVideoPlugin\Model\FileProductVideo` or `P
   {% include '@SetonoSyliusVideoPlugin/shop/product/_videos.html.twig' with { product: product } %}
   ```
 
-- **Twig functions** (output is HTML-safe):
+- **Twig functions** (`setono_sylius_video_render` is marked HTML-safe; `setono_sylius_video_poster`
+  returns a plain URL, escaped like any other value):
 
   ```twig
   {{ setono_sylius_video_render(video) }}   {# renders a single video #}
@@ -231,6 +232,24 @@ setono_sylius_video:
         adapter: Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface
         # Public URL base that a stored media path is prefixed with.
         public_url_prefix: /media/image
+    # Sylius resources; override a class to extend a type (a subclass keeps its parent's type name).
+    resources:
+        product_video:
+            classes:
+                model: Setono\SyliusVideoPlugin\Model\ProductVideo          # abstract base, no factory
+                repository: Setono\SyliusVideoPlugin\Repository\ProductVideoRepository
+        file_video:
+            classes:
+                model: Setono\SyliusVideoPlugin\Model\FileProductVideo
+                factory: Sylius\Component\Resource\Factory\Factory
+        url_video:
+            classes:
+                model: Setono\SyliusVideoPlugin\Model\UrlProductVideo
+                factory: Sylius\Component\Resource\Factory\Factory
+        embed_video:
+            classes:
+                model: Setono\SyliusVideoPlugin\Model\EmbedProductVideo
+                factory: Sylius\Component\Resource\Factory\Factory
 ```
 
 ## Security
@@ -251,7 +270,14 @@ than "can edit products".
 
 - **Models:** swap any subtype via the `setono_sylius_video.resources.*.classes.model` config —
   the discriminator keys stay stable because they are derived from each model's `getType()`.
-- **Renderer templates:** override at `templates/bundles/SetonoSyliusVideoPlugin/shop/renderer/<type>.html.twig`.
+- **Renderer templates:** override at `templates/bundles/SetonoSyliusVideoPlugin/shop/renderer/<type>.html.twig`;
+  the shop block itself is `shop/product/_videos.html.twig` and the admin tab
+  `admin/product/tab/_videos.html.twig` under the same bundle directory.
+- **Renderers and poster resolvers:** both are tagged composites (`setono_sylius_video.renderer`,
+  `setono_sylius_video.poster_resolver`) that ask their services in descending `priority` order and
+  use the first whose `supports()` returns true. The plugin's renderers run at priority 0 and its
+  stored-poster resolver at 100, so tag a more specific renderer above 0 and a computed poster
+  resolver below 100 if an uploaded poster should keep winning.
 - **Uploads:** decorate the `setono_sylius_video.uploader` service, or point `filesystem.adapter`
   at any Flysystem/Gaufrette adapter Sylius exposes.
 
@@ -264,10 +290,22 @@ exact type under `tests/Application` (`Entity/Video`, `Form`, `Renderer`, `Poste
 `config/doctrine`, `config/validator`, `templates/video`, `translations`), so read it as a complete
 reference.
 
+| Step | Artefact | Wired by |
+|---|---|---|
+| 1 | `<Type>ProductVideo` model (+ interface) | class name → `getType()` |
+| 2 | ORM mapping (mapped superclass, fields only for new columns) | Doctrine mapping config |
+| 3 | Sylius resource entry | `sylius_resource.resources.<app>.<name>` |
+| 4 | Renderer (+ template) and optional poster resolver | tags `setono_sylius_video.renderer` / `.poster_resolver` |
+| 5 | Form fields | a `ProductVideoType` extension, tag `form.type_extension` |
+| 6 | Validation XML in group `sylius`, `setono_sylius_video.ui.types.<type>` label | Symfony validator / translations |
+
 **1. Subtype model + interface** — name it `<Type>ProductVideo` and the static `getType()`
 derives the discriminator (`YoutubeProductVideo` → `youtube`); override it only for a
 non-conventional name. Extending a concrete type is fine: the derived name (`youtube`, not `url`)
-keeps the two apart in the discriminator map.
+keeps the two apart in the discriminator map. Two models resolving to the same type (for example
+an override of `getType()` returning `url`) fail loudly at container build and metadata load, since
+one would otherwise shadow the other in the map; to *replace* a built-in type's class rather than
+add a type, override its `resources.*.classes.model` instead (see Configuration).
 
 ```php
 namespace App\Entity\Video;
@@ -404,6 +442,11 @@ composer test-unit         # tests/Unit: kernel-free tests (what Infection mutat
 composer test-functional   # tests/Functional: boots tests/Application (STI map, type registry, form, templates)
 composer test-e2e          # tests/e2e: Playwright UI tests against the running test application
 ```
+
+CI (`.github/workflows/build.yaml`) enforces more than the composer scripts: `vendor/bin/rector process --dry-run`,
+`vendor/bin/infection` (`minCoveredMsi` 100, `minMsi` ratcheted in `infection.json.dist`),
+`vendor/bin/composer-dependency-analyser`, `composer validate --strict`, `composer normalize --dry-run`,
+and `lint:yaml`, `lint:twig` and `lint:container` in the test application. Run them before pushing.
 
 The test application lives in `tests/Application`. Admin credentials: `sylius` / `sylius`.
 
