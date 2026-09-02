@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Przesłanie pliku'
             url: 'Zewnętrzny adres URL'
             embed: 'Kod osadzania'
+        current_poster: 'Bieżący obraz miniatury'
+        current_file: 'Bieżący plik wideo'
     form:
         product:
             videos: 'Filmy'

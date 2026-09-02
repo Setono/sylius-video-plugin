@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Tiedoston lataus'
             url: 'Ulkoinen URL-osoite'
             embed: 'Upotuskoodi'
+        current_poster: 'Nykyinen esikatselukuva'
+        current_file: 'Nykyinen videotiedosto'
     form:
         product:
             videos: 'Videot'

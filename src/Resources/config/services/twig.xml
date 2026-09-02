@@ -17,5 +17,10 @@
             <tag name="twig.runtime"/>
             <tag name="monolog.logger" channel="setono_sylius_video"/>
         </service>
+
+        <service id="Setono\SyliusVideoPlugin\Twig\MediaUrlRuntime">
+            <argument type="service" id="Setono\SyliusVideoPlugin\Filesystem\MediaUrlGeneratorInterface"/>
+            <tag name="twig.runtime"/>
+        </service>
     </services>
 </container>

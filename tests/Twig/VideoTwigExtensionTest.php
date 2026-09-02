@@ -13,13 +13,13 @@ final class VideoTwigExtensionTest extends TestCase
     /**
      * @test
      */
-    public function it_registers_the_render_and_poster_functions(): void
+    public function it_registers_the_render_poster_and_media_url_functions(): void
     {
         $functions = (new VideoTwigExtension())->getFunctions();
 
         $names = array_map(static fn (TwigFunction $function): string => $function->getName(), $functions);
 
-        self::assertSame(['setono_sylius_video_render', 'setono_sylius_video_poster'], $names);
+        self::assertSame(['setono_sylius_video_render', 'setono_sylius_video_poster', 'setono_sylius_video_media_url'], $names);
     }
 
     /**

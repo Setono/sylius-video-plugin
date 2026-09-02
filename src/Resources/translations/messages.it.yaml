@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Caricamento file'
             url: 'URL esterno'
             embed: 'Codice di incorporamento'
+        current_poster: 'Immagine di anteprima attuale'
+        current_file: 'File video attuale'
     form:
         product:
             videos: 'Video'

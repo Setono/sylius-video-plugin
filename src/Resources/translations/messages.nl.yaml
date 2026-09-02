@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Bestand uploaden'
             url: 'Externe URL'
             embed: 'Insluitcode'
+        current_poster: 'Huidige posterafbeelding'
+        current_file: 'Huidig videobestand'
     form:
         product:
             videos: 'Video’s'

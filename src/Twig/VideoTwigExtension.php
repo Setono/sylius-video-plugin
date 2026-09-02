@@ -19,6 +19,7 @@ final class VideoTwigExtension extends AbstractExtension
         return [
             new TwigFunction('setono_sylius_video_render', [VideoRuntime::class, 'render'], ['is_safe' => ['html']]),
             new TwigFunction('setono_sylius_video_poster', [VideoRuntime::class, 'poster']),
+            new TwigFunction('setono_sylius_video_media_url', [MediaUrlRuntime::class, 'generate']),
         ];
     }
 }
