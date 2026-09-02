@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Nahrání souboru'
             url: 'Externí URL'
             embed: 'Kód pro vložení'
+        current_poster: 'Aktuální náhledový obrázek'
+        current_file: 'Aktuální soubor videa'
     form:
         product:
             videos: 'Videa'

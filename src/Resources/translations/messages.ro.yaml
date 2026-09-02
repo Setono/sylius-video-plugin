@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Încărcare fișier'
             url: 'URL extern'
             embed: 'Cod de încorporare'
+        current_poster: 'Imaginea de previzualizare curentă'
+        current_file: 'Fișierul video curent'
     form:
         product:
             videos: 'Videoclipuri'

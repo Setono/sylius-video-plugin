@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Filuppladdning'
             url: 'Extern URL'
             embed: 'Inbäddningskod'
+        current_poster: 'Aktuell affischbild'
+        current_file: 'Aktuell videofil'
     form:
         product:
             videos: 'Videor'

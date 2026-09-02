@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Téléversement de fichier'
             url: 'URL externe'
             embed: 'Code d’intégration'
+        current_poster: 'Image d’aperçu actuelle'
+        current_file: 'Fichier vidéo actuel'
     form:
         product:
             videos: 'Vidéos'

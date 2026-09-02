@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Fájlfeltöltés'
             url: 'Külső URL'
             embed: 'Beágyazási kód'
+        current_poster: 'Jelenlegi előnézeti kép'
+        current_file: 'Jelenlegi videófájl'
     form:
         product:
             videos: 'Videók'

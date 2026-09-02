@@ -52,14 +52,31 @@
 {% endmacro %}
 
 {% block setono_sylius_video_product_video_widget -%}
+    {% set video = form.vars.data %}
     {{ form_errors(form) }}
     <div class="ui two column stackable grid">
         <div class="column">
             {{ form_row(form.type) }}
             {{ form_row(form.position) }}
             {{ form_row(form.posterFile) }}
+            {% if video is not null and video.posterPath is not null %}
+                <div class="field" data-video-current="poster">
+                    <label>{{ 'setono_sylius_video.ui.current_poster'|trans }}</label>
+                    <a href="{{ setono_sylius_video_media_url(video.posterPath) }}" target="_blank" rel="noopener">
+                        <img class="ui small bordered image" src="{{ setono_sylius_video_media_url(video.posterPath) }}" alt="">
+                    </a>
+                </div>
+            {% endif %}
         </div>
         <div class="column">
+            {% if video is not null and video.path is defined and video.path is not null %}
+                <div class="field" data-video-current="file">
+                    <label>{{ 'setono_sylius_video.ui.current_file'|trans }}</label>
+                    <a href="{{ setono_sylius_video_media_url(video.path) }}" target="_blank" rel="noopener">
+                        <i class="file video outline icon"></i>{{ video.path|split('/')|last }}
+                    </a>
+                </div>
+            {% endif %}
             {# The type-specific field(s); the JavaScript controller shows only the selected type's. #}
             {{ form_rest(form) }}
         </div>

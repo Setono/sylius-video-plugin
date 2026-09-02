@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Завантаження файлу'
             url: 'Зовнішня URL-адреса'
             embed: 'Код для вставлення'
+        current_poster: 'Поточне зображення-постер'
+        current_file: 'Поточний відеофайл'
     form:
         product:
             videos: 'Відео'

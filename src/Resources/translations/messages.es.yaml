@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'Subida de archivo'
             url: 'URL externa'
             embed: 'Código de inserción'
+        current_poster: 'Imagen de portada actual'
+        current_file: 'Archivo de vídeo actual'
     form:
         product:
             videos: 'Vídeos'

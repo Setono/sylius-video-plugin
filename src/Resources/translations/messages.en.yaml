@@ -6,6 +6,8 @@ setono_sylius_video:
             file: 'File upload'
             url: 'External URL'
             embed: 'Embed code'
+        current_poster: 'Current poster image'
+        current_file: 'Current video file'
     form:
         product:
             videos: 'Videos'
