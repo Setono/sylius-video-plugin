@@ -344,7 +344,9 @@ fields your extension adds).
 composer analyse       # PHPStan (level max)
 composer check-style   # ECS
 composer fix-style     # ECS auto-fix
-composer phpunit       # PHPUnit (Prophecy)
+composer phpunit           # PHPUnit, both suites
+composer test-unit         # tests/Unit: kernel-free tests (what Infection mutates against)
+composer test-functional   # tests/Functional: boots tests/Application (STI map, type registry, form, templates)
 ```
 
 The test application lives in `tests/Application`. Admin credentials: `sylius` / `sylius`.

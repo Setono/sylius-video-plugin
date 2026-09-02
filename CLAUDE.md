@@ -82,7 +82,7 @@ Based on the `composer.json` scripts section:
 - `composer analyse` - Run PHPStan static analysis (level max)
 - `composer check-style` - Check code style with ECS (Easy Coding Standard)
 - `composer fix-style` - Fix code style issues automatically with ECS
-- `composer phpunit` - Run PHPUnit tests
+- `composer phpunit` - Run PHPUnit tests (both suites); `composer test-unit` (`tests/Unit`, kernel-free, what Infection mutates against) and `composer test-functional` (`tests/Functional`, boots the test application)
 
 CI (`.github/workflows/build.yaml`) additionally runs `vendor/bin/rector process --dry-run`,
 `vendor/bin/infection`, `vendor/bin/composer-dependency-analyser`, `composer validate --strict`,
