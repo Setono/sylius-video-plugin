@@ -113,7 +113,9 @@ bin/console doctrine:migrations:migrate
 
 This creates the single `setono_sylius_video__product_video` table. The discriminator listener
 adds the Single Table Inheritance map at runtime (keyed on each subtype's `getType()`), so no extra
-mapping is needed beyond the `videos` association you added in step 3.
+mapping is needed beyond the `videos` association you added in step 3. The `type` column is 64
+characters wide so derived type names of custom subtypes fit; installs created with an earlier
+development version (20 characters) pick the change up with another `doctrine:migrations:diff`.
 
 ### 5. Install assets
 

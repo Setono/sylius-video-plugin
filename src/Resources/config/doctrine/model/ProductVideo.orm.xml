@@ -15,7 +15,7 @@
     <mapped-superclass name="Setono\SyliusVideoPlugin\Model\ProductVideo"
                        table="setono_sylius_video__product_video"
                        inheritance-type="SINGLE_TABLE">
-        <discriminator-column name="type" type="string" length="20"/>
+        <discriminator-column name="type" type="string" length="64"/>
 
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
