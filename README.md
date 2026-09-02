@@ -139,6 +139,8 @@ attaching very large videos as an **External URL** video hosted elsewhere.
   a video is saved (to change it, remove the row and add a new one). Ordering uses the
   per-row **position** field (lowest first); positions are maintained per-product by the Gedmo
   Sortable extension Sylius already enables, so a new row left blank is appended automatically.
+  Removing a video (or its product, through the orphan-removal mapping above) also deletes the
+  stored video file and poster once the change is flushed.
 - **Shop:** the product's videos render on the product page via the `sylius.shop.product.show.content`
   event (it always fires, unlike `before_thumbnails`, which only fires for products with more
   than one image). Disable the block with:

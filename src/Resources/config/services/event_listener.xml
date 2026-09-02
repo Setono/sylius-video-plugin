@@ -9,5 +9,11 @@
             <argument>%sylius.resources%</argument>
             <tag name="doctrine.event_listener" event="loadClassMetadata"/>
         </service>
+
+        <service id="Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoFilesRemovalListener">
+            <argument type="service" id="Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface"/>
+            <tag name="doctrine.event_listener" event="onFlush"/>
+            <tag name="doctrine.event_listener" event="postFlush"/>
+        </service>
     </services>
 </container>
