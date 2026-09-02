@@ -6,7 +6,11 @@ namespace Setono\SyliusVideoPlugin\Model;
 
 use Sylius\Component\Core\Model\ProductInterface;
 
-class ProductVideo implements ProductVideoInterface
+/**
+ * Base of every video type. It is abstract: only the concrete subtypes registered as Sylius
+ * resources have a discriminator value and can be persisted.
+ */
+abstract class ProductVideo implements ProductVideoInterface
 {
     protected ?int $id = null;
 
@@ -31,7 +35,7 @@ class ProductVideo implements ProductVideoInterface
      * Derives the Single Table Inheritance discriminator value from the class name: the part
      * before the `ProductVideo` suffix, snake-cased (e.g. `UrlProductVideo` => `url`,
      * `EmbedProductVideo` => `embed`). Subtypes only need to override this for a non-conventional
-     * name. The base class itself has no type and throws.
+     * name. The base class itself is abstract, has no type and throws.
      */
     public static function getType(): string
     {

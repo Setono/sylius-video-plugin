@@ -26,6 +26,12 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
     public function it_builds_the_discriminator_map_on_the_base_class_keyed_by_type(): void
     {
         $metadata = new ClassMetadata(ProductVideo::class);
+        // Doctrine's default map (short class names, including the abstract base) is present by
+        // the time the listener runs and must be replaced, not merged.
+        $metadata->setDiscriminatorMap([
+            'productvideo' => ProductVideo::class,
+            'fileproductvideo' => FileProductVideo::class,
+        ]);
 
         $this->listener()->loadClassMetadata($this->eventArgs($metadata));
 
@@ -34,6 +40,7 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
             'url' => UrlProductVideo::class,
             'embed' => EmbedProductVideo::class,
         ], $metadata->discriminatorMap);
+        self::assertSame([FileProductVideo::class, UrlProductVideo::class, EmbedProductVideo::class], $metadata->subClasses);
     }
 
     /**
