@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\DependencyInjection;
 
+use Setono\SyliusVideoPlugin\Form\Extension\EmbedProductVideoTypeExtension;
+use Setono\SyliusVideoPlugin\Renderer\EmbedProductVideoRenderer;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
@@ -18,7 +20,7 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
-        /** @var array{resources: array<string, mixed>, filesystem: array{adapter: string, public_url_prefix: string}} $config */
+        /** @var array{embed: array{enabled: bool}, resources: array<string, mixed>, filesystem: array{adapter: string, public_url_prefix: string}} $config */
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
         $container->setParameter('setono_sylius_video.filesystem.public_url_prefix', $config['filesystem']['public_url_prefix']);
@@ -26,6 +28,14 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+
+        if (!$config['embed']['enabled']) {
+            // Without the resource the type is absent from both the STI map and the type selector;
+            // its form extension and renderer would then only add dead weight.
+            unset($config['resources']['embed_video']);
+            $container->removeDefinition(EmbedProductVideoTypeExtension::class);
+            $container->removeDefinition(EmbedProductVideoRenderer::class);
+        }
 
         $this->registerResources(
             'setono_sylius_video',

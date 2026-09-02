@@ -187,12 +187,30 @@ your own constraints for `Setono\SyliusVideoPlugin\Model\FileProductVideo` or `P
 ```yaml
 # config/packages/setono_sylius_video.yaml
 setono_sylius_video:
+    embed:
+        # The embed type prints admin-supplied HTML unescaped (see "Security" below). Set to false
+        # to remove the type from the selector, the STI map and the renderer entirely.
+        enabled: true
     filesystem:
         # Service id of the media filesystem used to store uploaded videos and posters.
         adapter: Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface
         # Public URL base that a stored media path is prefixed with.
         public_url_prefix: /media/image
 ```
+
+## Security
+
+The **embed** type stores the HTML an administrator pastes and prints it on the product page with
+`|raw`, on purpose: provider embed codes need their `<iframe>` and attributes intact, and a sanitizer
+would break them. Treat that field as trusted input. Anyone who can edit a product can put arbitrary
+markup and scripts in front of every visitor of that product page, and Sylius has no admin role finer
+than "can edit products".
+
+- If the shop does not need pasted embed codes, turn the type off with `embed.enabled: false`;
+  YouTube, Vimeo and similar providers work through the **External URL** type, which only ever
+  outputs an escaped `src`.
+- Otherwise, consider a Content Security Policy on the shop with a `frame-src` allow-list of the
+  providers you use, so a pasted `<script>` or an unexpected frame host is blocked by the browser.
 
 ## Overriding
 
