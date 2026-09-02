@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Choose how this video is provided.'
                 type_locked: 'The type cannot be changed once the video is saved. Remove the video and add a new one to change it.'
                 file: 'Upload a video file, e.g. MP4 or WebM.'
-                url: 'Link to a video file or a video page such as YouTube or Vimeo.'
+                url: 'Link to a video file or a video page such as YouTube or Vimeo. Use an https link.'
                 html: 'Paste the embed code (iframe) from the video provider.'
                 poster: 'Optional preview image shown before the video plays.'
                 position: 'Videos are ordered by this number, lowest first.'

@@ -11,7 +11,11 @@
                     <value>sylius</value>
                 </option>
             </constraint>
+            <!-- https only: on an https shop the browser blocks a plain-http iframe or video source. -->
             <constraint name="Url">
+                <option name="protocols">
+                    <value>https</value>
+                </option>
                 <option name="groups">
                     <value>sylius</value>
                 </option>

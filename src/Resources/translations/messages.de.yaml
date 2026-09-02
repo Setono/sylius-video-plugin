@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Wählen Sie, wie dieses Video bereitgestellt wird.'
                 type_locked: 'Der Typ kann nach dem Speichern des Videos nicht mehr geändert werden. Entfernen Sie das Video und fügen Sie ein neues hinzu, um ihn zu ändern.'
                 file: 'Laden Sie eine Videodatei hoch, z. B. MP4 oder WebM.'
-                url: 'Link zu einer Videodatei oder einer Videoseite wie YouTube oder Vimeo.'
+                url: 'Link zu einer Videodatei oder einer Videoseite wie YouTube oder Vimeo. Verwenden Sie einen https-Link.'
                 html: 'Fügen Sie den Einbettungscode (iframe) des Videoanbieters ein.'
                 poster: 'Optionales Vorschaubild, das vor der Videowiedergabe angezeigt wird.'
                 position: 'Videos werden nach dieser Zahl sortiert, niedrigste zuerst.'

@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Valitse, miten tämä video toimitetaan.'
                 type_locked: 'Tyyppiä ei voi muuttaa videon tallentamisen jälkeen. Poista video ja lisää uusi, jos haluat muuttaa sitä.'
                 file: 'Lataa videotiedosto, esim. MP4 tai WebM.'
-                url: 'Linkki videotiedostoon tai videosivulle, kuten YouTube tai Vimeo.'
+                url: 'Linkki videotiedostoon tai videosivulle, kuten YouTube tai Vimeo. Käytä https-linkkiä.'
                 html: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
                 poster: 'Valinnainen esikatselukuva, joka näytetään ennen videon toistoa.'
                 position: 'Videot järjestetään tämän numeron mukaan, pienin ensin.'

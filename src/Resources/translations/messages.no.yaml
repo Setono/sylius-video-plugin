@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Velg hvordan denne videoen leveres.'
                 type_locked: 'Typen kan ikke endres når videoen er lagret. Fjern videoen og legg til en ny for å endre den.'
                 file: 'Last opp en videofil, f.eks. MP4 eller WebM.'
-                url: 'Lenke til en videofil eller en videoside som YouTube eller Vimeo.'
+                url: 'Lenke til en videofil eller en videoside som YouTube eller Vimeo. Bruk en https-lenke.'
                 html: 'Lim inn innbyggingskoden (iframe) fra videoleverandøren.'
                 poster: 'Valgfritt forhåndsvisningsbilde som vises før videoen spilles av.'
                 position: 'Videoer sorteres etter dette tallet, laveste først.'

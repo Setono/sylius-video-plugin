@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Válassza ki, hogyan érhető el ez a videó.'
                 type_locked: 'A típus a videó mentése után nem módosítható. A módosításhoz távolítsa el a videót, és adjon hozzá egy újat.'
                 file: 'Töltsön fel egy videófájlt, pl. MP4 vagy WebM.'
-                url: 'Hivatkozás egy videófájlra vagy videóoldalra, például YouTube vagy Vimeo.'
+                url: 'Hivatkozás egy videófájlra vagy videóoldalra, például YouTube vagy Vimeo. Használjon https hivatkozást.'
                 html: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
                 poster: 'Választható előnézeti kép, amely a videó lejátszása előtt jelenik meg.'
                 position: 'A videók e szám szerint vannak rendezve, a legkisebbtől.'

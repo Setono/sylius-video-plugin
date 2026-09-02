@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Alegeți cum este furnizat acest videoclip.'
                 type_locked: 'Tipul nu poate fi modificat după salvarea videoclipului. Eliminați videoclipul și adăugați unul nou pentru a-l schimba.'
                 file: 'Încărcați un fișier video, de ex. MP4 sau WebM.'
-                url: 'Link către un fișier video sau o pagină video precum YouTube sau Vimeo.'
+                url: 'Link către un fișier video sau o pagină video precum YouTube sau Vimeo. Folosiți un link https.'
                 html: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
                 poster: 'Imagine de previzualizare opțională, afișată înainte de redarea videoclipului.'
                 position: 'Videoclipurile sunt ordonate după acest număr, crescător.'

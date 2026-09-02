@@ -19,7 +19,7 @@ setono_sylius_video:
                 type: 'Välj hur den här videon tillhandahålls.'
                 type_locked: 'Typen kan inte ändras när videon har sparats. Ta bort videon och lägg till en ny för att ändra den.'
                 file: 'Ladda upp en videofil, t.ex. MP4 eller WebM.'
-                url: 'Länk till en videofil eller en videosida som YouTube eller Vimeo.'
+                url: 'Länk till en videofil eller en videosida som YouTube eller Vimeo. Använd en https-länk.'
                 html: 'Klistra in inbäddningskoden (iframe) från videoleverantören.'
                 poster: 'Valfri förhandsvisningsbild som visas innan videon spelas upp.'
                 position: 'Videor sorteras efter detta nummer, lägsta först.'
