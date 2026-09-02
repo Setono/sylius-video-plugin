@@ -89,8 +89,8 @@ final class ProductVideoTypeTest extends TypeTestCase
 
         $form = $this->factory->create(ProductVideoType::class, $video);
 
-        // The user tampered with the (effectively read-only) type select; the row must remain a
-        // UrlProductVideo and only its own column may change.
+        // The type select is disabled for a saved row; even a tampered request must leave it a
+        // UrlProductVideo and may only change its own column.
         $form->submit([
             'type' => 'embed',
             'url' => 'https://example.com/new',
@@ -145,6 +145,37 @@ final class ProductVideoTypeTest extends TypeTestCase
 
         self::assertFalse($form->isValid());
         self::assertCount(1, $form->get('videos')->get('0')->get('url')->getErrors());
+    }
+
+    /**
+     * @test
+     */
+    public function it_offers_the_type_choice_on_a_new_row(): void
+    {
+        $form = $this->factory->create(ProductVideoType::class);
+
+        self::assertFalse($form->get('type')->isDisabled());
+        self::assertSame('setono_sylius_video.form.video.help.type', $form->get('type')->getConfig()->getOption('help'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_locks_the_type_of_an_existing_video(): void
+    {
+        $video = new UrlProductVideo();
+        $video->setUrl('https://example.com/video');
+
+        $form = $this->factory->create(ProductVideoType::class, $video);
+
+        self::assertTrue($form->get('type')->isDisabled());
+        self::assertSame('url', $form->get('type')->getData());
+        self::assertSame('setono_sylius_video.form.video.help.type_locked', $form->get('type')->getConfig()->getOption('help'));
+
+        // A disabled field ignores whatever is submitted for it.
+        $form->submit(['type' => 'embed', 'url' => 'https://example.com/video']);
+
+        self::assertSame('url', $form->get('type')->getData());
     }
 
     /**

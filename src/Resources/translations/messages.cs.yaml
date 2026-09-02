@@ -17,6 +17,7 @@ setono_sylius_video:
             position: 'Pozice'
             help:
                 type: 'Zvolte, jak je toto video poskytováno.'
+                type_locked: 'Typ nelze po uložení videa změnit. Chcete-li jej změnit, odeberte video a přidejte nové.'
                 file: 'Nahrajte soubor videa, např. MP4 nebo WebM.'
                 url: 'Odkaz na soubor videa nebo na stránku videa, jako je YouTube nebo Vimeo.'
                 html: 'Vložte kód pro vložení (iframe) od poskytovatele videa.'

@@ -127,7 +127,8 @@ field on the adaptive entry form to match the selected type.
 ## Usage
 
 - **Admin:** open any product's edit page and switch to the **Videos** tab. Add videos, pick a
-  type (file / url / embed) per row, and optionally attach a poster image. Ordering uses the
+  type (file / url / embed) per row, and optionally attach a poster image. The type is fixed once
+  a video is saved (to change it, remove the row and add a new one). Ordering uses the
   per-row **position** field (lowest first); positions are maintained per-product by the Gedmo
   Sortable extension Sylius already enables, so a new row left blank is appended automatically.
 - **Shop:** the product's videos render on the product page via the `sylius.shop.product.show.content`

@@ -17,6 +17,7 @@ setono_sylius_video:
             position: 'Positie'
             help:
                 type: 'Kies hoe deze video wordt aangeleverd.'
+                type_locked: 'Het type kan niet meer worden gewijzigd zodra de video is opgeslagen. Verwijder de video en voeg een nieuwe toe om het te wijzigen.'
                 file: 'Upload een videobestand, bijv. MP4 of WebM.'
                 url: 'Link naar een videobestand of een videopagina zoals YouTube of Vimeo.'
                 html: 'Plak de insluitcode (iframe) van de videoaanbieder.'

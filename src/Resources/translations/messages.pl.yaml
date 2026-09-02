@@ -17,6 +17,7 @@ setono_sylius_video:
             position: 'Pozycja'
             help:
                 type: 'Wybierz, w jaki sposób ten film jest dostarczany.'
+                type_locked: 'Typu nie można zmienić po zapisaniu filmu. Usuń film i dodaj nowy, aby go zmienić.'
                 file: 'Prześlij plik wideo, np. MP4 lub WebM.'
                 url: 'Link do pliku wideo lub strony wideo, takiej jak YouTube lub Vimeo.'
                 html: 'Wklej kod osadzania (iframe) od dostawcy wideo.'
