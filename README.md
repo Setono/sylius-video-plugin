@@ -131,7 +131,10 @@ bin/console assets:install
 ```
 
 This publishes the small dependency-free JavaScript controller that toggles the type-specific
-field on the adaptive entry form to match the selected type.
+field on the adaptive entry form to match the selected type, and the shop stylesheet that keeps
+the video block responsive (it stretches pasted embed iframes to the 16:9 box). The stylesheet is
+added to the shop layout through the `sylius.shop.layout.stylesheets` event; override or disable
+that `setono_sylius_video` block if your theme ships its own styles.
 
 ### Upload limits
 

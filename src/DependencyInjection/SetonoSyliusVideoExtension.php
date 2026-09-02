@@ -55,6 +55,14 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
             // overriding this block's `priority` / `enabled`.
             $container->prependExtensionConfig('sylius_ui', [
                 'events' => [
+                    // The stylesheet sizes pasted embed iframes inside the responsive box.
+                    'sylius.shop.layout.stylesheets' => [
+                        'blocks' => [
+                            'setono_sylius_video' => [
+                                'template' => '@SetonoSyliusVideoPlugin/shop/layout/_stylesheets.html.twig',
+                            ],
+                        ],
+                    ],
                     'sylius.shop.product.show.content' => [
                         'blocks' => [
                             'setono_sylius_video' => [
