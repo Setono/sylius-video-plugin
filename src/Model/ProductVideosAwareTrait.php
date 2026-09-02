@@ -21,9 +21,7 @@ trait ProductVideosAwareTrait
      */
     public function getVideos(): Collection
     {
-        if (!isset($this->videos)) {
-            $this->videos = new ArrayCollection();
-        }
+        $this->videos ??= new ArrayCollection();
 
         return $this->videos;
     }
