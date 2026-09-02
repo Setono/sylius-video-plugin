@@ -55,16 +55,17 @@ final class RegisterVideoTypesPassTest extends TestCase
     /**
      * @test
      */
-    public function it_skips_a_type_whose_factory_service_is_missing(): void
+    public function it_throws_when_a_types_factory_service_is_missing(): void
     {
         $container = $this->containerWithResources([
             'setono_sylius_video.file_video' => FileProductVideo::class,
         ]);
         $container->removeDefinition('setono_sylius_video.factory.file_video');
 
-        (new RegisterVideoTypesPass())->process($container);
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('"setono_sylius_video.factory.file_video"');
 
-        self::assertSame([], $container->getDefinition(VideoTypeRegistry::class)->getArgument(0));
+        (new RegisterVideoTypesPass())->process($container);
     }
 
     /**

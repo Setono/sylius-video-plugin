@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\DependencyInjection\Compiler;
 
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
+use Setono\SyliusVideoPlugin\Type\ProductVideoTypes;
 use Setono\SyliusVideoPlugin\Type\VideoTypeRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,29 +30,19 @@ final class RegisterVideoTypesPass implements CompilerPassInterface
 
         $types = [];
 
-        foreach ($resources as $alias => $resource) {
-            if (!is_string($alias)) {
-                continue;
-            }
-
-            $model = $resource['classes']['model'] ?? null;
-
-            if (!is_string($model) || !is_a($model, ProductVideoInterface::class, true)) {
-                continue;
-            }
-
-            try {
-                // The base ProductVideo has no discriminator type and throws; concrete subtypes
-                // derive one from their class name.
-                $type = $model::getType();
-            } catch (\Throwable) {
-                continue;
-            }
-
+        foreach (ProductVideoTypes::fromResources($resources) as $type => ['alias' => $alias, 'model' => $model]) {
             $factoryId = $this->factoryId($alias);
 
+            // A type without a factory could not be instantiated by the form, so it must not
+            // silently disappear from the type selector either.
             if (null === $factoryId || !$container->has($factoryId)) {
-                continue;
+                throw new \LogicException(sprintf(
+                    'Video type "%s" (%s, resource "%s") has no factory service "%s". Register the model as a Sylius resource under an "<app>.<name>" alias so its factory exists.',
+                    $type,
+                    $model,
+                    $alias,
+                    $factoryId ?? '<app>.factory.<name>',
+                ));
             }
 
             $types[] = [
