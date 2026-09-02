@@ -9,11 +9,11 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
-use Setono\SyliusVideoPlugin\Uploader\VideoFileUploader;
+use Setono\SyliusVideoPlugin\Uploader\VideoMediaUploader;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Sylius\Component\Core\Filesystem\Exception\FileNotFoundException;
 
-final class VideoFileUploaderTest extends TestCase
+final class VideoMediaUploaderTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -44,7 +44,7 @@ final class VideoFileUploaderTest extends TestCase
         $video = new FileProductVideo();
         $video->setFile(new \SplFileInfo($this->tmpFile));
 
-        (new VideoFileUploader($filesystem->reveal()))->upload($video);
+        (new VideoMediaUploader($filesystem->reveal()))->upload($video);
 
         self::assertNotNull($video->getPath());
         self::assertStringStartsWith('video/', $video->getPath());
@@ -62,7 +62,7 @@ final class VideoFileUploaderTest extends TestCase
         $video = new EmbedProductVideo();
         $video->setPosterFile(new \SplFileInfo($this->tmpFile));
 
-        (new VideoFileUploader($filesystem->reveal()))->uploadPoster($video);
+        (new VideoMediaUploader($filesystem->reveal()))->uploadPoster($video);
 
         self::assertNotNull($video->getPosterPath());
         self::assertStringStartsWith('video/poster/', $video->getPosterPath());
@@ -78,7 +78,7 @@ final class VideoFileUploaderTest extends TestCase
 
         $video = new FileProductVideo();
 
-        (new VideoFileUploader($filesystem->reveal()))->upload($video);
+        (new VideoMediaUploader($filesystem->reveal()))->upload($video);
 
         self::assertNull($video->getPath());
     }
@@ -103,7 +103,7 @@ final class VideoFileUploaderTest extends TestCase
         $video->setPath('video/old/path.mp4');
         $video->setFile(new \SplFileInfo($this->tmpFile));
 
-        (new VideoFileUploader($filesystem->reveal()))->upload($video);
+        (new VideoMediaUploader($filesystem->reveal()))->upload($video);
 
         self::assertSame(['write', 'delete'], $calls);
         self::assertNotSame('video/old/path.mp4', $video->getPath());
@@ -124,7 +124,7 @@ final class VideoFileUploaderTest extends TestCase
         $video->setFile(new \SplFileInfo($this->tmpFile));
 
         try {
-            (new VideoFileUploader($filesystem->reveal()))->upload($video);
+            (new VideoMediaUploader($filesystem->reveal()))->upload($video);
             self::fail('Expected the storage failure to propagate.');
         } catch (\RuntimeException $e) {
             self::assertSame('disk full', $e->getMessage());
@@ -148,7 +148,7 @@ final class VideoFileUploaderTest extends TestCase
         $video->setPosterFile(new \SplFileInfo($this->tmpFile));
 
         try {
-            (new VideoFileUploader($filesystem->reveal()))->uploadPoster($video);
+            (new VideoMediaUploader($filesystem->reveal()))->uploadPoster($video);
             self::fail('Expected the storage failure to propagate.');
         } catch (\RuntimeException) {
         }
@@ -164,7 +164,7 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
         $filesystem->delete('video/a/b.mp4')->shouldBeCalledOnce();
 
-        self::assertTrue((new VideoFileUploader($filesystem->reveal()))->remove('video/a/b.mp4'));
+        self::assertTrue((new VideoMediaUploader($filesystem->reveal()))->remove('video/a/b.mp4'));
     }
 
     /**
@@ -175,6 +175,6 @@ final class VideoFileUploaderTest extends TestCase
         $filesystem = $this->prophesize(FilesystemAdapterInterface::class);
         $filesystem->delete('video/a/b.mp4')->willThrow(new FileNotFoundException('video/a/b.mp4'));
 
-        self::assertFalse((new VideoFileUploader($filesystem->reveal()))->remove('video/a/b.mp4'));
+        self::assertFalse((new VideoMediaUploader($filesystem->reveal()))->remove('video/a/b.mp4'));
     }
 }

@@ -8,7 +8,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
-use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
+use Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface;
 
 /**
  * Deletes the stored video file and poster of every video Doctrine removes — mirrors Sylius's
@@ -23,7 +23,7 @@ final class ProductVideoFilesRemovalListener
     private array $pathsToDelete = [];
 
     public function __construct(
-        private readonly VideoFileUploaderInterface $uploader,
+        private readonly VideoMediaUploaderInterface $uploader,
     ) {
     }
 

@@ -11,11 +11,12 @@ use Sylius\Component\Core\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Modelled on {@see \Sylius\Component\Core\Uploader\ImageUploader}, reusing the same media
- * filesystem Sylius configures. Files are stored under the `video/` prefix and posters under
- * `video/poster/`.
+ * Stores the media a video carries — the uploaded file of a file video and the optional poster of
+ * any video — on the media filesystem Sylius configures, modelled on
+ * {@see \Sylius\Component\Core\Uploader\ImageUploader}. Files are stored under the `video/` prefix
+ * and posters under `video/poster/`.
  */
-final class VideoFileUploader implements VideoFileUploaderInterface
+final class VideoMediaUploader implements VideoMediaUploaderInterface
 {
     public function __construct(
         private readonly FilesystemAdapterInterface $filesystem,

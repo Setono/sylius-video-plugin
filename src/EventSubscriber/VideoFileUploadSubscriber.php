@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\EventSubscriber;
 
 use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
-use Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface;
+use Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 final class VideoFileUploadSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly VideoFileUploaderInterface $uploader,
+        private readonly VideoMediaUploaderInterface $uploader,
     ) {
     }
 
@@ -50,11 +50,6 @@ final class VideoFileUploadSubscriber implements EventSubscriberInterface
             // The poster upload is type-agnostic: any video (file/url/embed) may carry one.
             if ($video->hasPosterFile()) {
                 $this->uploader->uploadPoster($video);
-            }
-
-            // A file video whose upload produced no path is unusable — drop it.
-            if ($video instanceof FileProductVideoInterface && null === $video->getPath()) {
-                $videos->removeElement($video);
             }
         }
     }

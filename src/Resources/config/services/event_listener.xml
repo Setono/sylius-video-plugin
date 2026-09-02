@@ -11,7 +11,7 @@
         </service>
 
         <service id="Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoFilesRemovalListener">
-            <argument type="service" id="Setono\SyliusVideoPlugin\Uploader\VideoFileUploaderInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\Uploader\VideoMediaUploaderInterface"/>
             <tag name="doctrine.event_listener" event="onFlush"/>
             <tag name="doctrine.event_listener" event="postFlush"/>
         </service>

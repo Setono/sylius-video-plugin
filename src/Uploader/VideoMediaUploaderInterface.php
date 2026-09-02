@@ -7,7 +7,7 @@ namespace Setono\SyliusVideoPlugin\Uploader;
 use Setono\SyliusVideoPlugin\Model\FileProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 
-interface VideoFileUploaderInterface
+interface VideoMediaUploaderInterface
 {
     /**
      * Stores a pending video file (FileProductVideo::getFile()) on the media filesystem and writes the
