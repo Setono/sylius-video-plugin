@@ -54,26 +54,41 @@ final class ProductVideoType extends AbstractResourceType
                 'help' => 'setono_sylius_video.form.video.help.poster',
                 'required' => false,
             ])
-            ->add('type', ChoiceType::class, [
-                'label' => 'setono_sylius_video.form.video.type',
-                'help' => 'setono_sylius_video.form.video.help.type',
-                'choices' => $this->typeRegistry->getChoices(),
-                'mapped' => false,
-                // The selected value is the discriminator type; the client-side toggle reveals the
-                // matching type's fields (each tagged `data-video-fields="<type>"`).
-                'attr' => ['data-video-type-select' => true],
-            ])
+            ->add('type', ChoiceType::class, $this->typeOptions())
         ;
 
-        // The `type` field is unmapped, so the data mapper resets it after the data is set; select
-        // the existing video's type here, once mapping has run.
-        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event): void {
+        // A saved video keeps its subtype (a single-table-inheritance entity cannot change class),
+        // so its type select is re-added disabled with the row's type preselected; changing the
+        // type means removing the row and adding a new one. Only a new row offers the choice.
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $video = $event->getData();
 
             if ($video instanceof ProductVideoInterface) {
-                $event->getForm()->get('type')->setData($video::getType());
+                $event->getForm()->add('type', ChoiceType::class, $this->typeOptions($video::getType()));
             }
         });
+    }
+
+    /**
+     * @param string|null $lockedType the saved row's type; when given, the select is disabled and preselects it
+     *
+     * @return array<string, mixed>
+     */
+    private function typeOptions(?string $lockedType = null): array
+    {
+        return [
+            'label' => 'setono_sylius_video.form.video.type',
+            'help' => null === $lockedType
+                ? 'setono_sylius_video.form.video.help.type'
+                : 'setono_sylius_video.form.video.help.type_locked',
+            'choices' => $this->typeRegistry->getChoices(),
+            'mapped' => false,
+            'disabled' => null !== $lockedType,
+            'data' => $lockedType,
+            // The selected value is the discriminator type; the client-side toggle reveals the
+            // matching type's fields (each tagged `data-video-fields="<type>"`).
+            'attr' => ['data-video-type-select' => true],
+        ];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

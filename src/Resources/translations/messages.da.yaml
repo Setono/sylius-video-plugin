@@ -17,6 +17,7 @@ setono_sylius_video:
             position: 'Position'
             help:
                 type: 'Vælg, hvordan denne video leveres.'
+                type_locked: 'Typen kan ikke ændres, når videoen er gemt. Fjern videoen og tilføj en ny for at ændre den.'
                 file: 'Upload en videofil, f.eks. MP4 eller WebM.'
                 url: 'Link til en videofil eller en videoside som YouTube eller Vimeo.'
                 html: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'

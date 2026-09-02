@@ -17,6 +17,7 @@ setono_sylius_video:
             position: 'Posizione'
             help:
                 type: 'Scegli come viene fornito questo video.'
+                type_locked: 'Il tipo non può essere modificato dopo il salvataggio del video. Rimuovi il video e aggiungine uno nuovo per cambiarlo.'
                 file: 'Carica un file video, ad es. MP4 o WebM.'
                 url: 'Link a un file video o a una pagina video come YouTube o Vimeo.'
                 html: 'Incolla il codice di incorporamento (iframe) del provider del video.'
