@@ -1,4 +1,4 @@
-# Setono Sylius Video Plugin
+# Sylius Video Plugin
 
 [![Latest Version][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE)
