@@ -26,15 +26,15 @@ final class VideoRuntime implements RuntimeExtensionInterface
 
     /**
      * Renders the video, or nothing when no renderer supports its type. A type registered without
-     * a renderer is a configuration mistake worth logging, not a reason to take the product page
-     * down with a 500.
+     * a renderer is a configuration error: the video silently goes missing from the page, so it is
+     * logged as an error, but it is no reason to take the product page down with a 500.
      */
     public function render(ProductVideoInterface $video): string
     {
         try {
             return $this->renderer->render($video);
         } catch (UnsupportedVideoException $e) {
-            $this->logger->warning('Skipped a product video because no renderer supports its type. Tag a service implementing VideoRendererInterface with "setono_sylius_video.renderer" for it.', [
+            $this->logger->error('Skipped a product video because no renderer supports its type. Tag a service implementing VideoRendererInterface with "setono_sylius_video.renderer" for it.', [
                 'type' => $video::getType(),
                 'video' => $video->getId(),
                 'exception' => $e,
