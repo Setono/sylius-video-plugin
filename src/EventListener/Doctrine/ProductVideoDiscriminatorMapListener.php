@@ -40,13 +40,32 @@ final class ProductVideoDiscriminatorMapListener
             return;
         }
 
-        // By the time this event fires Doctrine has already filled in its default map (lower-cased
-        // short class names, including the abstract base). setDiscriminatorMap() only adds entries,
-        // so the map is emptied first or those defaults would remain next to ours, giving every
-        // subtype two discriminator values. The setter then maintains the subclass list (it
-        // deduplicates) and each subtype's discriminator value from the map.
-        $metadata->discriminatorMap = [];
-        $metadata->setDiscriminatorMap($this->buildDiscriminatorMap());
+        $map = $this->buildDiscriminatorMap();
+
+        // By the time this event fires Doctrine has already filled in its default map: the abstract
+        // root and every mapped subclass under a lower-cased short class name. Those entries are
+        // ours to replace, and since setDiscriminatorMap() only appends they have to go first, or
+        // every subtype would keep two discriminator values. An entry for a class this plugin does
+        // not know was added by another listener on purpose and is kept; it may not, however, claim
+        // one of our discriminator values.
+        foreach ($metadata->discriminatorMap as $value => $class) {
+            if ($class === $metadata->getName() || in_array($class, $map, true)) {
+                unset($metadata->discriminatorMap[$value]);
+
+                continue;
+            }
+
+            if (isset($map[$value])) {
+                throw new \LogicException(sprintf(
+                    'Cannot map video type "%s" to "%s": the discriminator value is already mapped to "%s" by another listener.',
+                    $value,
+                    $map[$value],
+                    $class,
+                ));
+            }
+        }
+
+        $metadata->setDiscriminatorMap($map);
     }
 
     /**
