@@ -9,6 +9,7 @@ use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
+use Setono\SyliusVideoPlugin\Tests\Application\Entity\Video\YoutubeProductVideo;
 
 final class DiscriminatorMapTest extends FunctionalTestCase
 {
@@ -19,10 +20,12 @@ final class DiscriminatorMapTest extends FunctionalTestCase
     {
         $metadata = $this->service(EntityManagerInterface::class)->getClassMetadata(ProductVideo::class);
 
-        self::assertSame([
+        // The built-in types plus the README's youtube example, which the test application registers.
+        self::assertEquals([
             'file' => FileProductVideo::class,
             'url' => UrlProductVideo::class,
             'embed' => EmbedProductVideo::class,
+            'youtube' => YoutubeProductVideo::class,
         ], $metadata->discriminatorMap);
         self::assertSame('type', $metadata->discriminatorColumn['name'] ?? null);
         self::assertSame('setono_sylius_video__product_video', $metadata->getTableName());
@@ -35,7 +38,7 @@ final class DiscriminatorMapTest extends FunctionalTestCase
     {
         $manager = $this->service(EntityManagerInterface::class);
 
-        foreach (['file' => FileProductVideo::class, 'url' => UrlProductVideo::class, 'embed' => EmbedProductVideo::class] as $type => $class) {
+        foreach (['file' => FileProductVideo::class, 'url' => UrlProductVideo::class, 'embed' => EmbedProductVideo::class, 'youtube' => YoutubeProductVideo::class] as $type => $class) {
             self::assertSame($type, $manager->getClassMetadata($class)->discriminatorValue);
         }
     }
