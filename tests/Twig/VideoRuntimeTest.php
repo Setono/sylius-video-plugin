@@ -44,7 +44,7 @@ final class VideoRuntimeTest extends TestCase
         $renderer->render($video)->willThrow(new UnsupportedVideoException($video));
 
         $logger = $this->prophesize(LoggerInterface::class);
-        $logger->warning(Argument::containingString('no renderer supports its type'), Argument::withEntry('type', 'url'))->shouldBeCalledOnce();
+        $logger->error(Argument::containingString('no renderer supports its type'), Argument::withEntry('type', 'url'))->shouldBeCalledOnce();
 
         $runtime = new VideoRuntime($renderer->reveal(), $this->prophesize(VideoPosterResolverInterface::class)->reveal(), $logger->reveal());
 
