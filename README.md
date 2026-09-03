@@ -43,11 +43,7 @@ return [
 
 ### 3. Make your `Product` own its videos
 
-Implement `ProductVideosAwareInterface` and use the trait on your `Product`. The `videos` property
-comes from the trait, so its mapping must be declared in XML (attributes cannot target a trait's
-property), which means the `Product` entity itself must be XML-mapped: Doctrine hands a class to
-exactly one mapping driver, so a `#[ORM\Entity]` attribute on the class would make Doctrine ignore
-the XML file entirely.
+Implement `ProductVideosAwareInterface` and use the trait on your `Product`:
 
 ```php
 # src/Entity/Product/Product.php
@@ -57,10 +53,13 @@ declare(strict_types=1);
 namespace App\Entity\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideosAwareTrait;
 use Sylius\Component\Core\Model\Product as BaseProduct;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_product')]
 class Product extends BaseProduct implements ProductVideosAwareInterface
 {
     use ProductVideosAwareTrait;
@@ -74,9 +73,13 @@ class Product extends BaseProduct implements ProductVideosAwareInterface
 }
 ```
 
-The plugin deliberately does **not** map the inverse `videos` association for you — you own your
-`Product` mapping, so you add it. The owning `ManyToOne` lives on `ProductVideo`, so you only need
-the inverse `OneToMany` (everything else is inherited from Sylius's mapped superclass):
+That is all for an attribute-mapped `Product` (the Sylius-Standard default): the trait's `videos`
+property carries the `OneToMany` attributes (mapped by `product`, cascade persist, orphan removal,
+ordered by `position`), and Doctrine reads them through your class. The owning `ManyToOne` lives on
+`ProductVideo`. The test application under `tests/Application` does exactly this.
+
+If your `Product` is XML- or YAML-mapped instead, the attributes are ignored and you declare the
+inverse side yourself, next to the rest of your mapping:
 
 ```xml
 <!-- config/doctrine/Product.Product.orm.xml -->
@@ -97,31 +100,7 @@ the inverse `OneToMany` (everything else is inherited from Sylius's mapped super
 </doctrine-mapping>
 ```
 
-Tell Doctrine to read that directory for your `App\Entity` namespace. Sylius-Standard maps
-`App\Entity` with attributes by default; list the XML mapping **before** it so it wins for the
-classes that have a file there (the simplified XML driver expects one file per class, named after
-the class relative to the prefix, hence `Product.Product.orm.xml`), and keep attributes on the
-rest of your entities:
-
-```yaml
-# config/packages/doctrine.yaml
-doctrine:
-    orm:
-        mappings:
-            AppXml:
-                is_bundle: false
-                type: xml
-                dir: '%kernel.project_dir%/config/doctrine'
-                prefix: 'App\Entity'
-                alias: App
-            App:
-                is_bundle: false
-                type: attribute
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-```
-
-Then point the product resource at your class (skip if you already override it):
+Either way, point the product resource at your class (skip if you already override it):
 
 ```yaml
 # config/packages/_sylius.yaml
@@ -132,9 +111,6 @@ sylius_product:
             classes:
                 model: App\Entity\Product\Product
 ```
-
-The test application under `tests/Application` does exactly this (`Entity/Product.php`,
-`config/doctrine/Product.orm.xml`, `config/packages/doctrine.yaml`).
 
 ### 4. Update the database
 
@@ -287,8 +263,7 @@ Worked example: a `youtube` type that extends the URL type to reuse its `url` co
 parses the video id from the link, renders YouTube's player and computes its thumbnail from the
 YouTube CDN. Because it adds no column **no migration is needed**. The test application ships this
 exact type under `tests/Application` (`Entity/Video`, `Form`, `Renderer`, `Poster`,
-`config/doctrine`, `config/validator`, `templates/video`, `translations`), so read it as a complete
-reference.
+`config/validator`, `templates/video`, `translations`), so read it as a complete reference.
 
 | Step | Artefact | Wired by |
 |---|---|---|
@@ -336,15 +311,17 @@ class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideo
 ```
 
 **2. ORM mapping** — every class in the discriminator map must be known to a mapping driver, even
-one that adds no column, so always ship a mapping. Register it as a mapped superclass (Sylius turns
-the resource into an entity) and add fields only for new columns:
+one that adds no column, so always ship a mapping. Declare it as a mapped superclass (Sylius turns
+the resource into an entity) and map fields only for new columns. With attributes that is a single
+line on the class:
 
-```xml
-<!-- config/doctrine/Video.YoutubeProductVideo.orm.xml -->
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
-    <mapped-superclass name="App\Entity\Video\YoutubeProductVideo"/>
-</doctrine-mapping>
+```php
+#[ORM\MappedSuperclass]
+class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideoInterface
 ```
+
+or, for an XML-mapped entity namespace, `<mapped-superclass name="App\Entity\Video\YoutubeProductVideo"/>`
+in `config/doctrine/Video.YoutubeProductVideo.orm.xml`.
 
 **3. Register it as a resource** — the plugin scans every Sylius resource whose model implements
 `ProductVideoInterface`: the discriminator listener adds it to the STI map and the type selector

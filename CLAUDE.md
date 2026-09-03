@@ -9,8 +9,9 @@ share one Single Table Inheritance entity: the abstract `ProductVideo` base and 
 `FileProductVideo` (uploaded file), `UrlProductVideo` (external link; a provider page renders in an
 `<iframe>`, a direct file in a native `<video>`) and `EmbedProductVideo` (pasted embed HTML, printed
 raw) subtypes under `src/Model/`. Videos hang off `Product` through a `videos` collection that the
-application maps itself (`ProductVideosAwareInterface` + `ProductVideosAwareTrait`); the plugin
-ships neither migrations nor a Product mapping.
+application adds by using `ProductVideosAwareTrait` (its `videos` property carries the `OneToMany`
+attributes, so an attribute-mapped Product needs nothing else; XML-mapped ones map it themselves);
+the plugin ships no migrations.
 
 How the pieces fit together:
 
@@ -54,7 +55,7 @@ Follow clean code principles and SOLID design patterns when working with this co
 - Write code that is easy to test and extend
 
 House rules that reviews enforce:
-- No migrations in the plugin; no automatic mapping onto the application's `Product`.
+- No migrations in the plugin, and no listener that maps onto the application's `Product` behind its back: the association comes from the trait's own ORM attributes, opted into by using the trait.
 - Symfony listeners go in `src/EventSubscriber/` as `EventSubscriberInterface`; Doctrine listeners in `src/EventListener/Doctrine/`.
 - Validation rules belong in `src/Resources/config/validation/*.xml` (group `sylius`), not in form types.
 - Prefer discovery through Sylius resources over hand-maintained config; derive names from `getType()`.
