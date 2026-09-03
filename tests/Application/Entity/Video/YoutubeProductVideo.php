@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\Application\Entity\Video;
 
+use Doctrine\ORM\Mapping as ORM;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 
 /**
  * The README's worked example of an application-defined type: extends the URL type to reuse its
  * `url` column and accessors, derives the discriminator `youtube` from its class name, and parses
- * the YouTube id for its own renderer and poster resolver.
+ * the YouTube id for its own renderer and poster resolver. Every class in the discriminator map
+ * needs a mapping even when it adds no column; Sylius turns the mapped superclass of a resource
+ * into an entity.
  */
+#[ORM\MappedSuperclass]
 class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideoInterface
 {
     public function getVideoId(): ?string

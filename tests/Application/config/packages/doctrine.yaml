@@ -17,7 +17,7 @@ doctrine:
         mappings:
             SetonoSyliusVideoApp:
                 is_bundle: false
-                type: xml
-                dir: '%kernel.project_dir%/config/doctrine'
+                type: attribute
+                dir: '%kernel.project_dir%/Entity'
                 prefix: 'Setono\SyliusVideoPlugin\Tests\Application\Entity'
                 alias: App
