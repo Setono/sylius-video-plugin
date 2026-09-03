@@ -46,6 +46,44 @@ final class ProductVideoDiscriminatorMapListenerTest extends TestCase
     /**
      * @test
      */
+    public function it_keeps_entries_other_listeners_added_for_classes_it_does_not_know(): void
+    {
+        $metadata = new ClassMetadata(ProductVideo::class);
+        $metadata->setDiscriminatorMap([
+            'productvideo' => ProductVideo::class,
+            'fileproductvideo' => FileProductVideo::class,
+            // Registered by some other listener, not as a Sylius resource.
+            'custom' => CustomFileProductVideo::class,
+        ]);
+
+        $this->listener()->loadClassMetadata($this->eventArgs($metadata));
+
+        self::assertSame([
+            'custom' => CustomFileProductVideo::class,
+            'file' => FileProductVideo::class,
+            'url' => UrlProductVideo::class,
+            'embed' => EmbedProductVideo::class,
+        ], $metadata->discriminatorMap);
+        self::assertContains(CustomFileProductVideo::class, $metadata->subClasses);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_when_another_listener_already_uses_one_of_its_discriminator_values(): void
+    {
+        $metadata = new ClassMetadata(ProductVideo::class);
+        $metadata->setDiscriminatorMap(['url' => CustomFileProductVideo::class]);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('"url"');
+
+        $this->listener()->loadClassMetadata($this->eventArgs($metadata));
+    }
+
+    /**
+     * @test
+     */
     public function it_does_not_touch_metadata_for_other_classes(): void
     {
         $metadata = new ClassMetadata(\stdClass::class);
