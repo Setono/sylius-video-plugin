@@ -17,7 +17,8 @@ final class ProductVideoFormTest extends FunctionalTestCase
     {
         $form = $this->service(FormFactoryInterface::class)->create(ProductVideoType::class);
 
-        self::assertSame(['position', 'posterFile', 'type', 'file', 'url', 'html'], array_keys($form->all()));
+        // Shared fields, each built-in type's field, and the youtube_url field of the test application's example type.
+        self::assertEqualsCanonicalizing(['position', 'posterFile', 'type', 'file', 'url', 'html', 'youtube_url'], array_keys($form->all()));
         self::assertSame(['sylius'], $form->getConfig()->getOption('validation_groups'));
         self::assertFalse($form->get('type')->isDisabled());
     }
