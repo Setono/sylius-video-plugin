@@ -22,6 +22,9 @@ the plugin's mapping required.
 - Sylius with the Gedmo **sortable** and **timestampable** listeners enabled (Sylius core enables
   them by default). They fill the `position`, `created_at` and `updated_at` columns of a video; an
   application that disables `stof_doctrine_extensions` cannot insert videos.
+- Sylius 1.13 or newer with `sylius/resource-bundle` 1.11 or newer, which is what Sylius 1.13 and
+  1.14 ship; the plugin uses nothing newer from the resource bundle, so installing it never forces
+  a resource-bundle bump.
 - No other runtime dependency beyond what Sylius already ships.
 
 ### 1. Require the plugin
