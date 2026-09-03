@@ -59,6 +59,7 @@ House rules that reviews enforce:
 - Validation rules belong in `src/Resources/config/validation/*.xml` (group `sylius`), not in form types.
 - Prefer discovery through Sylius resources over hand-maintained config; derive names from `getType()`.
 - Keep the terminology "type" (never "kind") for the video subtypes.
+- Twig folders and file names are snake_case (`admin/form/_videos_theme.html.twig`, `shop/renderer/url.html.twig`); never camelCase.
 
 ### Testing Requirements
 - Write unit tests for all new functionality (if it makes sense)
