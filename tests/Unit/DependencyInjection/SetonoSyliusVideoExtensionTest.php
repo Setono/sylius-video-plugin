@@ -204,6 +204,19 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
     /**
      * @test
      */
+    public function it_ignores_a_cloudflare_stream_section_that_is_not_a_map_when_prepending(): void
+    {
+        $this->registerSyliusUi();
+        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => 'nope']);
+
+        (new SetonoSyliusVideoExtension())->prepend($this->container);
+
+        self::assertSame([['events' => self::DEFAULT_EVENTS]], $this->container->getExtensionConfig('sylius_ui'));
+    }
+
+    /**
+     * @test
+     */
     public function it_prepends_the_default_video_js_urls_when_none_are_configured(): void
     {
         $this->registerSyliusUi();
