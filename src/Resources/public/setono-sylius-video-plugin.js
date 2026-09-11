@@ -281,6 +281,9 @@
                 setStatus(input, (texts.uploaded || 'Uploaded.') + ' (' + file.name + ')', 100, 'success');
             });
         }).catch(function (error) {
+            // Drop the file so a later save does not post it to the shop after all; picking it
+            // again retries the upload.
+            input.value = '';
             setStatus(input, (texts.failed || 'Upload failed:') + ' ' + error.message, 0, 'error');
         }).then(function () {
             uploadsInFlight--;

@@ -249,6 +249,30 @@ final class CloudflareStreamClientTest extends TestCase
 
     /**
      * @test
+     *
+     * @dataProvider missingCredentials
+     */
+    public function it_refuses_to_call_cloudflare_without_credentials(string $accountId, string $apiToken): void
+    {
+        $client = new CloudflareStreamClient($this->httpClient([]), $accountId, $apiToken);
+
+        $this->expectException(CloudflareStreamException::class);
+        $this->expectExceptionMessage('Cloudflare Stream is not configured');
+
+        $client->getVideo('video123');
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function missingCredentials(): iterable
+    {
+        yield 'no account id' => ['', 'token'];
+        yield 'no token' => ['acc', ''];
+    }
+
+    /**
+     * @test
      */
     public function it_deletes_a_video(): void
     {
