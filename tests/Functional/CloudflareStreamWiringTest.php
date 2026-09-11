@@ -10,8 +10,9 @@ use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction
 use Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * The test application enables the Cloudflare Stream type (see config/packages/setono_sylius_video.yaml).
@@ -23,11 +24,17 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
      */
     public function it_registers_the_admin_upload_route_and_the_webhook_route(): void
     {
-        $routes = $this->service(RouterInterface::class)->getRouteCollection();
+        // The plugin's route file is loaded on its own rather than through the router: the full
+        // collection would pull in Sylius's shop routes, which reference Payum routing files that
+        // some supported Payum bundle versions do not ship.
+        $loader = self::getContainer()->get('routing.loader');
+        self::assertInstanceOf(LoaderInterface::class, $loader);
+        $routes = $loader->load('@SetonoSyliusVideoPlugin/Resources/config/routes.yaml');
+        self::assertInstanceOf(RouteCollection::class, $routes);
 
         $upload = $routes->get('setono_sylius_video_admin_cloudflare_stream_direct_upload');
         self::assertNotNull($upload);
-        self::assertSame('/admin/videos/cloudflare-stream/direct-upload', $upload->getPath());
+        self::assertSame('/%sylius_admin.path_name%/videos/cloudflare-stream/direct-upload', $upload->getPath());
         self::assertSame(['POST'], $upload->getMethods());
         self::assertSame(CloudflareStreamDirectUploadAction::class, $upload->getDefault('_controller'));
 
