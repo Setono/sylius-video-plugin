@@ -1,5 +1,6 @@
 {# Context: `product` (required); `show_heading` (optional, default true), e.g. via the sylius_ui block's `context`. #}
-{% set videos = product.videos %}
+{# A video its provider is still processing has nothing to play yet, so it is left out. #}
+{% set videos = product.videos|filter(video => setono_sylius_video_ready(video)) %}
 {% if videos|length > 0 %}
     <div class="setono-sylius-video-list" style="margin-top: 2rem;">
         {% if show_heading|default(true) %}

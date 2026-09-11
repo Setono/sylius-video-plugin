@@ -1,0 +1,10 @@
+# The Cloudflare Stream type is enabled with placeholder credentials so its wiring (type selector,
+# STI map, form fields, routes, command) is covered by the functional and e2e suites; the
+# credentials are only used when a video is actually uploaded.
+setono_sylius_video:
+    cloudflare_stream:
+        enabled: true
+        account_id: '%env(CLOUDFLARE_STREAM_ACCOUNT_ID)%'
+        api_token: '%env(CLOUDFLARE_STREAM_API_TOKEN)%'
+        customer_subdomain: '%env(CLOUDFLARE_STREAM_CUSTOMER_SUBDOMAIN)%'
+        webhook_secret: '%env(CLOUDFLARE_STREAM_WEBHOOK_SECRET)%'

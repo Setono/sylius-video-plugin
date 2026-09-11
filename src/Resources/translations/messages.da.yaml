@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Filupload'
             url: 'Ekstern URL'
             embed: 'Indlejringskode'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Nuværende posterbillede'
         current_file: 'Nuværende videofil'
+        cloudflare_stream:
+            current: 'Cloudflare Stream-video'
+            ready: 'Klar til afspilning'
+            processing: 'Behandles af Cloudflare'
+            preparing: 'Forbereder upload…'
+            uploading: 'Uploader til Cloudflare Stream…'
+            uploaded: 'Uploadet. Cloudflare behandler videoen; den vises i shoppen, når den er klar. Gem produktet for at beholde den.'
+            failed: 'Upload mislykkedes:'
     form:
         product:
             videos: 'Videoer'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Videofil'
             poster: 'Posterbillede'
             position: 'Position'
+            cloudflare_stream_file: 'Videofil'
             help:
                 type: 'Vælg, hvordan denne video leveres.'
                 type_locked: 'Typen kan ikke ændres, når videoen er gemt. Fjern videoen og tilføj en ny for at ændre den.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Indsæt indlejringskoden (iframe) fra videoudbyderen.'
                 poster: 'Valgfrit forhåndsvisningsbillede, der vises, før videoen afspilles.'
                 position: 'Videoer sorteres efter dette tal, laveste først.'
-    file_video:
-        file:
-            not_blank: 'Upload en videofil.'
+                cloudflare_stream_file: 'Uploades fra din browser direkte til Cloudflare Stream. Vent, til uploaden er færdig, før du gemmer.'

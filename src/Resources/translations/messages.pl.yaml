@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Przesłanie pliku'
             url: 'Zewnętrzny adres URL'
             embed: 'Kod osadzania'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Bieżący obraz miniatury'
         current_file: 'Bieżący plik wideo'
+        cloudflare_stream:
+            current: 'Wideo Cloudflare Stream'
+            ready: 'Gotowe do odtwarzania'
+            processing: 'Przetwarzane przez Cloudflare'
+            preparing: 'Przygotowywanie przesyłania…'
+            uploading: 'Przesyłanie do Cloudflare Stream…'
+            uploaded: 'Przesłano. Cloudflare przetwarza wideo; pojawi się w sklepie, gdy będzie gotowe. Zapisz produkt, aby je zachować.'
+            failed: 'Przesyłanie nie powiodło się:'
     form:
         product:
             videos: 'Filmy'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Plik wideo'
             poster: 'Obraz miniatury'
             position: 'Pozycja'
+            cloudflare_stream_file: 'Plik wideo'
             help:
                 type: 'Wybierz, w jaki sposób ten film jest dostarczany.'
                 type_locked: 'Typu nie można zmienić po zapisaniu filmu. Usuń film i dodaj nowy, aby go zmienić.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Wklej kod osadzania (iframe) od dostawcy wideo.'
                 poster: 'Opcjonalny obraz podglądu wyświetlany przed odtworzeniem filmu.'
                 position: 'Filmy są sortowane według tego numeru, od najniższego.'
-    file_video:
-        file:
-            not_blank: 'Prześlij plik wideo.'
+                cloudflare_stream_file: 'Przesyłane z Twojej przeglądarki bezpośrednio do Cloudflare Stream. Przed zapisaniem poczekaj na zakończenie przesyłania.'

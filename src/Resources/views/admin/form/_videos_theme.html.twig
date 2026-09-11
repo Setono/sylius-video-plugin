@@ -77,6 +77,17 @@
                     </a>
                 </div>
             {% endif %}
+            {% if video is not null and video.uid is defined and video.uid is not null %}
+                <div class="field" data-video-current="cloudflare-stream">
+                    <label>{{ 'setono_sylius_video.ui.cloudflare_stream.current'|trans }}</label>
+                    <code>{{ video.uid }}</code>
+                    {% if video.ready %}
+                        <span class="ui green mini label">{{ 'setono_sylius_video.ui.cloudflare_stream.ready'|trans }}</span>
+                    {% else %}
+                        <span class="ui yellow mini label">{{ 'setono_sylius_video.ui.cloudflare_stream.processing'|trans }}</span>
+                    {% endif %}
+                </div>
+            {% endif %}
             {# The type-specific field(s); the JavaScript controller shows only the selected type's. #}
             {{ form_rest(form) }}
         </div>

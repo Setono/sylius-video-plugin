@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Carica un file video.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Carica prima un video su Cloudflare Stream.'

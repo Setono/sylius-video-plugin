@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Caricamento file'
             url: 'URL esterno'
             embed: 'Codice di incorporamento'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Immagine di anteprima attuale'
         current_file: 'File video attuale'
+        cloudflare_stream:
+            current: 'Video Cloudflare Stream'
+            ready: 'Pronto per la riproduzione'
+            processing: 'In elaborazione da parte di Cloudflare'
+            preparing: 'Preparazione del caricamento…'
+            uploading: 'Caricamento su Cloudflare Stream…'
+            uploaded: 'Caricato. Cloudflare sta elaborando il video; apparirà nel negozio quando sarà pronto. Salva il prodotto per conservarlo.'
+            failed: 'Il caricamento non è riuscito:'
     form:
         product:
             videos: 'Video'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'File video'
             poster: 'Immagine di anteprima'
             position: 'Posizione'
+            cloudflare_stream_file: 'File video'
             help:
                 type: 'Scegli come viene fornito questo video.'
                 type_locked: 'Il tipo non può essere modificato dopo il salvataggio del video. Rimuovi il video e aggiungine uno nuovo per cambiarlo.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Incolla il codice di incorporamento (iframe) del provider del video.'
                 poster: 'Immagine di anteprima facoltativa mostrata prima della riproduzione del video.'
                 position: 'I video sono ordinati per questo numero, dal più basso.'
-    file_video:
-        file:
-            not_blank: 'Carica un file video.'
+                cloudflare_stream_file: 'Caricato dal tuo browser direttamente su Cloudflare Stream. Attendi la fine del caricamento prima di salvare.'

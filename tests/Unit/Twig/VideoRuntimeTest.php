@@ -9,6 +9,7 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Log\LoggerInterface;
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
+use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
 use Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface;
 use Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface;
@@ -49,6 +50,22 @@ final class VideoRuntimeTest extends TestCase
         $runtime = new VideoRuntime($renderer->reveal(), $this->prophesize(VideoPosterResolverInterface::class)->reveal(), $logger->reveal());
 
         self::assertSame('', $runtime->render($video));
+    }
+
+    /**
+     * @test
+     */
+    public function it_treats_every_video_as_ready_unless_its_provider_is_still_processing_it(): void
+    {
+        $runtime = new VideoRuntime($this->prophesize(VideoRendererInterface::class)->reveal(), $this->prophesize(VideoPosterResolverInterface::class)->reveal());
+
+        self::assertTrue($runtime->ready(new UrlProductVideo()));
+
+        $processing = new CloudflareStreamProductVideo();
+        self::assertFalse($runtime->ready($processing));
+
+        $processing->setReady(true);
+        self::assertTrue($runtime->ready($processing));
     }
 
     /**

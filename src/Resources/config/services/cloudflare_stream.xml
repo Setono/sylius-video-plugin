@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!--
+        The Cloudflare Stream video type. Loaded by the extension only when
+        `setono_sylius_video.cloudflare_stream.enabled` is true, so nothing here may be referenced
+        from the always-loaded files.
+    -->
+    <services>
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient">
+            <argument type="service" id="http_client"/>
+            <argument>%setono_sylius_video.cloudflare_stream.account_id%</argument>
+            <argument>%setono_sylius_video.cloudflare_stream.api_token%</argument>
+            <argument>%setono_sylius_video.cloudflare_stream.max_duration_seconds%</argument>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient"/>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGenerator">
+            <argument>%setono_sylius_video.cloudflare_stream.customer_subdomain%</argument>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGenerator"/>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier">
+            <argument>%setono_sylius_video.cloudflare_stream.webhook_secret%</argument>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Form\Extension\CloudflareStreamProductVideoTypeExtension">
+            <argument type="service" id="router"/>
+            <argument type="service" id="translator"/>
+            <tag name="form.type_extension"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Renderer\CloudflareStreamProductVideoRenderer">
+            <argument type="service" id="twig"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface"/>
+            <tag name="setono_sylius_video.renderer"/>
+        </service>
+
+        <!-- Below the stored-poster resolver (priority 100): an uploaded poster beats Cloudflare's thumbnail. -->
+        <service id="Setono\SyliusVideoPlugin\Poster\CloudflareStreamPosterResolver">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface"/>
+            <tag name="setono_sylius_video.poster_resolver"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\EventListener\Doctrine\CloudflareStreamVideoRemovalListener">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="logger" on-invalid="null"/>
+            <tag name="doctrine.event_listener" event="onFlush"/>
+            <tag name="doctrine.event_listener" event="preUpdate"/>
+            <tag name="doctrine.event_listener" event="postFlush"/>
+            <tag name="monolog.logger" channel="setono_sylius_video"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction" public="true">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="logger" on-invalid="null"/>
+            <tag name="monolog.logger" channel="setono_sylius_video"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction" public="true">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
+            <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
+            <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
+            <argument type="service" id="logger" on-invalid="null"/>
+            <tag name="monolog.logger" channel="setono_sylius_video"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer"/>
+            <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
+            <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
+            <tag name="console.command"/>
+        </service>
+    </services>
+</container>

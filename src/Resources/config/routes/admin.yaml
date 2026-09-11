@@ -1,0 +1,6 @@
+# Creates the one-time upload URL the admin product form uploads a video to Cloudflare through.
+setono_sylius_video_admin_cloudflare_stream_direct_upload:
+    path: /videos/cloudflare-stream/direct-upload
+    methods: [POST]
+    defaults:
+        _controller: Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction

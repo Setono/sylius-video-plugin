@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <class name="Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo">
+        <!-- The uid is DB-nullable (shared STI table), so "the upload must have finished" is enforced here. -->
+        <property name="uid">
+            <constraint name="NotBlank">
+                <option name="message">setono_sylius_video.cloudflare_stream_video.uid.not_blank</option>
+                <option name="groups">
+                    <value>sylius</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
+</constraint-mapping>
