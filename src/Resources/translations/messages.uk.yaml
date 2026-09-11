@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Завантаження файлу'
             url: 'Зовнішня URL-адреса'
             embed: 'Код для вставлення'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Поточне зображення-постер'
         current_file: 'Поточний відеофайл'
+        cloudflare_stream:
+            current: 'Відео Cloudflare Stream'
+            ready: 'Готово до відтворення'
+            processing: 'Обробляється Cloudflare'
+            preparing: 'Підготовка завантаження…'
+            uploading: 'Завантаження до Cloudflare Stream…'
+            uploaded: 'Завантажено. Cloudflare обробляє відео; воно з''явиться в магазині, щойно буде готове. Збережіть товар, щоб зберегти відео.'
+            failed: 'Не вдалося завантажити:'
     form:
         product:
             videos: 'Відео'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Відеофайл'
             poster: 'Зображення-постер'
             position: 'Позиція'
+            cloudflare_stream_file: 'Відеофайл'
             help:
                 type: 'Виберіть, як надається це відео.'
                 type_locked: 'Тип не можна змінити після збереження відео. Видаліть відео та додайте нове, щоб змінити його.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Вставте код для вставлення (iframe) від постачальника відео.'
                 poster: 'Необов’язкове зображення попереднього перегляду, що показується перед відтворенням відео.'
                 position: 'Відео сортуються за цим числом, від найменшого.'
-    file_video:
-        file:
-            not_blank: 'Завантажте відеофайл.'
+                cloudflare_stream_file: 'Завантажується з вашого браузера безпосередньо до Cloudflare Stream. Дочекайтеся завершення завантаження перед збереженням.'

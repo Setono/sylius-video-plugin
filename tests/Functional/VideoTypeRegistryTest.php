@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\Functional;
 
+use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
@@ -20,17 +21,19 @@ final class VideoTypeRegistryTest extends FunctionalTestCase
         $registry = $this->service(VideoTypeRegistryInterface::class);
 
         // The built-in types plus the README's youtube example, which the test application registers.
-        self::assertEqualsCanonicalizing(['file', 'url', 'embed', 'youtube'], $registry->getTypes());
+        self::assertEqualsCanonicalizing(['file', 'url', 'embed', 'cloudflare_stream', 'youtube'], $registry->getTypes());
         self::assertEquals([
             'setono_sylius_video.ui.types.file' => 'file',
             'setono_sylius_video.ui.types.url' => 'url',
             'setono_sylius_video.ui.types.embed' => 'embed',
+            'setono_sylius_video.ui.types.cloudflare_stream' => 'cloudflare_stream',
             'setono_sylius_video.ui.types.youtube' => 'youtube',
         ], $registry->getChoices());
 
         self::assertInstanceOf(FileProductVideo::class, $registry->getFactory('file')->createNew());
         self::assertInstanceOf(UrlProductVideo::class, $registry->getFactory('url')->createNew());
         self::assertInstanceOf(EmbedProductVideo::class, $registry->getFactory('embed')->createNew());
+        self::assertInstanceOf(CloudflareStreamProductVideo::class, $registry->getFactory('cloudflare_stream')->createNew());
         self::assertInstanceOf(YoutubeProductVideo::class, $registry->getFactory('youtube')->createNew());
     }
 }

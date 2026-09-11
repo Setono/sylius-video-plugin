@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <!-- Both columns are nullable at the DB level because STI rows of other types do not have
+         them; the application-layer validator enforces a uid for Cloudflare Stream videos. -->
+    <mapped-superclass name="Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo">
+        <field name="uid" type="string" length="64" column="cloudflare_stream_uid" nullable="true"/>
+        <field name="ready" type="boolean" column="cloudflare_stream_ready" nullable="true"/>
+    </mapped-superclass>
+
+</doctrine-mapping>

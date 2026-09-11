@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Nahrajte soubor videa.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Nejprve nahrajte video do Cloudflare Stream.'

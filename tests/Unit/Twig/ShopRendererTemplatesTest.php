@@ -6,6 +6,7 @@ namespace Setono\SyliusVideoPlugin\Tests\Unit\Twig;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Model\UrlProductVideo;
@@ -51,6 +52,24 @@ final class ShopRendererTemplatesTest extends TestCase
 
         self::assertStringContainsString('<video class="setono-sylius-video__player" controls preload="metadata" aria-label="setono_sylius_video.ui.video_of:Shirt"', $url);
         self::assertStringContainsString('<video class="setono-sylius-video__player" controls preload="metadata" aria-label="setono_sylius_video.ui.video_of:Shirt"', $file);
+    }
+
+    /**
+     * @test
+     */
+    public function it_renders_a_cloudflare_stream_video_as_a_video_js_player_with_both_manifests(): void
+    {
+        $video = new CloudflareStreamProductVideo();
+        $video->setPosterPath('video/poster/ab/cd.jpg');
+
+        $html = $this->render('cloudflare_stream', $this->video($video, 'Shirt'), [
+            'hls_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8',
+            'dash_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd',
+        ]);
+
+        self::assertStringContainsString('<video class="video-js setono-sylius-video__player" data-setono-sylius-video-player controls playsinline preload="metadata" aria-label="setono_sylius_video.ui.video_of:Shirt" poster="video/poster/ab/cd.jpg">', $html);
+        self::assertStringContainsString('<source src="https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8" type="application/x-mpegURL">', $html);
+        self::assertStringContainsString('<source src="https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd" type="application/dash+xml">', $html);
     }
 
     /**

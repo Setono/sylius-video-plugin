@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Upload en videofil.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Upload først en video til Cloudflare Stream.'

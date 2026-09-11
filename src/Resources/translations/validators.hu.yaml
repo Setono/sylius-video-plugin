@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Töltsön fel egy videófájlt.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Előbb töltsön fel egy videót a Cloudflare Streambe.'

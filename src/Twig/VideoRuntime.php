@@ -7,6 +7,7 @@ namespace Setono\SyliusVideoPlugin\Twig;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Setono\SyliusVideoPlugin\Exception\UnsupportedVideoException;
+use Setono\SyliusVideoPlugin\Model\ProcessingAwareVideoInterface;
 use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Setono\SyliusVideoPlugin\Poster\VideoPosterResolverInterface;
 use Setono\SyliusVideoPlugin\Renderer\VideoRendererInterface;
@@ -47,5 +48,14 @@ final class VideoRuntime implements RuntimeExtensionInterface
     public function poster(ProductVideoInterface $video): ?string
     {
         return $this->posterResolver->resolve($video);
+    }
+
+    /**
+     * Whether the video can be shown: true for every type except one still being processed by its
+     * provider ({@see ProcessingAwareVideoInterface}).
+     */
+    public function ready(ProductVideoInterface $video): bool
+    {
+        return !$video instanceof ProcessingAwareVideoInterface || $video->isReady();
     }
 }

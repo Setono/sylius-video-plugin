@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\Functional;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\EmbedProductVideo;
 use Setono\SyliusVideoPlugin\Model\FileProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
@@ -25,6 +26,7 @@ final class DiscriminatorMapTest extends FunctionalTestCase
             'file' => FileProductVideo::class,
             'url' => UrlProductVideo::class,
             'embed' => EmbedProductVideo::class,
+            'cloudflare_stream' => CloudflareStreamProductVideo::class,
             'youtube' => YoutubeProductVideo::class,
         ], $metadata->discriminatorMap);
         self::assertSame('type', $metadata->discriminatorColumn['name'] ?? null);
@@ -38,7 +40,7 @@ final class DiscriminatorMapTest extends FunctionalTestCase
     {
         $manager = $this->service(EntityManagerInterface::class);
 
-        foreach (['file' => FileProductVideo::class, 'url' => UrlProductVideo::class, 'embed' => EmbedProductVideo::class, 'youtube' => YoutubeProductVideo::class] as $type => $class) {
+        foreach (['file' => FileProductVideo::class, 'url' => UrlProductVideo::class, 'embed' => EmbedProductVideo::class, 'cloudflare_stream' => CloudflareStreamProductVideo::class, 'youtube' => YoutubeProductVideo::class] as $type => $class) {
             self::assertSame($type, $manager->getClassMetadata($class)->discriminatorValue);
         }
     }

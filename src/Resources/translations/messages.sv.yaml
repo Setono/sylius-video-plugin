@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Filuppladdning'
             url: 'Extern URL'
             embed: 'Inbäddningskod'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Aktuell affischbild'
         current_file: 'Aktuell videofil'
+        cloudflare_stream:
+            current: 'Cloudflare Stream-video'
+            ready: 'Redo att spelas upp'
+            processing: 'Bearbetas av Cloudflare'
+            preparing: 'Förbereder uppladdning…'
+            uploading: 'Laddar upp till Cloudflare Stream…'
+            uploaded: 'Uppladdad. Cloudflare bearbetar videon; den visas i butiken när den är klar. Spara produkten för att behålla den.'
+            failed: 'Uppladdningen misslyckades:'
     form:
         product:
             videos: 'Videor'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Videofil'
             poster: 'Affischbild'
             position: 'Position'
+            cloudflare_stream_file: 'Videofil'
             help:
                 type: 'Välj hur den här videon tillhandahålls.'
                 type_locked: 'Typen kan inte ändras när videon har sparats. Ta bort videon och lägg till en ny för att ändra den.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Klistra in inbäddningskoden (iframe) från videoleverantören.'
                 poster: 'Valfri förhandsvisningsbild som visas innan videon spelas upp.'
                 position: 'Videor sorteras efter detta nummer, lägsta först.'
-    file_video:
-        file:
-            not_blank: 'Ladda upp en videofil.'
+                cloudflare_stream_file: 'Laddas upp från din webbläsare direkt till Cloudflare Stream. Vänta tills uppladdningen är klar innan du sparar.'

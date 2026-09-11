@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Veuillez téléverser un fichier vidéo.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Veuillez d''abord envoyer une vidéo vers Cloudflare Stream.'

@@ -40,6 +40,17 @@ How the pieces fit together:
   `EventListener\Doctrine\ProductVideoFilesRemovalListener` deletes files after a video is removed.
   Uploads are validated by the `Validator\Constraints\VideoUpload` / `PosterUpload` constraints
   against the limits under `setono_sylius_video.upload`.
+- **Cloudflare Stream (opt-in type).** `Model\CloudflareStreamProductVideo` stores only a `uid`: the
+  file goes from the admin's browser straight to Cloudflare (the direct-upload controller in
+  `Resources/public/setono-sylius-video-plugin.js`, which first asks
+  `Controller\Admin\CloudflareStreamDirectUploadAction` — backed by `CloudflareStream\CloudflareStreamClient` —
+  for a one-time tus upload URL). Readiness comes from `Controller\Webhook\CloudflareStreamWebhookAction`
+  (signature checked by `CloudflareStream\WebhookSignatureVerifier`) or `Command\CloudflareStreamSyncCommand`;
+  an unready video implements `Model\ProcessingAwareVideoInterface`, renders nothing and is skipped by
+  the product block (`setono_sylius_video_ready()`). Playback is Video.js on Cloudflare's HLS/DASH
+  manifests, mounted by `Resources/public/setono-sylius-video-plugin-shop.js` (loaded through a
+  `sylius.shop.layout.javascripts` block). Its services live in `services/cloudflare_stream.xml`, loaded
+  only when `cloudflare_stream.enabled`, and its routes in `Resources/config/routes.yaml`.
 - **Service wiring** is explicit: one XML file per `src/` folder under `Resources/config/services/`,
   service ids are the FQCN, interfaces are aliases to the implementation, no autowiring or
   autoconfiguration. Configuration lives in `DependencyInjection\Configuration`.
@@ -136,7 +147,7 @@ Examples:
 The plugin provides multilingual support through translation files in `src/Resources/translations/`:
 
 - **Translation Files**: 16 locales (cs, da, de, en, es, fi, fr, hu, it, nl, no, pl, pt, ro, sv, uk); every key must exist in all of them
-- **Translation Domain**: `messages.*` only (no flash messages)
+- **Translation Domains**: `messages.*` for UI and form strings, `validators.*` for constraint messages (the validator translates in the `validators` domain, so a message key placed in `messages.*` would show up raw); no flash messages
 
 Translation keys:
 - `setono_sylius_video.ui.videos` - The Videos tab and shop heading
@@ -144,4 +155,6 @@ Translation keys:
 - `setono_sylius_video.ui.video_of` - Accessible name of a rendered video (`%product%` placeholder)
 - `setono_sylius_video.form.product.videos` and `setono_sylius_video.form.video.*` - Form labels
 - `setono_sylius_video.form.video.help.*` - Field help texts (`type_locked` for a saved row)
-- `setono_sylius_video.file_video.file.not_blank` - Validation message of `HasVideoFile`
+- `setono_sylius_video.file_video.file.not_blank` - Validation message of `HasVideoFile` (`validators.*`)
+- `setono_sylius_video.cloudflare_stream_video.uid.not_blank` - Validation message when a Cloudflare Stream row is saved before its upload finished (`validators.*`)
+- `setono_sylius_video.ui.cloudflare_stream.*` - Admin status texts of the Cloudflare Stream type (`current`, `ready`, `processing`, and the upload controller's `preparing`, `uploading`, `uploaded`, `failed`)

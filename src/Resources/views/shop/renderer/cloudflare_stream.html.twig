@@ -1,0 +1,9 @@
+{% set poster = setono_sylius_video_poster(video) %}
+{% set label = 'setono_sylius_video.ui.video_of'|trans({'%product%': video.product is not null ? video.product.name : ''}) %}
+{# `data-setono-sylius-video-player` is what the plugin's shop script mounts Video.js on (its value may hold JSON options for videojs()). #}
+<div class="setono-sylius-video setono-sylius-video--cloudflare-stream">
+    <video class="video-js setono-sylius-video__player" data-setono-sylius-video-player controls playsinline preload="metadata" aria-label="{{ label }}"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
+        <source src="{{ hls_url }}" type="application/x-mpegURL">
+        <source src="{{ dash_url }}" type="application/dash+xml">
+    </video>
+</div>

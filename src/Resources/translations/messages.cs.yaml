@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Nahrání souboru'
             url: 'Externí URL'
             embed: 'Kód pro vložení'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Aktuální náhledový obrázek'
         current_file: 'Aktuální soubor videa'
+        cloudflare_stream:
+            current: 'Video Cloudflare Stream'
+            ready: 'Připraveno k přehrávání'
+            processing: 'Zpracovává Cloudflare'
+            preparing: 'Příprava nahrávání…'
+            uploading: 'Nahrávání do Cloudflare Stream…'
+            uploaded: 'Nahráno. Cloudflare video zpracovává; v obchodě se zobrazí, jakmile bude připraveno. Uložte produkt, aby zůstalo zachováno.'
+            failed: 'Nahrávání se nezdařilo:'
     form:
         product:
             videos: 'Videa'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Soubor videa'
             poster: 'Náhledový obrázek'
             position: 'Pozice'
+            cloudflare_stream_file: 'Videosoubor'
             help:
                 type: 'Zvolte, jak je toto video poskytováno.'
                 type_locked: 'Typ nelze po uložení videa změnit. Chcete-li jej změnit, odeberte video a přidejte nové.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Vložte kód pro vložení (iframe) od poskytovatele videa.'
                 poster: 'Volitelný náhledový obrázek zobrazený před přehráním videa.'
                 position: 'Videa jsou seřazena podle tohoto čísla, od nejnižšího.'
-    file_video:
-        file:
-            not_blank: 'Nahrajte soubor videa.'
+                cloudflare_stream_file: 'Nahrává se z vašeho prohlížeče přímo do Cloudflare Stream. Před uložením počkejte na dokončení nahrávání.'

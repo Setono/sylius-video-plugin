@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Bestand uploaden'
             url: 'Externe URL'
             embed: 'Insluitcode'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Huidige posterafbeelding'
         current_file: 'Huidig videobestand'
+        cloudflare_stream:
+            current: 'Cloudflare Stream-video'
+            ready: 'Klaar om af te spelen'
+            processing: 'Wordt verwerkt door Cloudflare'
+            preparing: 'Upload voorbereiden…'
+            uploading: 'Uploaden naar Cloudflare Stream…'
+            uploaded: 'Geüpload. Cloudflare verwerkt de video; deze verschijnt in de winkel zodra hij klaar is. Sla het product op om de video te behouden.'
+            failed: 'De upload is mislukt:'
     form:
         product:
             videos: 'Video’s'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Videobestand'
             poster: 'Posterafbeelding'
             position: 'Positie'
+            cloudflare_stream_file: 'Videobestand'
             help:
                 type: 'Kies hoe deze video wordt aangeleverd.'
                 type_locked: 'Het type kan niet meer worden gewijzigd zodra de video is opgeslagen. Verwijder de video en voeg een nieuwe toe om het te wijzigen.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Plak de insluitcode (iframe) van de videoaanbieder.'
                 poster: 'Optionele voorbeeldafbeelding die wordt getoond voordat de video wordt afgespeeld.'
                 position: 'Gesorteerd op dit nummer, laagste eerst.'
-    file_video:
-        file:
-            not_blank: 'Upload een videobestand.'
+                cloudflare_stream_file: 'Wordt vanuit uw browser rechtstreeks naar Cloudflare Stream geüpload. Wacht tot de upload klaar is voordat u opslaat.'

@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Tiedoston lataus'
             url: 'Ulkoinen URL-osoite'
             embed: 'Upotuskoodi'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Nykyinen esikatselukuva'
         current_file: 'Nykyinen videotiedosto'
+        cloudflare_stream:
+            current: 'Cloudflare Stream -video'
+            ready: 'Valmis toistettavaksi'
+            processing: 'Cloudflare käsittelee'
+            preparing: 'Valmistellaan latausta…'
+            uploading: 'Ladataan Cloudflare Streamiin…'
+            uploaded: 'Ladattu. Cloudflare käsittelee videota; se näkyy kaupassa, kun se on valmis. Tallenna tuote säilyttääksesi sen.'
+            failed: 'Lataus epäonnistui:'
     form:
         product:
             videos: 'Videot'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Videotiedosto'
             poster: 'Esikatselukuva'
             position: 'Sijainti'
+            cloudflare_stream_file: 'Videotiedosto'
             help:
                 type: 'Valitse, miten tämä video toimitetaan.'
                 type_locked: 'Tyyppiä ei voi muuttaa videon tallentamisen jälkeen. Poista video ja lisää uusi, jos haluat muuttaa sitä.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Liitä upotuskoodi (iframe) videopalvelun tarjoajalta.'
                 poster: 'Valinnainen esikatselukuva, joka näytetään ennen videon toistoa.'
                 position: 'Videot järjestetään tämän numeron mukaan, pienin ensin.'
-    file_video:
-        file:
-            not_blank: 'Lataa videotiedosto.'
+                cloudflare_stream_file: 'Ladataan selaimestasi suoraan Cloudflare Streamiin. Odota latauksen valmistumista ennen tallentamista.'
