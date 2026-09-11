@@ -37,8 +37,9 @@ final class CloudflareStreamDirectUploadAction
         }
 
         $payload = json_decode($request->getContent(), true);
-        $name = is_array($payload) ? ($payload['name'] ?? null) : null;
-        $size = is_array($payload) ? ($payload['size'] ?? null) : null;
+        $payload = is_array($payload) ? $payload : [];
+        $name = $payload['name'] ?? null;
+        $size = $payload['size'] ?? null;
 
         if (!is_string($name) || '' === trim($name) || !is_int($size) || $size <= 0) {
             return new JsonResponse(['error' => 'Expected a JSON body with a non-empty "name" and a positive integer "size".'], Response::HTTP_BAD_REQUEST);

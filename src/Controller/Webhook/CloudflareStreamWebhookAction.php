@@ -43,7 +43,8 @@ final class CloudflareStreamWebhookAction
         }
 
         $payload = json_decode($body, true);
-        $uid = is_array($payload) ? ($payload['uid'] ?? null) : null;
+        $payload = is_array($payload) ? $payload : [];
+        $uid = $payload['uid'] ?? null;
 
         if (!is_string($uid) || '' === $uid) {
             return new Response('Expected a JSON body with a "uid".', Response::HTTP_BAD_REQUEST);
