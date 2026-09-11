@@ -108,7 +108,7 @@ final class CloudflareStreamClient implements CloudflareStreamClientInterface
     }
 
     /**
-     * @return array<string, list<string>>
+     * @return array<array-key, array<string>>
      */
     private function headers(ResponseInterface $response): array
     {
