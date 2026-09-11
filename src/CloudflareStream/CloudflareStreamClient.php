@@ -90,6 +90,10 @@ final class CloudflareStreamClient implements CloudflareStreamClientInterface
      */
     private function request(string $method, string $path, array $options = [], array $acceptedErrorStatuses = []): ResponseInterface
     {
+        if ('' === $this->accountId || '' === $this->apiToken) {
+            throw new CloudflareStreamException('Cloudflare Stream is not configured: set setono_sylius_video.cloudflare_stream.account_id and api_token.');
+        }
+
         $headers = is_array($options['headers'] ?? null) ? $options['headers'] : [];
         $options['headers'] = $headers + ['Authorization' => 'Bearer ' . $this->apiToken];
 
