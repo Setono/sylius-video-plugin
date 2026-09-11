@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Fájlfeltöltés'
             url: 'Külső URL'
             embed: 'Beágyazási kód'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Jelenlegi előnézeti kép'
         current_file: 'Jelenlegi videófájl'
+        cloudflare_stream:
+            current: 'Cloudflare Stream videó'
+            ready: 'Lejátszásra kész'
+            processing: 'A Cloudflare feldolgozza'
+            preparing: 'Feltöltés előkészítése…'
+            uploading: 'Feltöltés a Cloudflare Streambe…'
+            uploaded: 'Feltöltve. A Cloudflare feldolgozza a videót; amint elkészül, megjelenik a boltban. Mentse a terméket, hogy megmaradjon.'
+            failed: 'A feltöltés nem sikerült:'
     form:
         product:
             videos: 'Videók'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Videófájl'
             poster: 'Előnézeti kép'
             position: 'Pozíció'
+            cloudflare_stream_file: 'Videofájl'
             help:
                 type: 'Válassza ki, hogyan érhető el ez a videó.'
                 type_locked: 'A típus a videó mentése után nem módosítható. A módosításhoz távolítsa el a videót, és adjon hozzá egy újat.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Illessze be a videószolgáltató beágyazási kódját (iframe).'
                 poster: 'Választható előnézeti kép, amely a videó lejátszása előtt jelenik meg.'
                 position: 'A videók e szám szerint vannak rendezve, a legkisebbtől.'
-    file_video:
-        file:
-            not_blank: 'Töltsön fel egy videófájlt.'
+                cloudflare_stream_file: 'A böngészőjéből közvetlenül a Cloudflare Streambe töltődik fel. Mentés előtt várja meg a feltöltés végét.'

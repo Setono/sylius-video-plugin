@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Завантажте відеофайл.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Спочатку завантажте відео до Cloudflare Stream.'

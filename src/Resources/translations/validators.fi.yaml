@@ -1,0 +1,7 @@
+setono_sylius_video:
+    file_video:
+        file:
+            not_blank: 'Lataa videotiedosto.'
+    cloudflare_stream_video:
+        uid:
+            not_blank: 'Lataa ensin video Cloudflare Streamiin.'

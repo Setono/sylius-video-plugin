@@ -6,8 +6,17 @@ setono_sylius_video:
             file: 'Încărcare fișier'
             url: 'URL extern'
             embed: 'Cod de încorporare'
+            cloudflare_stream: 'Cloudflare Stream'
         current_poster: 'Imaginea de previzualizare curentă'
         current_file: 'Fișierul video curent'
+        cloudflare_stream:
+            current: 'Videoclip Cloudflare Stream'
+            ready: 'Gata de redare'
+            processing: 'În curs de procesare de către Cloudflare'
+            preparing: 'Se pregătește încărcarea…'
+            uploading: 'Se încarcă în Cloudflare Stream…'
+            uploaded: 'Încărcat. Cloudflare procesează videoclipul; va apărea în magazin când este gata. Salvați produsul pentru a-l păstra.'
+            failed: 'Încărcarea a eșuat:'
     form:
         product:
             videos: 'Videoclipuri'
@@ -18,6 +27,7 @@ setono_sylius_video:
             file: 'Fișier video'
             poster: 'Imagine de previzualizare'
             position: 'Poziție'
+            cloudflare_stream_file: 'Fișier video'
             help:
                 type: 'Alegeți cum este furnizat acest videoclip.'
                 type_locked: 'Tipul nu poate fi modificat după salvarea videoclipului. Eliminați videoclipul și adăugați unul nou pentru a-l schimba.'
@@ -26,6 +36,4 @@ setono_sylius_video:
                 html: 'Lipiți codul de încorporare (iframe) de la furnizorul videoclipului.'
                 poster: 'Imagine de previzualizare opțională, afișată înainte de redarea videoclipului.'
                 position: 'Videoclipurile sunt ordonate după acest număr, crescător.'
-    file_video:
-        file:
-            not_blank: 'Încărcați un fișier video.'
+                cloudflare_stream_file: 'Se încarcă din browserul dvs. direct în Cloudflare Stream. Așteptați finalizarea încărcării înainte de a salva.'
