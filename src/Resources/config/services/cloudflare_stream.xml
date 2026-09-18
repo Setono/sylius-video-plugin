@@ -29,9 +29,15 @@
 
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
 
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
+
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
         </service>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer"/>
 
         <service id="Setono\SyliusVideoPlugin\Form\Extension\CloudflareStreamProductVideoTypeExtension">
             <argument type="service" id="router"/>
@@ -69,7 +75,7 @@
         <!-- Symfony Webhook component: the parser is routed by framework.webhook.routing (prepended by the
              extension); the consumer handles the remote events it produces. -->
         <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser">
-            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface"/>
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer">
@@ -81,7 +87,7 @@
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand">
-            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface"/>
             <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
             <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
             <tag name="console.command"/>

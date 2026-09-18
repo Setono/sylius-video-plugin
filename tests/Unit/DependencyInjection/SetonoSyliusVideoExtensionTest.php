@@ -8,7 +8,10 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface;
+use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer;
+use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface;
 use Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
 use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
@@ -149,7 +152,8 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasAlias(CloudflareStreamClientInterface::class, CloudflareStreamClient::class);
         $this->assertContainerBuilderHasService(CloudflareStreamUrlGeneratorInterface::class);
-        $this->assertContainerBuilderHasService(WebhookSignatureVerifier::class);
+        $this->assertContainerBuilderHasAlias(WebhookSignatureVerifierInterface::class, WebhookSignatureVerifier::class);
+        $this->assertContainerBuilderHasAlias(ReadinessSynchronizerInterface::class, ReadinessSynchronizer::class);
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamProductVideoTypeExtension::class, 'form.type_extension');
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamProductVideoRenderer::class, 'setono_sylius_video.renderer');
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamPosterResolver::class, 'setono_sylius_video.poster_resolver');

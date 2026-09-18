@@ -6,7 +6,7 @@ namespace Setono\SyliusVideoPlugin\Command;
 
 use Doctrine\Persistence\ObjectManager;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamException;
-use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer;
+use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideoInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,7 +30,7 @@ final class CloudflareStreamSyncCommand extends Command
      * @param RepositoryInterface<CloudflareStreamProductVideoInterface> $repository
      */
     public function __construct(
-        private readonly ReadinessSynchronizer $synchronizer,
+        private readonly ReadinessSynchronizerInterface $synchronizer,
         private readonly RepositoryInterface $repository,
         private readonly ObjectManager $manager,
     ) {

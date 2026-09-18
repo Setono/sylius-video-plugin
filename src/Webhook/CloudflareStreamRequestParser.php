@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Webhook;
 
-use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface;
 use Symfony\Component\HttpFoundation\ChainRequestMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcher\IsJsonRequestMatcher;
@@ -30,7 +30,7 @@ final class CloudflareStreamRequestParser extends AbstractRequestParser
     public const EVENT = 'cloudflare_stream.video';
 
     public function __construct(
-        private readonly WebhookSignatureVerifier $signatureVerifier,
+        private readonly WebhookSignatureVerifierInterface $signatureVerifier,
     ) {
     }
 

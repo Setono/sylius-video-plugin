@@ -12,7 +12,7 @@ use Psr\Clock\ClockInterface;
  * the webhook was subscribed) is computed over `<time>.<raw request body>`. Notifications older
  * than the tolerance are rejected so a captured request cannot be replayed later.
  */
-final class WebhookSignatureVerifier
+final class WebhookSignatureVerifier implements WebhookSignatureVerifierInterface
 {
     private readonly ClockInterface $clock;
 
