@@ -7,9 +7,10 @@ namespace Setono\SyliusVideoPlugin\Tests\Functional;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
-use Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
+use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser;
+use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 use Symfony\Component\Routing\RouteCollection;
@@ -22,7 +23,7 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function it_registers_the_admin_upload_route_and_the_webhook_route(): void
+    public function it_registers_the_admin_upload_route(): void
     {
         // The plugin's route file is loaded on its own rather than through the router: the full
         // collection would pull in Sylius's shop routes, which reference Payum routing files that
@@ -38,11 +39,26 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
         self::assertSame(['POST'], $upload->getMethods());
         self::assertSame(CloudflareStreamDirectUploadAction::class, $upload->getDefault('_controller'));
 
-        $webhook = $routes->get('setono_sylius_video_cloudflare_stream_webhook');
-        self::assertNotNull($webhook);
-        self::assertSame('/setono-sylius-video/cloudflare-stream/webhook', $webhook->getPath());
-        self::assertSame(['POST'], $webhook->getMethods());
-        self::assertSame(CloudflareStreamWebhookAction::class, $webhook->getDefault('_controller'));
+        // The webhook is not a route of the plugin: it goes through Symfony's webhook endpoint.
+        self::assertNull($routes->get('setono_sylius_video_cloudflare_stream_webhook'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_routes_cloudflares_webhook_through_symfonys_webhook_component(): void
+    {
+        $container = self::getContainer();
+
+        // The test application imports the framework's webhook route, so notifications arrive at /webhook/cloudflare_stream.
+        $loader = $container->get('routing.loader');
+        self::assertInstanceOf(LoaderInterface::class, $loader);
+        $routes = $loader->load('@FrameworkBundle/Resources/config/routing/webhook.xml');
+        self::assertInstanceOf(RouteCollection::class, $routes);
+        self::assertNotNull($routes->get('_webhook_controller'));
+
+        self::assertInstanceOf(CloudflareStreamRequestParser::class, $container->get(CloudflareStreamRequestParser::class));
+        self::assertInstanceOf(CloudflareStreamWebhookConsumer::class, $container->get(CloudflareStreamWebhookConsumer::class));
     }
 
     /**
@@ -53,7 +69,6 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
         $container = self::getContainer();
 
         self::assertInstanceOf(CloudflareStreamDirectUploadAction::class, $container->get(CloudflareStreamDirectUploadAction::class));
-        self::assertInstanceOf(CloudflareStreamWebhookAction::class, $container->get(CloudflareStreamWebhookAction::class));
 
         $commands = $container->get('console.command_loader');
         self::assertInstanceOf(CommandLoaderInterface::class, $commands);

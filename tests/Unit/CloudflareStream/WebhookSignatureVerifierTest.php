@@ -19,9 +19,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_accepts_a_notification_signed_with_the_secret(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertTrue($verifier->verify($this->header(1_700_000_000), self::BODY));
+        self::assertTrue($verifier->verify(self::SECRET, $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -29,9 +29,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_accepts_a_notification_within_the_tolerance(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_300));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_300));
 
-        self::assertTrue($verifier->verify($this->header(1_700_000_000), self::BODY));
+        self::assertTrue($verifier->verify(self::SECRET, $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -39,9 +39,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_accepts_an_uppercase_hex_signature(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertTrue($verifier->verify(sprintf('time=%d,sig1=%s', 1_700_000_000, strtoupper(hash_hmac('sha256', '1700000000.' . self::BODY, self::SECRET))), self::BODY));
+        self::assertTrue($verifier->verify(self::SECRET, sprintf('time=%d,sig1=%s', 1_700_000_000, strtoupper(hash_hmac('sha256', '1700000000.' . self::BODY, self::SECRET))), self::BODY));
     }
 
     /**
@@ -49,9 +49,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_rejects_a_notification_older_than_the_tolerance(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_301));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_301));
 
-        self::assertFalse($verifier->verify($this->header(1_700_000_000), self::BODY));
+        self::assertFalse($verifier->verify(self::SECRET, $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -59,9 +59,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_rejects_a_notification_from_the_future_beyond_the_tolerance(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_699_999_699));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_699_999_699));
 
-        self::assertFalse($verifier->verify($this->header(1_700_000_000), self::BODY));
+        self::assertFalse($verifier->verify(self::SECRET, $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -69,9 +69,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_rejects_a_signature_made_with_another_secret(): void
     {
-        $verifier = new WebhookSignatureVerifier('other', 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertFalse($verifier->verify($this->header(1_700_000_000), self::BODY));
+        self::assertFalse($verifier->verify('other', $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -79,9 +79,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_rejects_a_tampered_body(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertFalse($verifier->verify($this->header(1_700_000_000), '{"uid":"other"}'));
+        self::assertFalse($verifier->verify(self::SECRET, $this->header(1_700_000_000), '{"uid":"other"}'));
     }
 
     /**
@@ -91,9 +91,9 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_rejects_a_malformed_header(?string $header): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET, 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertFalse($verifier->verify($header, self::BODY));
+        self::assertFalse($verifier->verify(self::SECRET, $header, self::BODY));
     }
 
     /**
@@ -111,23 +111,12 @@ final class WebhookSignatureVerifierTest extends TestCase
 
     /**
      * @test
-     *
-     * @dataProvider missingSecrets
      */
-    public function it_rejects_everything_without_a_secret(?string $secret): void
+    public function it_rejects_everything_without_a_secret(): void
     {
-        $verifier = new WebhookSignatureVerifier($secret, 300, $this->clock(1_700_000_000));
+        $verifier = new WebhookSignatureVerifier(300, $this->clock(1_700_000_000));
 
-        self::assertFalse($verifier->verify($this->header(1_700_000_000), self::BODY));
-    }
-
-    /**
-     * @return iterable<string, array{?string}>
-     */
-    public static function missingSecrets(): iterable
-    {
-        yield 'null' => [null];
-        yield 'empty' => [''];
+        self::assertFalse($verifier->verify('', $this->header(1_700_000_000), self::BODY));
     }
 
     /**
@@ -135,10 +124,10 @@ final class WebhookSignatureVerifierTest extends TestCase
      */
     public function it_uses_the_system_clock_by_default(): void
     {
-        $verifier = new WebhookSignatureVerifier(self::SECRET);
+        $verifier = new WebhookSignatureVerifier();
 
-        self::assertTrue($verifier->verify($this->header(time()), self::BODY));
-        self::assertFalse($verifier->verify($this->header(time() - 3600), self::BODY));
+        self::assertTrue($verifier->verify(self::SECRET, $this->header(time()), self::BODY));
+        self::assertFalse($verifier->verify(self::SECRET, $this->header(time() - 3600), self::BODY));
     }
 
     private function header(int $time): string

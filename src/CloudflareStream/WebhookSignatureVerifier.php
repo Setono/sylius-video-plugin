@@ -17,7 +17,6 @@ final class WebhookSignatureVerifier
     private readonly ClockInterface $clock;
 
     public function __construct(
-        private readonly ?string $secret,
         private readonly int $toleranceInSeconds = 300,
         ?ClockInterface $clock = null,
     ) {
@@ -29,9 +28,9 @@ final class WebhookSignatureVerifier
         };
     }
 
-    public function verify(?string $header, string $body): bool
+    public function verify(string $secret, ?string $header, string $body): bool
     {
-        if (null === $this->secret || '' === $this->secret || null === $header) {
+        if ('' === $secret || null === $header) {
             return false;
         }
 
@@ -56,6 +55,6 @@ final class WebhookSignatureVerifier
             return false;
         }
 
-        return hash_equals(hash_hmac('sha256', $time . '.' . $body, $this->secret), strtolower($signature));
+        return hash_equals(hash_hmac('sha256', $time . '.' . $body, $secret), strtolower($signature));
     }
 }

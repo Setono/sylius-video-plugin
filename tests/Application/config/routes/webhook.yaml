@@ -1,0 +1,4 @@
+# Symfony's webhook endpoint (/webhook/{type}); the plugin routes Cloudflare Stream's notifications to it.
+webhook:
+    resource: '@FrameworkBundle/Resources/config/routing/webhook.xml'
+    prefix: /webhook

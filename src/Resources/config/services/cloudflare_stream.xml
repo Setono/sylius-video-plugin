@@ -27,9 +27,7 @@
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface"
                  alias="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGenerator"/>
 
-        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier">
-            <argument>%setono_sylius_video.cloudflare_stream.webhook_secret%</argument>
-        </service>
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
 
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
@@ -68,11 +66,17 @@
             <tag name="monolog.logger" channel="setono_sylius_video"/>
         </service>
 
-        <service id="Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction" public="true">
+        <!-- Symfony Webhook component: the parser is routed by framework.webhook.routing (prepended by the
+             extension); the consumer handles the remote events it produces. -->
+        <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer">
             <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
             <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
             <argument type="service" id="logger" on-invalid="null"/>
+            <tag name="remote_event.consumer" consumer="cloudflare_stream"/>
             <tag name="monolog.logger" channel="setono_sylius_video"/>
         </service>
 

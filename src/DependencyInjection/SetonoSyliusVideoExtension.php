@@ -6,6 +6,7 @@ namespace Setono\SyliusVideoPlugin\DependencyInjection;
 
 use Setono\SyliusVideoPlugin\Form\Extension\EmbedProductVideoTypeExtension;
 use Setono\SyliusVideoPlugin\Renderer\EmbedProductVideoRenderer;
+use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
@@ -59,6 +60,8 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
 
     public function prepend(ContainerBuilder $container): void
     {
+        $this->prependWebhookRouting($container);
+
         if ($container->hasExtension('sylius_ui')) {
             // Render the product's videos on the shop product page. The `content` event always
             // fires on the product show page (unlike `before_thumbnails`, which only fires when a
@@ -86,5 +89,59 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
                 ],
             ]);
         }
+    }
+
+    /**
+     * Routes Cloudflare Stream's notifications through Symfony's Webhook component: the framework's
+     * endpoint hands every request for `/webhook/cloudflare_stream` to the plugin's parser with the
+     * configured secret. Only the raw configuration is available in prepend(), so the values are
+     * read from it (env placeholders pass through and are resolved by the container later); without
+     * a secret the type is not routed at all, since every notification would be refused anyway.
+     */
+    private function prependWebhookRouting(ContainerBuilder $container): void
+    {
+        if (!$container->hasExtension('framework')) {
+            return;
+        }
+
+        $config = $this->rawCloudflareStreamConfig($container);
+        $secret = $config['webhook_secret'] ?? null;
+
+        if (false === ($config['enabled'] ?? false) || !is_string($secret) || '' === $secret) {
+            return;
+        }
+
+        $container->prependExtensionConfig('framework', [
+            'webhook' => [
+                'routing' => [
+                    CloudflareStreamRequestParser::TYPE => [
+                        'service' => CloudflareStreamRequestParser::class,
+                        'secret' => $secret,
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * The `cloudflare_stream` section as configured, later files overriding earlier ones key by key.
+     *
+     * @return array<string, mixed>
+     */
+    private function rawCloudflareStreamConfig(ContainerBuilder $container): array
+    {
+        $merged = [];
+
+        foreach ($container->getExtensionConfig($this->getAlias()) as $config) {
+            if (!is_array($config['cloudflare_stream'] ?? null)) {
+                continue;
+            }
+
+            foreach ($config['cloudflare_stream'] as $key => $value) {
+                $merged[(string) $key] = $value;
+            }
+        }
+
+        return $merged;
     }
 }

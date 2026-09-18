@@ -11,7 +11,6 @@ use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterf
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
 use Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
-use Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction;
 use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
 use Setono\SyliusVideoPlugin\EventListener\Doctrine\CloudflareStreamVideoRemovalListener;
 use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMapListener;
@@ -21,6 +20,8 @@ use Setono\SyliusVideoPlugin\Poster\CloudflareStreamPosterResolver;
 use Setono\SyliusVideoPlugin\Renderer\CloudflareStreamProductVideoRenderer;
 use Setono\SyliusVideoPlugin\Renderer\CompositeVideoRenderer;
 use Setono\SyliusVideoPlugin\Renderer\EmbedProductVideoRenderer;
+use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser;
+use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -158,7 +159,78 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamSyncCommand::class, 'console.command');
 
         self::assertTrue($this->container->getDefinition(CloudflareStreamDirectUploadAction::class)->isPublic());
-        self::assertTrue($this->container->getDefinition(CloudflareStreamWebhookAction::class)->isPublic());
+        $this->assertContainerBuilderHasService(CloudflareStreamRequestParser::class);
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamWebhookConsumer::class, 'remote_event.consumer', ['consumer' => 'cloudflare_stream']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_routes_cloudflares_webhook_through_the_framework_when_a_secret_is_configured(): void
+    {
+        $this->registerFramework();
+        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => self::CLOUDFLARE_STREAM + ['webhook_secret' => '%env(CLOUDFLARE_STREAM_WEBHOOK_SECRET)%']]);
+
+        (new SetonoSyliusVideoExtension())->prepend($this->container);
+
+        self::assertSame([['webhook' => ['routing' => ['cloudflare_stream' => [
+            'service' => CloudflareStreamRequestParser::class,
+            'secret' => '%env(CLOUDFLARE_STREAM_WEBHOOK_SECRET)%',
+        ]]]]], $this->container->getExtensionConfig('framework'));
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider webhookRoutingLeftOut
+     *
+     * @param array<string, mixed> $config
+     */
+    public function it_leaves_the_webhook_unrouted_without_a_secret_or_while_the_type_is_disabled(array $config): void
+    {
+        $this->registerFramework();
+        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => $config]);
+
+        (new SetonoSyliusVideoExtension())->prepend($this->container);
+
+        self::assertSame([], $this->container->getExtensionConfig('framework'));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>}>
+     */
+    public static function webhookRoutingLeftOut(): iterable
+    {
+        yield 'no secret' => [self::CLOUDFLARE_STREAM];
+        yield 'empty secret' => [self::CLOUDFLARE_STREAM + ['webhook_secret' => '']];
+        yield 'disabled' => [['enabled' => false, 'webhook_secret' => 'secret']];
+        yield 'malformed section' => [[]];
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_touch_the_framework_configuration_when_the_framework_extension_is_absent(): void
+    {
+        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => self::CLOUDFLARE_STREAM + ['webhook_secret' => 'secret']]);
+
+        (new SetonoSyliusVideoExtension())->prepend($this->container);
+
+        self::assertSame([], $this->container->getExtensionConfig('framework'));
+    }
+
+    private function registerFramework(): void
+    {
+        $this->container->registerExtension(new class() extends Extension {
+            public function load(array $configs, ContainerBuilder $container): void
+            {
+            }
+
+            public function getAlias(): string
+            {
+                return 'framework';
+            }
+        });
     }
 
     private function registerSyliusUi(): void
