@@ -44,7 +44,8 @@ How the pieces fit together:
   file goes from the admin's browser straight to Cloudflare (the direct-upload controller in
   `Resources/public/setono-sylius-video-plugin.js`, which first asks
   `Controller\Admin\CloudflareStreamDirectUploadAction` — backed by `CloudflareStream\CloudflareStreamClient` —
-  for a one-time tus upload URL). Readiness comes from Symfony's Webhook component — `Webhook\CloudflareStreamRequestParser`
+  for a one-time tus upload URL; the same client manages the account's webhook behind
+  `CloudflareStream\WebhookClientInterface`). Readiness comes from Symfony's Webhook component — `Webhook\CloudflareStreamRequestParser`
   (signature checked by `CloudflareStream\WebhookSignatureVerifierInterface` against the configured `webhook_secret` or,
   by default, the secret `CloudflareStream\WebhookSecretProviderInterface` reads back from Cloudflare and remembers in
   `cache.app`; routed by the `framework.webhook.routing` entry the extension prepends whenever the type is enabled) and

@@ -33,7 +33,7 @@ final class CloudflareStreamRequestParser extends AbstractRequestParser
 
     public function __construct(
         private readonly WebhookSignatureVerifierInterface $signatureVerifier,
-        private readonly WebhookSecretProviderInterface $secretProvider,
+        private readonly ?WebhookSecretProviderInterface $secretProvider = null,
     ) {
     }
 
@@ -69,7 +69,8 @@ final class CloudflareStreamRequestParser extends AbstractRequestParser
      * the secret is the one Cloudflare holds for the account's subscription: a signature that does
      * not match the remembered secret is tried once more against a freshly read one, so that
      * re-subscribing (which may change the secret) takes effect without any restart. A notification
-     * without a signature is refused without asking Cloudflare anything.
+     * without a signature is refused without asking Cloudflare anything, and without a provider
+     * only a configured secret can vouch for a notification.
      */
     private function isSigned(?string $header, string $body, string $configuredSecret): bool
     {
@@ -77,7 +78,7 @@ final class CloudflareStreamRequestParser extends AbstractRequestParser
             return $this->signatureVerifier->verify($configuredSecret, $header, $body);
         }
 
-        if (null === $header) {
+        if (null === $header || null === $this->secretProvider) {
             return false;
         }
 

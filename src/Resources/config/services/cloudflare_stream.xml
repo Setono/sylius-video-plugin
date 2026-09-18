@@ -20,6 +20,10 @@
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"
                  alias="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient"/>
 
+        <!-- The same client also manages the account's webhook, behind an interface of its own. -->
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient"/>
+
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGenerator">
             <argument>%setono_sylius_video.cloudflare_stream.customer_subdomain%</argument>
         </service>
@@ -34,7 +38,7 @@
 
         <!-- Remembers the secret read from Cloudflare in the application cache, shared by the web and the console. -->
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider">
-            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface"/>
             <argument type="service" id="cache.app"/>
         </service>
 
@@ -104,7 +108,7 @@
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Command\CloudflareStreamSubscribeWebhookCommand">
-            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface"/>
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface"/>
             <argument type="service" id="router"/>
             <argument>%setono_sylius_video.cloudflare_stream.webhook_secret%</argument>
