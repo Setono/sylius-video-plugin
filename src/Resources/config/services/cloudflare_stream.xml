@@ -80,7 +80,7 @@
 
         <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer">
             <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
-            <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
+            <argument type="service" id="doctrine"/>
             <argument type="service" id="logger" on-invalid="null"/>
             <tag name="remote_event.consumer" consumer="cloudflare_stream"/>
             <tag name="monolog.logger" channel="setono_sylius_video"/>
@@ -89,7 +89,7 @@
         <service id="Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface"/>
             <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
-            <argument type="service" id="setono_sylius_video.manager.cloudflare_stream_video"/>
+            <argument type="service" id="doctrine"/>
             <tag name="console.command"/>
         </service>
     </services>

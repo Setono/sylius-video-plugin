@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Command;
 
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ManagerRegistry;
+use Setono\Doctrine\ORMTrait;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamException;
 use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideoInterface;
@@ -26,14 +27,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class CloudflareStreamSyncCommand extends Command
 {
+    use ORMTrait;
+
     /**
      * @param RepositoryInterface<CloudflareStreamProductVideoInterface> $repository
      */
     public function __construct(
         private readonly ReadinessSynchronizerInterface $synchronizer,
         private readonly RepositoryInterface $repository,
-        private readonly ObjectManager $manager,
+        ManagerRegistry $managerRegistry,
     ) {
+        $this->managerRegistry = $managerRegistry;
+
         parent::__construct();
     }
 
@@ -67,7 +72,7 @@ final class CloudflareStreamSyncCommand extends Command
             }
         }
 
-        $this->manager->flush();
+        $this->getManager($this->repository->getClassName())->flush();
 
         $io->success(sprintf('%d video(s) became ready, %d still processing, %d could not be checked.', $ready, $pending, $failed));
 
