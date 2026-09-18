@@ -25,4 +25,19 @@ interface CloudflareStreamClientInterface
      * @throws CloudflareStreamException
      */
     public function deleteVideo(string $uid): void;
+
+    /**
+     * The account's webhook subscription (Cloudflare Stream allows one per account), or null when
+     * the account has none. The subscription carries the secret the notifications are signed with.
+     *
+     * @throws CloudflareStreamException
+     */
+    public function getWebhook(): ?WebhookSubscription;
+
+    /**
+     * Subscribes the account's webhook to the URL, replacing whatever subscription the account had.
+     *
+     * @throws CloudflareStreamException
+     */
+    public function subscribeWebhook(string $notificationUrl): WebhookSubscription;
 }

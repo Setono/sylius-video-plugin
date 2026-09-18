@@ -10,8 +10,11 @@ use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer;
 use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface;
+use Setono\SyliusVideoPlugin\Command\CloudflareStreamSubscribeWebhookCommand;
 use Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
 use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
@@ -28,6 +31,7 @@ use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer;
 use Sylius\Component\Core\Filesystem\Adapter\FilesystemAdapterInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
 {
@@ -154,6 +158,8 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService(CloudflareStreamUrlGeneratorInterface::class);
         $this->assertContainerBuilderHasAlias(WebhookSignatureVerifierInterface::class, WebhookSignatureVerifier::class);
         $this->assertContainerBuilderHasAlias(ReadinessSynchronizerInterface::class, ReadinessSynchronizer::class);
+        $this->assertContainerBuilderHasAlias(WebhookSecretProviderInterface::class, WebhookSecretProvider::class);
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(WebhookSecretProvider::class, 1, new Reference('cache.app'));
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamProductVideoTypeExtension::class, 'form.type_extension');
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamProductVideoRenderer::class, 'setono_sylius_video.renderer');
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamPosterResolver::class, 'setono_sylius_video.poster_resolver');
@@ -161,6 +167,8 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamVideoRemovalListener::class, 'doctrine.event_listener', ['event' => 'preUpdate']);
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamVideoRemovalListener::class, 'doctrine.event_listener', ['event' => 'postFlush']);
         $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamSyncCommand::class, 'console.command');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(CloudflareStreamSubscribeWebhookCommand::class, 'console.command');
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(CloudflareStreamSubscribeWebhookCommand::class, 3, '%setono_sylius_video.cloudflare_stream.webhook_secret%');
 
         self::assertTrue($this->container->getDefinition(CloudflareStreamDirectUploadAction::class)->isPublic());
         $this->assertContainerBuilderHasService(CloudflareStreamRequestParser::class);
@@ -184,13 +192,46 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
     }
 
     /**
+     * Without a configured secret the type is still routed: the parser then verifies against the
+     * secret it reads from Cloudflare, and the framework needs a (here empty) secret string.
+     *
+     * @test
+     *
+     * @dataProvider configurationsWithoutASecret
+     *
+     * @param array<string, mixed> $config
+     */
+    public function it_routes_cloudflares_webhook_with_an_empty_secret_when_none_is_configured(array $config): void
+    {
+        $this->registerFramework();
+        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => $config]);
+
+        (new SetonoSyliusVideoExtension())->prepend($this->container);
+
+        self::assertSame([['webhook' => ['routing' => ['cloudflare_stream' => [
+            'service' => CloudflareStreamRequestParser::class,
+            'secret' => '',
+        ]]]]], $this->container->getExtensionConfig('framework'));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>}>
+     */
+    public static function configurationsWithoutASecret(): iterable
+    {
+        yield 'no secret' => [self::CLOUDFLARE_STREAM];
+        yield 'empty secret' => [self::CLOUDFLARE_STREAM + ['webhook_secret' => '']];
+        yield 'null secret' => [self::CLOUDFLARE_STREAM + ['webhook_secret' => null]];
+    }
+
+    /**
      * @test
      *
      * @dataProvider webhookRoutingLeftOut
      *
      * @param array<string, mixed> $config
      */
-    public function it_leaves_the_webhook_unrouted_without_a_secret_or_while_the_type_is_disabled(array $config): void
+    public function it_leaves_the_webhook_unrouted_while_the_type_is_disabled(array $config): void
     {
         $this->registerFramework();
         $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => $config]);
@@ -205,8 +246,6 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
      */
     public static function webhookRoutingLeftOut(): iterable
     {
-        yield 'no secret' => [self::CLOUDFLARE_STREAM];
-        yield 'empty secret' => [self::CLOUDFLARE_STREAM + ['webhook_secret' => '']];
         yield 'disabled' => [['enabled' => false, 'webhook_secret' => 'secret']];
         yield 'malformed section' => [[]];
     }

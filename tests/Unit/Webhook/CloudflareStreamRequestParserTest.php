@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Setono\SyliusVideoPlugin\Tests\Unit\Webhook;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Clock\ClockInterface;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
 use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +16,8 @@ use Symfony\Component\Webhook\Exception\RejectWebhookException;
 
 final class CloudflareStreamRequestParserTest extends TestCase
 {
+    use ProphecyTrait;
+
     private const SECRET = 'whsec_test';
 
     public const NOW = 1_700_000_000;
@@ -66,6 +71,105 @@ final class CloudflareStreamRequestParserTest extends TestCase
         $this->expectException(RejectWebhookException::class);
 
         $this->parser()->parse($this->request($body, $this->signature($body)), 'another-secret');
+    }
+
+    /**
+     * @test
+     */
+    public function it_verifies_against_the_secret_read_from_cloudflare_when_none_is_configured(): void
+    {
+        $body = '{"uid":"video123"}';
+
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret()->willReturn(self::SECRET);
+        $provider->getSecret(true)->shouldNotBeCalled();
+
+        $event = $this->parser($provider->reveal())->parse($this->request($body, $this->signature($body)), '');
+
+        self::assertNotNull($event);
+        self::assertSame('video123', $event->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function it_tries_a_freshly_read_secret_once_when_the_remembered_one_no_longer_matches(): void
+    {
+        $body = '{"uid":"video123"}';
+
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret()->willReturn('rotated-away')->shouldBeCalledOnce();
+        $provider->getSecret(true)->willReturn(self::SECRET)->shouldBeCalledOnce();
+
+        $event = $this->parser($provider->reveal())->parse($this->request($body, $this->signature($body)), '');
+
+        self::assertNotNull($event);
+        self::assertSame('video123', $event->getId());
+    }
+
+    /**
+     * @test
+     */
+    public function it_rejects_a_notification_matching_neither_the_remembered_nor_a_fresh_secret(): void
+    {
+        $body = '{"uid":"video123"}';
+
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret()->willReturn('rotated-away');
+        $provider->getSecret(true)->willReturn('still-not-it');
+
+        $this->expectException(RejectWebhookException::class);
+        $this->expectExceptionMessage('Invalid webhook signature.');
+
+        $this->parser($provider->reveal())->parse($this->request($body, $this->signature($body)), '');
+    }
+
+    /**
+     * @test
+     */
+    public function it_rejects_every_notification_while_the_account_has_no_subscription(): void
+    {
+        $body = '{"uid":"video123"}';
+
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret()->willReturn(null);
+        $provider->getSecret(true)->willReturn(null);
+
+        $this->expectException(RejectWebhookException::class);
+        $this->expectExceptionMessage('Invalid webhook signature.');
+
+        $this->parser($provider->reveal())->parse($this->request($body, $this->signature($body)), '');
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_ask_cloudflare_for_the_secret_when_the_notification_carries_no_signature(): void
+    {
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret(Argument::cetera())->shouldNotBeCalled();
+
+        $this->expectException(RejectWebhookException::class);
+        $this->expectExceptionMessage('Invalid webhook signature.');
+
+        $this->parser($provider->reveal())->parse($this->request('{"uid":"video123"}', null), '');
+    }
+
+    /**
+     * @test
+     */
+    public function it_prefers_the_configured_secret_over_the_one_read_from_cloudflare(): void
+    {
+        $body = '{"uid":"video123"}';
+        $signedWithCloudflaresSecret = sprintf('time=%d,sig1=%s', self::NOW, hash_hmac('sha256', self::NOW . '.' . $body, 'cloudflares-secret'));
+
+        $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+        $provider->getSecret(Argument::cetera())->shouldNotBeCalled();
+
+        $this->expectException(RejectWebhookException::class);
+        $this->expectExceptionMessage('Invalid webhook signature.');
+
+        $this->parser($provider->reveal())->parse($this->request($body, $signedWithCloudflaresSecret), self::SECRET);
     }
 
     /**
@@ -128,7 +232,11 @@ final class CloudflareStreamRequestParserTest extends TestCase
         self::assertSame('Invalid webhook signature.', $parser->createRejectedResponse('Invalid webhook signature.')->getContent());
     }
 
-    private function parser(): CloudflareStreamRequestParser
+    /**
+     * Without a provider, a parser whose secret must come from the configuration: reading it from
+     * Cloudflare would be a mistake.
+     */
+    private function parser(?WebhookSecretProviderInterface $secretProvider = null): CloudflareStreamRequestParser
     {
         $clock = new class() implements ClockInterface {
             public function now(): \DateTimeImmutable
@@ -137,7 +245,13 @@ final class CloudflareStreamRequestParserTest extends TestCase
             }
         };
 
-        return new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $clock));
+        if (null === $secretProvider) {
+            $provider = $this->prophesize(WebhookSecretProviderInterface::class);
+            $provider->getSecret(Argument::cetera())->shouldNotBeCalled();
+            $secretProvider = $provider->reveal();
+        }
+
+        return new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $clock), $secretProvider);
     }
 
     private function request(string $body, ?string $signature): Request

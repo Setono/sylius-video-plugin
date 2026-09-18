@@ -12,7 +12,7 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class CloudflareStreamClientTest extends TestCase
 {
-    /** @var list<array{method: string, url: string, headers: array<string, string>}> */
+    /** @var list<array{method: string, url: string, headers: array<string, string>, body: ?string}> */
     private array $requests = [];
 
     /**
@@ -311,6 +311,149 @@ final class CloudflareStreamClientTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function it_reads_the_webhook_subscription(): void
+    {
+        $client = $this->client([new MockResponse((string) json_encode([
+            'result' => ['notificationUrl' => 'https://shop.test/webhook/cloudflare_stream', 'modified' => '2026-09-18T10:00:00Z', 'secret' => 'whsec'],
+        ]))]);
+
+        $subscription = $client->getWebhook();
+
+        self::assertNotNull($subscription);
+        self::assertSame('https://shop.test/webhook/cloudflare_stream', $subscription->notificationUrl);
+        self::assertSame('whsec', $subscription->secret);
+        self::assertNotNull($subscription->modifiedAt);
+        self::assertSame('2026-09-18T10:00:00+00:00', $subscription->modifiedAt->format(\DATE_ATOM));
+
+        self::assertSame('GET', $this->requests[0]['method']);
+        self::assertSame('https://api.cloudflare.com/client/v4/accounts/acc/stream/webhook', $this->requests[0]['url']);
+        self::assertSame('Bearer token', $this->requests[0]['headers']['authorization']);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider responsesWithoutASubscription
+     */
+    public function it_reports_no_webhook_subscription_when_the_account_has_none(MockResponse $response): void
+    {
+        self::assertNull($this->client([$response])->getWebhook());
+    }
+
+    /**
+     * @return iterable<string, array{MockResponse}>
+     */
+    public static function responsesWithoutASubscription(): iterable
+    {
+        yield 'not found' => [new MockResponse('{"success":false,"errors":[{"code":10000,"message":"Not found"}]}', ['http_code' => 404])];
+        yield 'empty result' => [new MockResponse('{"success":true,"result":null}')];
+        yield 'result without a url' => [new MockResponse('{"success":true,"result":{"secret":"whsec"}}')];
+        yield 'result with an empty url' => [new MockResponse('{"success":true,"result":{"notificationUrl":"","secret":"whsec"}}')];
+    }
+
+    /**
+     * @test
+     */
+    public function it_leaves_the_modification_time_out_when_it_is_missing_or_unreadable(): void
+    {
+        $client = $this->client([
+            new MockResponse('{"result":{"notificationUrl":"https://shop.test/hook","secret":"whsec"}}'),
+            new MockResponse('{"result":{"notificationUrl":"https://shop.test/hook","secret":"whsec","modified":"not a date"}}'),
+        ]);
+
+        self::assertNull($client->getWebhook()?->modifiedAt);
+        self::assertNull($client->getWebhook()?->modifiedAt);
+    }
+
+    /**
+     * @test
+     */
+    public function it_subscribes_the_webhook(): void
+    {
+        $client = $this->client([new MockResponse((string) json_encode([
+            'result' => ['notificationUrl' => 'https://shop.test/webhook/cloudflare_stream', 'modified' => '2026-09-18T10:00:00Z', 'secret' => 'whsec'],
+        ]))]);
+
+        $subscription = $client->subscribeWebhook('https://shop.test/webhook/cloudflare_stream');
+
+        self::assertSame('https://shop.test/webhook/cloudflare_stream', $subscription->notificationUrl);
+        self::assertSame('whsec', $subscription->secret);
+
+        self::assertSame('PUT', $this->requests[0]['method']);
+        self::assertSame('https://api.cloudflare.com/client/v4/accounts/acc/stream/webhook', $this->requests[0]['url']);
+        self::assertSame('Bearer token', $this->requests[0]['headers']['authorization']);
+        self::assertSame('application/json', $this->requests[0]['headers']['content-type']);
+        self::assertSame(['notificationUrl' => 'https://shop.test/webhook/cloudflare_stream'], json_decode((string) $this->requests[0]['body'], true));
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider incompleteSubscriptionResponses
+     */
+    public function it_throws_when_the_subscription_response_is_incomplete(string $body, string $message): void
+    {
+        $client = $this->client([new MockResponse($body)]);
+
+        $this->expectException(CloudflareStreamException::class);
+        $this->expectExceptionMessage($message);
+
+        $client->subscribeWebhook('https://shop.test/webhook/cloudflare_stream');
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function incompleteSubscriptionResponses(): iterable
+    {
+        yield 'no result' => ['{"success":true}', 'Cloudflare Stream did not return the webhook subscription it was asked to create.'];
+        yield 'no url' => ['{"result":{"secret":"whsec"}}', 'Cloudflare Stream did not return the webhook subscription it was asked to create.'];
+        yield 'no secret' => ['{"result":{"notificationUrl":"https://shop.test/hook"}}', 'Cloudflare Stream returned the webhook subscription without its secret.'];
+        yield 'empty secret' => ['{"result":{"notificationUrl":"https://shop.test/hook","secret":""}}', 'Cloudflare Stream returned the webhook subscription without its secret.'];
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_when_a_subscription_is_read_without_its_secret(): void
+    {
+        $client = $this->client([new MockResponse('{"result":{"notificationUrl":"https://shop.test/hook"}}')]);
+
+        $this->expectException(CloudflareStreamException::class);
+        $this->expectExceptionMessage('Cloudflare Stream returned the webhook subscription without its secret.');
+
+        $client->getWebhook();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_when_the_webhook_response_is_not_json(): void
+    {
+        $client = $this->client([new MockResponse('<html>')]);
+
+        $this->expectException(CloudflareStreamException::class);
+        $this->expectExceptionMessage('Cloudflare Stream returned an unreadable response for the webhook subscription:');
+
+        $client->getWebhook();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_when_the_webhook_cannot_be_subscribed(): void
+    {
+        $client = $this->client([new MockResponse('{"success":false,"errors":[{"code":10001,"message":"Invalid notification URL"}]}', ['http_code' => 400])]);
+
+        $this->expectException(CloudflareStreamException::class);
+        $this->expectExceptionMessage('PUT /accounts/acc/stream/webhook with HTTP 400: Invalid notification URL');
+
+        $client->subscribeWebhook('ftp://shop.test');
+    }
+
+    /**
      * @param list<MockResponse> $responses
      */
     private function client(array $responses, ?int $maxDurationSeconds = null): CloudflareStreamClient
@@ -336,7 +479,8 @@ final class CloudflareStreamClientTest extends TestCase
                 $headers[strtolower($name)] = $value;
             }
 
-            $this->requests[] = ['method' => $method, 'url' => $url, 'headers' => $headers];
+            $body = $options['body'] ?? null;
+            $this->requests[] = ['method' => $method, 'url' => $url, 'headers' => $headers, 'body' => is_string($body) ? $body : null];
 
             $response = array_shift($queue);
             self::assertInstanceOf(MockResponse::class, $response, 'More requests were made than responses queued.');
