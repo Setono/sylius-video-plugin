@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Clock\ClockInterface;
-use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamException;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSubscription;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -25,7 +25,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_reads_the_secret_from_cloudflare_once_and_remembers_it(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('whsec'))->shouldBeCalledOnce();
 
         $provider = new WebhookSecretProvider($client->reveal(), new ArrayAdapter(), clock: new FrozenClock(1_000));
@@ -39,7 +39,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_remembers_that_the_account_has_no_subscription(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn(null)->shouldBeCalledOnce();
 
         $provider = new WebhookSecretProvider($client->reveal(), new ArrayAdapter(), clock: new FrozenClock(1_000));
@@ -53,7 +53,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_reads_the_secret_again_on_a_refresh_but_not_more_often_than_the_minimum_interval(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('old'), $this->subscription('rotated'))->shouldBeCalledTimes(2);
 
         $clock = new FrozenClock(1_000);
@@ -78,7 +78,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_honours_a_configured_minimum_refresh_interval(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('old'), $this->subscription('rotated'))->shouldBeCalledTimes(2);
 
         $clock = new FrozenClock(1_000);
@@ -95,7 +95,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_does_not_read_twice_when_a_refresh_finds_nothing_remembered(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('whsec'))->shouldBeCalledOnce();
 
         $provider = new WebhookSecretProvider($client->reveal(), new ArrayAdapter(), clock: new FrozenClock(1_000));
@@ -108,7 +108,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_lets_the_remembered_secret_expire_after_the_ttl(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('whsec'));
 
         $item = $this->prophesize(ItemInterface::class);
@@ -134,7 +134,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_uses_the_configured_ttl(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn(null);
 
         $item = $this->prophesize(ItemInterface::class);
@@ -160,7 +160,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_tells_the_system_time_by_default(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willReturn($this->subscription('whsec'))->shouldBeCalledOnce();
 
         $provider = new WebhookSecretProvider($client->reveal(), new ArrayAdapter());
@@ -175,7 +175,7 @@ final class WebhookSecretProviderTest extends TestCase
      */
     public function it_passes_on_a_failure_to_ask_cloudflare(): void
     {
-        $client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $client = $this->prophesize(WebhookClientInterface::class);
         $client->getWebhook()->willThrow(new CloudflareStreamException('Authentication error'));
 
         $provider = new WebhookSecretProvider($client->reveal(), new ArrayAdapter(), clock: new FrozenClock(1_000));

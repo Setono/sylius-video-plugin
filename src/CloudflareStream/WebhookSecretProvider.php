@@ -21,7 +21,7 @@ final class WebhookSecretProvider implements WebhookSecretProviderInterface
     private readonly ClockInterface $clock;
 
     public function __construct(
-        private readonly CloudflareStreamClientInterface $client,
+        private readonly WebhookClientInterface $client,
         private readonly CacheInterface $cache,
         /** How long a secret is remembered before Cloudflare is asked again */
         private readonly int $ttl = 3600,

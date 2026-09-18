@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamException;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSubscription;
 use Setono\SyliusVideoPlugin\Command\CloudflareStreamSubscribeWebhookCommand;
@@ -24,7 +24,7 @@ final class CloudflareStreamSubscribeWebhookCommandTest extends TestCase
 
     private const URL = 'https://shop.test/webhook/cloudflare_stream';
 
-    /** @var ObjectProphecy<CloudflareStreamClientInterface> */
+    /** @var ObjectProphecy<WebhookClientInterface> */
     private ObjectProphecy $client;
 
     /** @var ObjectProphecy<WebhookSecretProviderInterface> */
@@ -35,7 +35,7 @@ final class CloudflareStreamSubscribeWebhookCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = $this->prophesize(CloudflareStreamClientInterface::class);
+        $this->client = $this->prophesize(WebhookClientInterface::class);
         $this->secretProvider = $this->prophesize(WebhookSecretProviderInterface::class);
         $this->urlGenerator = $this->prophesize(UrlGeneratorInterface::class);
         $this->urlGenerator->generate('_webhook_controller', ['type' => 'cloudflare_stream'], UrlGeneratorInterface::ABSOLUTE_URL)->willReturn(self::URL);

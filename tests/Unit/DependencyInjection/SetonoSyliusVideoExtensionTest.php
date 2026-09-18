@@ -10,6 +10,7 @@ use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer;
 use Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
@@ -155,6 +156,7 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('setono_sylius_video.cloudflare_stream.max_duration_seconds', 600);
 
         $this->assertContainerBuilderHasAlias(CloudflareStreamClientInterface::class, CloudflareStreamClient::class);
+        $this->assertContainerBuilderHasAlias(WebhookClientInterface::class, CloudflareStreamClient::class);
         $this->assertContainerBuilderHasService(CloudflareStreamUrlGeneratorInterface::class);
         $this->assertContainerBuilderHasAlias(WebhookSignatureVerifierInterface::class, WebhookSignatureVerifier::class);
         $this->assertContainerBuilderHasAlias(ReadinessSynchronizerInterface::class, ReadinessSynchronizer::class);

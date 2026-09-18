@@ -158,6 +158,34 @@ final class CloudflareStreamRequestParserTest extends TestCase
     /**
      * @test
      */
+    public function it_rejects_a_notification_when_there_is_neither_a_configured_secret_nor_a_provider(): void
+    {
+        $body = '{"uid":"video123"}';
+        $parser = new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $this->clock()));
+
+        $this->expectException(RejectWebhookException::class);
+        $this->expectExceptionMessage('Invalid webhook signature.');
+
+        $parser->parse($this->request($body, $this->signature($body)), '');
+    }
+
+    /**
+     * @test
+     */
+    public function it_verifies_against_the_configured_secret_without_a_provider(): void
+    {
+        $body = '{"uid":"video123"}';
+        $parser = new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $this->clock()));
+
+        $event = $parser->parse($this->request($body, $this->signature($body)), self::SECRET);
+
+        self::assertNotNull($event);
+        self::assertSame('video123', $event->getId());
+    }
+
+    /**
+     * @test
+     */
     public function it_prefers_the_configured_secret_over_the_one_read_from_cloudflare(): void
     {
         $body = '{"uid":"video123"}';
@@ -238,20 +266,23 @@ final class CloudflareStreamRequestParserTest extends TestCase
      */
     private function parser(?WebhookSecretProviderInterface $secretProvider = null): CloudflareStreamRequestParser
     {
-        $clock = new class() implements ClockInterface {
-            public function now(): \DateTimeImmutable
-            {
-                return new \DateTimeImmutable('@' . CloudflareStreamRequestParserTest::NOW);
-            }
-        };
-
         if (null === $secretProvider) {
             $provider = $this->prophesize(WebhookSecretProviderInterface::class);
             $provider->getSecret(Argument::cetera())->shouldNotBeCalled();
             $secretProvider = $provider->reveal();
         }
 
-        return new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $clock), $secretProvider);
+        return new CloudflareStreamRequestParser(new WebhookSignatureVerifier(300, $this->clock()), $secretProvider);
+    }
+
+    private function clock(): ClockInterface
+    {
+        return new class() implements ClockInterface {
+            public function now(): \DateTimeImmutable
+            {
+                return new \DateTimeImmutable('@' . CloudflareStreamRequestParserTest::NOW);
+            }
+        };
     }
 
     private function request(string $body, ?string $signature): Request

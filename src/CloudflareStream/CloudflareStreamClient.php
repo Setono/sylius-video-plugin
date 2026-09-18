@@ -12,7 +12,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  * Thin client for the parts of the Cloudflare Stream API the plugin uses, authenticated with an
  * API token that has the "Stream: Edit" permission.
  */
-final class CloudflareStreamClient implements CloudflareStreamClientInterface
+final class CloudflareStreamClient implements CloudflareStreamClientInterface, WebhookClientInterface
 {
     public function __construct(
         private readonly HttpClientInterface $httpClient,

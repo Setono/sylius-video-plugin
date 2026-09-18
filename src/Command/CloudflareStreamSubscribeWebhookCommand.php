@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Command;
 
-use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamException;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookClientInterface;
 use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +31,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class CloudflareStreamSubscribeWebhookCommand extends Command
 {
     public function __construct(
-        private readonly CloudflareStreamClientInterface $client,
+        private readonly WebhookClientInterface $client,
         private readonly WebhookSecretProviderInterface $secretProvider,
         private readonly UrlGeneratorInterface $urlGenerator,
         /** The `webhook_secret` from the plugin configuration, if any */
