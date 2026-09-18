@@ -1,7 +1,7 @@
-# Routes of the Cloudflare Stream video type; import this file only when the type is enabled.
+# Routes of the Cloudflare Stream video type; import this file only when the type is enabled. Its
+# webhook uses Symfony's Webhook component instead: import the framework's webhook route
+# (`@FrameworkBundle/Resources/config/routing/webhook.xml`, prefix /webhook) and notifications
+# arrive at /webhook/cloudflare_stream.
 setono_sylius_video_admin:
     resource: "@SetonoSyliusVideoPlugin/Resources/config/routes/admin.yaml"
     prefix: /%sylius_admin.path_name%
-
-setono_sylius_video_webhook:
-    resource: "@SetonoSyliusVideoPlugin/Resources/config/routes/webhook.yaml"

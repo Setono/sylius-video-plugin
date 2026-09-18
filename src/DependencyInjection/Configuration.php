@@ -86,7 +86,7 @@ final class Configuration implements ConfigurationInterface
                             ->defaultNull()
                         ->end()
                         ->scalarNode('webhook_secret')
-                            ->info('The secret Cloudflare returned when the webhook was subscribed. Without it the webhook endpoint refuses every notification; run the sync command instead.')
+                            ->info('The secret Cloudflare returned when the webhook was subscribed. Without it the webhook is not routed at all; run the sync command instead.')
                             ->defaultNull()
                         ->end()
                         ->integerNode('max_duration_seconds')

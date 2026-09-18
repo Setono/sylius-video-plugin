@@ -278,27 +278,32 @@ was uploaded; a template override can plug in any other player.
            # max_duration_seconds: 600          # optional cap, enforced by Cloudflare per upload
    ```
 
-3. Import the routes — the admin endpoint that creates uploads and the public webhook:
+3. Import the plugin's admin route (the endpoint that creates uploads) and Symfony's webhook
+   endpoint, which the `symfony/webhook` Flex recipe adds as `config/routes/webhook.yaml`:
 
    ```yaml
    # config/routes/setono_sylius_video.yaml
    setono_sylius_video:
        resource: "@SetonoSyliusVideoPlugin/Resources/config/routes.yaml"
+
+   # config/routes/webhook.yaml
+   webhook:
+       resource: '@FrameworkBundle/Resources/config/routing/webhook.xml'
+       prefix: /webhook
    ```
 
 4. Add the columns and publish the shop script: `bin/console doctrine:migrations:diff` (two
    nullable columns on the video table, `cloudflare_stream_uid` and `cloudflare_stream_ready`),
    `doctrine:migrations:migrate` and `assets:install`.
 
-5. Subscribe Cloudflare's webhook (one per account) to
-   `https://<shop>/setono-sylius-video/cloudflare-stream/webhook` and put the `secret` the API
-   returns in `CLOUDFLARE_STREAM_WEBHOOK_SECRET`:
+5. Subscribe Cloudflare's webhook (one per account) to `https://<shop>/webhook/cloudflare_stream`
+   and put the `secret` the API returns in `CLOUDFLARE_STREAM_WEBHOOK_SECRET`:
 
    ```bash
    curl -X PUT "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/stream/webhook" \
         -H "Authorization: Bearer <API_TOKEN>" \
         -H "Content-Type: application/json" \
-        --data '{"notificationUrl":"https://<shop>/setono-sylius-video/cloudflare-stream/webhook"}'
+        --data '{"notificationUrl":"https://<shop>/webhook/cloudflare_stream"}'
    ```
 
 ### How it behaves
@@ -307,8 +312,12 @@ was uploaded; a template override can plug in any other player.
   (`readyToStream`), the video stays off the product page: the renderer outputs nothing, the
   plugin's block skips it and `setono_sylius_video_ready(video)` returns false, so templates
   that list videos themselves can do the same. The webhook flips the flag the moment Cloudflare
-  is done; without a reachable webhook, run `bin/console setono:sylius-video:cloudflare-stream:sync`
-  from cron — it asks Cloudflare about every video that is not ready yet.
+  is done: it is handled by [Symfony's Webhook component](https://symfony.com/doc/current/webhook.html)
+  — the plugin registers a request parser under the `cloudflare_stream` type and a remote-event
+  consumer that marks the video ready, so consumption runs through Messenger (synchronously by
+  default; route `ConsumeRemoteEventMessage` to a transport to process notifications in a worker).
+  Without a reachable webhook, run `bin/console setono:sylius-video:cloudflare-stream:sync` from
+  cron — it asks Cloudflare about every video that is not ready yet.
 - **Admin.** A row of this type shows a progress bar while uploading, blocks saving until the
   upload has finished, and afterwards shows the uid and whether the video is ready. Its type is
   locked once saved like any other; picking a new file on a saved row replaces the video, and the
@@ -322,9 +331,10 @@ was uploaded; a template override can plug in any other player.
   player library, which your shop then loads and mounts itself.
 - **Security.** The upload endpoint sits under the admin prefix, so the admin firewall guards it,
   and it only answers `XMLHttpRequest` calls (a cross-site form post cannot add that header). The
-  webhook is public but refuses any notification whose `Webhook-Signature` (HMAC-SHA256 of
-  `<time>.<body>` keyed with the secret) is invalid or older than five minutes; without a
-  configured secret it refuses everything.
+  webhook endpoint is public but the parser refuses any notification whose `Webhook-Signature`
+  (HMAC-SHA256 of `<time>.<body>` keyed with the secret) is invalid or older than five minutes;
+  without a configured `webhook_secret` the type is not routed at all, so `/webhook/cloudflare_stream`
+  answers 404.
 
 ## Security
 

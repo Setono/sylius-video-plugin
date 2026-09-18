@@ -1,6 +1,0 @@
-# Cloudflare Stream's processing notifications; signed by Cloudflare, so it needs no firewall.
-setono_sylius_video_cloudflare_stream_webhook:
-    path: /setono-sylius-video/cloudflare-stream/webhook
-    methods: [POST]
-    defaults:
-        _controller: Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction

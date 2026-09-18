@@ -34,9 +34,11 @@
         "symfony/http-client-contracts": "^3.0",
         "symfony/http-foundation": "^6.4",
         "symfony/options-resolver": "^6.4",
+        "symfony/remote-event": "^6.4",
         "symfony/routing": "^6.4",
         "symfony/translation-contracts": "^2.5 || ^3.0",
         "symfony/validator": "^6.4",
+        "symfony/webhook": "^6.4",
         "twig/twig": "^3.0"
     },
     "require-dev": {
