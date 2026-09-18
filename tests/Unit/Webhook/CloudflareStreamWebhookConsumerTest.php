@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\Unit\Webhook;
 
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -23,7 +24,7 @@ final class CloudflareStreamWebhookConsumerTest extends TestCase
     /** @var ObjectProphecy<RepositoryInterface<CloudflareStreamProductVideoInterface>> */
     private ObjectProphecy $repository;
 
-    /** @var ObjectProphecy<ObjectManager> */
+    /** @var ObjectProphecy<EntityManagerInterface> */
     private ObjectProphecy $manager;
 
     /** @var ObjectProphecy<LoggerInterface> */
@@ -34,7 +35,7 @@ final class CloudflareStreamWebhookConsumerTest extends TestCase
         /** @var ObjectProphecy<RepositoryInterface<CloudflareStreamProductVideoInterface>> $repository */
         $repository = $this->prophesize(RepositoryInterface::class);
         $this->repository = $repository;
-        $this->manager = $this->prophesize(ObjectManager::class);
+        $this->manager = $this->prophesize(EntityManagerInterface::class);
         $this->logger = $this->prophesize(LoggerInterface::class);
     }
 
@@ -120,7 +121,10 @@ final class CloudflareStreamWebhookConsumerTest extends TestCase
 
     private function consumer(): CloudflareStreamWebhookConsumer
     {
-        return new CloudflareStreamWebhookConsumer($this->repository->reveal(), $this->manager->reveal(), $this->logger->reveal());
+        $registry = $this->prophesize(ManagerRegistry::class);
+        $registry->getManagerForClass(CloudflareStreamProductVideo::class)->willReturn($this->manager->reveal());
+
+        return new CloudflareStreamWebhookConsumer($this->repository->reveal(), $registry->reveal(), $this->logger->reveal());
     }
 
     /**

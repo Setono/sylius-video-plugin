@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Webhook;
 
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Setono\Doctrine\ORMTrait;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideoInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\RemoteEvent\Consumer\ConsumerInterface;
@@ -20,6 +21,8 @@ use Symfony\Component\RemoteEvent\RemoteEvent;
  */
 final class CloudflareStreamWebhookConsumer implements ConsumerInterface
 {
+    use ORMTrait;
+
     private readonly LoggerInterface $logger;
 
     /**
@@ -27,9 +30,10 @@ final class CloudflareStreamWebhookConsumer implements ConsumerInterface
      */
     public function __construct(
         private readonly RepositoryInterface $repository,
-        private readonly ObjectManager $manager,
+        ManagerRegistry $managerRegistry,
         ?LoggerInterface $logger = null,
     ) {
+        $this->managerRegistry = $managerRegistry;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -55,6 +59,6 @@ final class CloudflareStreamWebhookConsumer implements ConsumerInterface
         }
 
         $video->setReady(true === ($payload['readyToStream'] ?? false));
-        $this->manager->flush();
+        $this->getManager($video)->flush();
     }
 }

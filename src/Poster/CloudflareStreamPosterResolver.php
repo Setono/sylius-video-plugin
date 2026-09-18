@@ -22,17 +22,25 @@ final class CloudflareStreamPosterResolver implements VideoPosterResolverInterfa
 
     public function supports(ProductVideoInterface $video): bool
     {
-        return $video instanceof CloudflareStreamProductVideoInterface && null !== $video->getUid() && $video->isReady();
+        return null !== $this->uidOfReadyVideo($video);
     }
 
     public function resolve(ProductVideoInterface $video): ?string
     {
-        if (!$this->supports($video)) {
+        $uid = $this->uidOfReadyVideo($video);
+
+        return null === $uid ? null : $this->urlGenerator->thumbnail($uid);
+    }
+
+    /**
+     * The uid of a Cloudflare Stream video that has been processed, or null for anything else.
+     */
+    private function uidOfReadyVideo(ProductVideoInterface $video): ?string
+    {
+        if (!$video instanceof CloudflareStreamProductVideoInterface || !$video->isReady()) {
             return null;
         }
 
-        \assert($video instanceof CloudflareStreamProductVideoInterface);
-
-        return $this->urlGenerator->thumbnail((string) $video->getUid());
+        return $video->getUid();
     }
 }

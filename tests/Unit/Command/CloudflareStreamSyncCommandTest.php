@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusVideoPlugin\Tests\Unit\Command;
 
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -38,10 +39,7 @@ final class CloudflareStreamSyncCommandTest extends TestCase
         $client->getVideo('encoding')->willReturn(new VideoDetails('encoding', false, 'inprogress'));
         $client->getVideo('broken')->willReturn(new VideoDetails('broken', false, 'error', 'The file is not a video.'));
 
-        $manager = $this->prophesize(ObjectManager::class);
-        $manager->flush()->shouldBeCalledOnce();
-
-        $tester = $this->tester([$ready, $pending, $broken], $client->reveal(), $manager->reveal());
+        $tester = $this->tester([$ready, $pending, $broken], $client->reveal(), $this->flushingRegistry());
         $exitCode = $tester->execute([]);
 
         self::assertSame(Command::SUCCESS, $exitCode);
@@ -68,10 +66,7 @@ final class CloudflareStreamSyncCommandTest extends TestCase
         $client->getVideo('failing')->willThrow(new CloudflareStreamException('Authentication error'));
         $client->getVideo('done')->willReturn(new VideoDetails('done', true, 'ready'));
 
-        $manager = $this->prophesize(ObjectManager::class);
-        $manager->flush()->shouldBeCalledOnce();
-
-        $tester = $this->tester([$failing, $ready], $client->reveal(), $manager->reveal());
+        $tester = $this->tester([$failing, $ready], $client->reveal(), $this->flushingRegistry());
         $exitCode = $tester->execute([]);
 
         self::assertSame(Command::FAILURE, $exitCode);
@@ -88,10 +83,7 @@ final class CloudflareStreamSyncCommandTest extends TestCase
         $client = $this->prophesize(CloudflareStreamClientInterface::class);
         $client->getVideo(Argument::any())->shouldNotBeCalled();
 
-        $manager = $this->prophesize(ObjectManager::class);
-        $manager->flush()->shouldBeCalledOnce();
-
-        $tester = $this->tester([new CloudflareStreamProductVideo(), new UrlProductVideo()], $client->reveal(), $manager->reveal());
+        $tester = $this->tester([new CloudflareStreamProductVideo(), new UrlProductVideo()], $client->reveal(), $this->flushingRegistry());
 
         self::assertSame(Command::SUCCESS, $tester->execute([]));
         self::assertStringContainsString('0 video(s) became ready, 0 still processing, 0 could not be checked.', $tester->getDisplay());
@@ -114,14 +106,30 @@ final class CloudflareStreamSyncCommandTest extends TestCase
     }
 
     /**
+     * A registry whose manager for the video class expects exactly one flush: the command saves
+     * everything it synchronised in one go.
+     */
+    private function flushingRegistry(): ManagerRegistry
+    {
+        $manager = $this->prophesize(EntityManagerInterface::class);
+        $manager->flush()->shouldBeCalledOnce();
+
+        $registry = $this->prophesize(ManagerRegistry::class);
+        $registry->getManagerForClass(CloudflareStreamProductVideo::class)->willReturn($manager->reveal());
+
+        return $registry->reveal();
+    }
+
+    /**
      * @param list<object> $pending
      */
-    private function tester(array $pending, CloudflareStreamClientInterface $client, ObjectManager $manager): CommandTester
+    private function tester(array $pending, CloudflareStreamClientInterface $client, ManagerRegistry $registry): CommandTester
     {
         /** @var \Prophecy\Prophecy\ObjectProphecy<RepositoryInterface<CloudflareStreamProductVideoInterface>> $repository */
         $repository = $this->prophesize(RepositoryInterface::class);
         $repository->findBy(['ready' => false])->willReturn($pending);
+        $repository->getClassName()->willReturn(CloudflareStreamProductVideo::class);
 
-        return new CommandTester(new CloudflareStreamSyncCommand(new ReadinessSynchronizer($client), $repository->reveal(), $manager));
+        return new CommandTester(new CloudflareStreamSyncCommand(new ReadinessSynchronizer($client), $repository->reveal(), $registry));
     }
 }
