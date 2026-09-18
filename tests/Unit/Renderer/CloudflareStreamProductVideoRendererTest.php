@@ -32,14 +32,14 @@ final class CloudflareStreamProductVideoRendererTest extends TestCase
     /**
      * @test
      */
-    public function it_renders_the_manifests_of_a_ready_video(): void
+    public function it_renders_the_player_and_manifest_urls_of_a_ready_video(): void
     {
         $video = new CloudflareStreamProductVideo();
         $video->setUid('video123');
         $video->setReady(true);
 
         self::assertSame(
-            'https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8|https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd|video123',
+            'https://customer-abc.cloudflarestream.com/video123/iframe|https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8|https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd|video123',
             $this->renderer()->render($video),
         );
     }
@@ -93,7 +93,7 @@ final class CloudflareStreamProductVideoRendererTest extends TestCase
 
     private function renderer(): CloudflareStreamProductVideoRenderer
     {
-        $twig = new Environment(new ArrayLoader(['renderer' => '{{ hls_url }}|{{ dash_url }}|{{ video.uid }}']));
+        $twig = new Environment(new ArrayLoader(['renderer' => '{{ player_url }}|{{ hls_url }}|{{ dash_url }}|{{ video.uid }}']));
 
         return new CloudflareStreamProductVideoRenderer($twig, new CloudflareStreamUrlGenerator('abc'), 'renderer');
     }

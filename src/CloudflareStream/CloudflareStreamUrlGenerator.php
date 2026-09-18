@@ -29,6 +29,11 @@ final class CloudflareStreamUrlGenerator implements CloudflareStreamUrlGenerator
         return sprintf('%s/%s/manifest/video.mpd', $this->baseUrl, $uid);
     }
 
+    public function player(string $uid): string
+    {
+        return sprintf('%s/%s/iframe', $this->baseUrl, $uid);
+    }
+
     public function thumbnail(string $uid, string $time = '1s', int $height = 720): string
     {
         return sprintf('%s/%s/thumbnails/thumbnail.jpg?%s', $this->baseUrl, $uid, http_build_query(['time' => $time, 'height' => $height]));

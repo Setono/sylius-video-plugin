@@ -1,9 +1,8 @@
 {% set poster = setono_sylius_video_poster(video) %}
 {% set label = 'setono_sylius_video.ui.video_of'|trans({'%product%': video.product is not null ? video.product.name : ''}) %}
-{# `data-setono-sylius-video-player` is what the plugin's shop script mounts Video.js on (its value may hold JSON options for videojs()). #}
+{# Cloudflare's own Stream Player. An override that brings its own player (Video.js, hls.js, …) has the manifests as `hls_url` and `dash_url`. #}
 <div class="setono-sylius-video setono-sylius-video--cloudflare-stream">
-    <video class="video-js setono-sylius-video__player" data-setono-sylius-video-player controls playsinline preload="metadata" aria-label="{{ label }}"{% if poster is not null %} poster="{{ poster }}"{% endif %}>
-        <source src="{{ hls_url }}" type="application/x-mpegURL">
-        <source src="{{ dash_url }}" type="application/dash+xml">
-    </video>
+    <div class="setono-sylius-video__responsive" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe src="{{ player_url }}{% if poster is not null %}?poster={{ poster|url_encode }}{% endif %}" title="{{ label }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+    </div>
 </div>

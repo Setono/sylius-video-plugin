@@ -12,7 +12,6 @@ use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier;
 use Setono\SyliusVideoPlugin\Command\CloudflareStreamSyncCommand;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
 use Setono\SyliusVideoPlugin\Controller\Webhook\CloudflareStreamWebhookAction;
-use Setono\SyliusVideoPlugin\DependencyInjection\Configuration;
 use Setono\SyliusVideoPlugin\DependencyInjection\SetonoSyliusVideoExtension;
 use Setono\SyliusVideoPlugin\EventListener\Doctrine\CloudflareStreamVideoRemovalListener;
 use Setono\SyliusVideoPlugin\EventListener\Doctrine\ProductVideoDiscriminatorMapListener;
@@ -160,83 +159,6 @@ final class SetonoSyliusVideoExtensionTest extends AbstractExtensionTestCase
 
         self::assertTrue($this->container->getDefinition(CloudflareStreamDirectUploadAction::class)->isPublic());
         self::assertTrue($this->container->getDefinition(CloudflareStreamWebhookAction::class)->isPublic());
-    }
-
-    /**
-     * @test
-     */
-    public function it_prepends_the_player_bootstrap_when_the_cloudflare_stream_type_is_enabled(): void
-    {
-        $this->registerSyliusUi();
-        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => self::CLOUDFLARE_STREAM + ['video_js' => ['script' => 'https://cdn.example.com/video.js']]]);
-
-        (new SetonoSyliusVideoExtension())->prepend($this->container);
-
-        self::assertSame([['events' => self::DEFAULT_EVENTS + [
-            'sylius.shop.layout.javascripts' => [
-                'blocks' => [
-                    'setono_sylius_video' => [
-                        'template' => '@SetonoSyliusVideoPlugin/shop/layout/_javascripts.html.twig',
-                        'context' => [
-                            'video_js_script' => 'https://cdn.example.com/video.js',
-                            'video_js_stylesheet' => Configuration::DEFAULT_VIDEO_JS_STYLESHEET,
-                        ],
-                    ],
-                ],
-            ],
-        ]]], $this->container->getExtensionConfig('sylius_ui'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_lets_a_later_configuration_file_disable_the_player_bootstrap_again(): void
-    {
-        $this->registerSyliusUi();
-        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => self::CLOUDFLARE_STREAM]);
-        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => ['enabled' => false]]);
-
-        (new SetonoSyliusVideoExtension())->prepend($this->container);
-
-        self::assertSame([['events' => self::DEFAULT_EVENTS]], $this->container->getExtensionConfig('sylius_ui'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_ignores_a_cloudflare_stream_section_that_is_not_a_map_when_prepending(): void
-    {
-        $this->registerSyliusUi();
-        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => 'nope']);
-
-        (new SetonoSyliusVideoExtension())->prepend($this->container);
-
-        self::assertSame([['events' => self::DEFAULT_EVENTS]], $this->container->getExtensionConfig('sylius_ui'));
-    }
-
-    /**
-     * @test
-     */
-    public function it_prepends_the_default_video_js_urls_when_none_are_configured(): void
-    {
-        $this->registerSyliusUi();
-        $this->container->loadFromExtension('setono_sylius_video', ['cloudflare_stream' => self::CLOUDFLARE_STREAM]);
-
-        (new SetonoSyliusVideoExtension())->prepend($this->container);
-
-        self::assertSame([['events' => self::DEFAULT_EVENTS + [
-            'sylius.shop.layout.javascripts' => [
-                'blocks' => [
-                    'setono_sylius_video' => [
-                        'template' => '@SetonoSyliusVideoPlugin/shop/layout/_javascripts.html.twig',
-                        'context' => [
-                            'video_js_script' => Configuration::DEFAULT_VIDEO_JS_SCRIPT,
-                            'video_js_stylesheet' => Configuration::DEFAULT_VIDEO_JS_STYLESHEET,
-                        ],
-                    ],
-                ],
-            ],
-        ]]], $this->container->getExtensionConfig('sylius_ui'));
     }
 
     private function registerSyliusUi(): void

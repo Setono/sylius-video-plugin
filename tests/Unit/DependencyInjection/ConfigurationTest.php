@@ -46,10 +46,6 @@ final class ConfigurationTest extends TestCase
                 'customer_subdomain' => null,
                 'webhook_secret' => null,
                 'max_duration_seconds' => null,
-                'video_js' => [
-                    'script' => 'https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video.min.js',
-                    'stylesheet' => 'https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video-js.min.css',
-                ],
             ],
             'resources' => [
                 'product_video' => ['classes' => [
@@ -89,7 +85,6 @@ final class ConfigurationTest extends TestCase
                 'customer_subdomain' => 'abc',
                 'webhook_secret' => 'secret',
                 'max_duration_seconds' => 600,
-                'video_js' => ['script' => 'https://cdn.example.com/video.js'],
             ],
         ]], ['cloudflare_stream' => [
             'enabled' => true,
@@ -98,10 +93,6 @@ final class ConfigurationTest extends TestCase
             'customer_subdomain' => 'abc',
             'webhook_secret' => 'secret',
             'max_duration_seconds' => 600,
-            'video_js' => [
-                'script' => 'https://cdn.example.com/video.js',
-                'stylesheet' => 'https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video-js.min.css',
-            ],
         ]], 'cloudflare_stream');
     }
 

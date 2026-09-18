@@ -47,10 +47,11 @@ How the pieces fit together:
   for a one-time tus upload URL). Readiness comes from `Controller\Webhook\CloudflareStreamWebhookAction`
   (signature checked by `CloudflareStream\WebhookSignatureVerifier`) or `Command\CloudflareStreamSyncCommand`;
   an unready video implements `Model\ProcessingAwareVideoInterface`, renders nothing and is skipped by
-  the product block (`setono_sylius_video_ready()`). Playback is Video.js on Cloudflare's HLS/DASH
-  manifests, mounted by `Resources/public/setono-sylius-video-plugin-shop.js` (loaded through a
-  `sylius.shop.layout.javascripts` block). Its services live in `services/cloudflare_stream.xml`, loaded
-  only when `cloudflare_stream.enabled`, and its routes in `Resources/config/routes.yaml`.
+  the product block (`setono_sylius_video_ready()`). The default renderer template embeds Cloudflare's
+  Stream Player iframe; the context also carries the HLS/DASH manifest URLs for apps that override the
+  template with their own player (the plugin ships no player library). Its services live in
+  `services/cloudflare_stream.xml`, loaded only when `cloudflare_stream.enabled`, and its routes in
+  `Resources/config/routes.yaml`.
 - **Service wiring** is explicit: one XML file per `src/` folder under `Resources/config/services/`,
   service ids are the FQCN, interfaces are aliases to the implementation, no autowiring or
   autoconfiguration. Configuration lives in `DependencyInjection\Configuration`.

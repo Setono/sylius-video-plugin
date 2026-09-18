@@ -57,19 +57,33 @@ final class ShopRendererTemplatesTest extends TestCase
     /**
      * @test
      */
-    public function it_renders_a_cloudflare_stream_video_as_a_video_js_player_with_both_manifests(): void
+    public function it_embeds_cloudflares_player_for_a_cloudflare_stream_video_with_the_poster(): void
     {
         $video = new CloudflareStreamProductVideo();
         $video->setPosterPath('video/poster/ab/cd.jpg');
 
         $html = $this->render('cloudflare_stream', $this->video($video, 'Shirt'), [
+            'player_url' => 'https://customer-abc.cloudflarestream.com/video123/iframe',
             'hls_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8',
             'dash_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd',
         ]);
 
-        self::assertStringContainsString('<video class="video-js setono-sylius-video__player" data-setono-sylius-video-player controls playsinline preload="metadata" aria-label="setono_sylius_video.ui.video_of:Shirt" poster="video/poster/ab/cd.jpg">', $html);
-        self::assertStringContainsString('<source src="https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8" type="application/x-mpegURL">', $html);
-        self::assertStringContainsString('<source src="https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd" type="application/dash+xml">', $html);
+        self::assertStringContainsString('<iframe src="https://customer-abc.cloudflarestream.com/video123/iframe?poster=video%2Fposter%2Fab%2Fcd.jpg" title="setono_sylius_video.ui.video_of:Shirt"', $html);
+        self::assertStringContainsString('allowfullscreen', $html);
+    }
+
+    /**
+     * @test
+     */
+    public function it_embeds_cloudflares_player_without_a_poster_parameter_when_none_resolves(): void
+    {
+        $html = $this->render('cloudflare_stream', $this->video(new CloudflareStreamProductVideo(), 'Shirt'), [
+            'player_url' => 'https://customer-abc.cloudflarestream.com/video123/iframe',
+            'hls_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.m3u8',
+            'dash_url' => 'https://customer-abc.cloudflarestream.com/video123/manifest/video.mpd',
+        ]);
+
+        self::assertStringContainsString('<iframe src="https://customer-abc.cloudflarestream.com/video123/iframe" title=', $html);
     }
 
     /**

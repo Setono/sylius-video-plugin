@@ -18,10 +18,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 final class Configuration implements ConfigurationInterface
 {
-    public const DEFAULT_VIDEO_JS_SCRIPT = 'https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video.min.js';
-
-    public const DEFAULT_VIDEO_JS_STYLESHEET = 'https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video-js.min.css';
-
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('setono_sylius_video');
@@ -70,7 +66,7 @@ final class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->arrayNode('cloudflare_stream')
-                    ->info('The Cloudflare Stream video type: videos are uploaded from the admin\'s browser straight to Cloudflare Stream and played with Video.js from Cloudflare\'s HLS/DASH manifests.')
+                    ->info('The Cloudflare Stream video type: videos are uploaded from the admin\'s browser straight to Cloudflare Stream and played through Cloudflare\'s Stream Player (or a player of your own via a template override).')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enabled')
@@ -97,14 +93,6 @@ final class Configuration implements ConfigurationInterface
                             ->info('Optional maximum duration of an uploaded video, enforced by Cloudflare when the upload is created.')
                             ->defaultNull()
                             ->min(1)
-                        ->end()
-                        ->arrayNode('video_js')
-                            ->info('Where the shop loads Video.js from; point these at your own copies to avoid the CDN.')
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('script')->defaultValue(self::DEFAULT_VIDEO_JS_SCRIPT)->cannotBeEmpty()->end()
-                                ->scalarNode('stylesheet')->defaultValue(self::DEFAULT_VIDEO_JS_STYLESHEET)->cannotBeEmpty()->end()
-                            ->end()
                         ->end()
                     ->end()
                     ->validate()
