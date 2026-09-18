@@ -94,9 +94,9 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
     /**
      * Routes Cloudflare Stream's notifications through Symfony's Webhook component: the framework's
      * endpoint hands every request for `/webhook/cloudflare_stream` to the plugin's parser with the
-     * configured secret. Only the raw configuration is available in prepend(), so the values are
-     * read from it (env placeholders pass through and are resolved by the container later); without
-     * a secret the type is not routed at all, since every notification would be refused anyway.
+     * configured `webhook_secret`, or an empty one when none is configured, in which case the parser
+     * reads the secret from Cloudflare. Only the raw configuration is available in prepend(), so the
+     * values are read from it (env placeholders pass through and are resolved by the container later).
      */
     private function prependWebhookRouting(ContainerBuilder $container): void
     {
@@ -105,18 +105,19 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
         }
 
         $config = $this->rawCloudflareStreamConfig($container);
-        $secret = $config['webhook_secret'] ?? null;
 
-        if (false === ($config['enabled'] ?? false) || !is_string($secret) || '' === $secret) {
+        if (false === ($config['enabled'] ?? false)) {
             return;
         }
+
+        $secret = $config['webhook_secret'] ?? null;
 
         $container->prependExtensionConfig('framework', [
             'webhook' => [
                 'routing' => [
                     CloudflareStreamRequestParser::TYPE => [
                         'service' => CloudflareStreamRequestParser::class,
-                        'secret' => $secret,
+                        'secret' => is_string($secret) ? $secret : '',
                     ],
                 ],
             ],

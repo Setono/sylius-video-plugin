@@ -6,6 +6,8 @@ namespace Setono\SyliusVideoPlugin\Tests\Functional;
 
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClient;
 use Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamUrlGeneratorInterface;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider;
+use Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface;
 use Setono\SyliusVideoPlugin\Controller\Admin\CloudflareStreamDirectUploadAction;
 use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideo;
 use Setono\SyliusVideoPlugin\Model\ProductVideo;
@@ -64,7 +66,7 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function it_exposes_the_controllers_and_the_sync_command(): void
+    public function it_exposes_the_controllers_and_the_commands(): void
     {
         $container = self::getContainer();
 
@@ -73,6 +75,15 @@ final class CloudflareStreamWiringTest extends FunctionalTestCase
         $commands = $container->get('console.command_loader');
         self::assertInstanceOf(CommandLoaderInterface::class, $commands);
         self::assertTrue($commands->has('setono:sylius-video:cloudflare-stream:sync'));
+        self::assertTrue($commands->has('setono:sylius-video:cloudflare-stream:subscribe-webhook'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_reads_the_webhook_secret_through_the_application_cache(): void
+    {
+        self::assertInstanceOf(WebhookSecretProvider::class, $this->service(WebhookSecretProviderInterface::class));
     }
 
     /**

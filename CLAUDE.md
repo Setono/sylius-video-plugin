@@ -45,9 +45,11 @@ How the pieces fit together:
   `Resources/public/setono-sylius-video-plugin.js`, which first asks
   `Controller\Admin\CloudflareStreamDirectUploadAction` — backed by `CloudflareStream\CloudflareStreamClient` —
   for a one-time tus upload URL). Readiness comes from Symfony's Webhook component — `Webhook\CloudflareStreamRequestParser`
-  (signature checked by `CloudflareStream\WebhookSignatureVerifierInterface`, routed by the `framework.webhook.routing`
-  entry the extension prepends when a secret is configured) and `Webhook\CloudflareStreamWebhookConsumer` — or
-  `Command\CloudflareStreamSyncCommand`;
+  (signature checked by `CloudflareStream\WebhookSignatureVerifierInterface` against the configured `webhook_secret` or,
+  by default, the secret `CloudflareStream\WebhookSecretProviderInterface` reads back from Cloudflare and remembers in
+  `cache.app`; routed by the `framework.webhook.routing` entry the extension prepends whenever the type is enabled) and
+  `Webhook\CloudflareStreamWebhookConsumer` — or `Command\CloudflareStreamSyncCommand`.
+  `Command\CloudflareStreamSubscribeWebhookCommand` points the account's single webhook at the application, idempotently;
   an unready video implements `Model\ProcessingAwareVideoInterface`, renders nothing and is skipped by
   the product block (`setono_sylius_video_ready()`). The default renderer template embeds Cloudflare's
   Stream Player iframe; the context also carries the HLS/DASH manifest URLs for apps that override the

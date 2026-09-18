@@ -86,7 +86,7 @@ final class Configuration implements ConfigurationInterface
                             ->defaultNull()
                         ->end()
                         ->scalarNode('webhook_secret')
-                            ->info('The secret Cloudflare returned when the webhook was subscribed. Without it the webhook is not routed at all; run the sync command instead.')
+                            ->info('Optional. Pins the secret notifications are verified with; by default the plugin reads it from Cloudflare, which returns it with the webhook subscription (see the subscribe-webhook command).')
                             ->defaultNull()
                         ->end()
                         ->integerNode('max_duration_seconds')

@@ -32,6 +32,15 @@
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface"
                  alias="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifier"/>
 
+        <!-- Remembers the secret read from Cloudflare in the application cache, shared by the web and the console. -->
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="cache.app"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface"
+                 alias="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProvider"/>
+
         <service id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizer">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
         </service>
@@ -76,6 +85,7 @@
              extension); the consumer handles the remote events it produces. -->
         <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamRequestParser">
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSignatureVerifierInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface"/>
         </service>
 
         <service id="Setono\SyliusVideoPlugin\Webhook\CloudflareStreamWebhookConsumer">
@@ -90,6 +100,14 @@
             <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\ReadinessSynchronizerInterface"/>
             <argument type="service" id="setono_sylius_video.repository.cloudflare_stream_video"/>
             <argument type="service" id="doctrine"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="Setono\SyliusVideoPlugin\Command\CloudflareStreamSubscribeWebhookCommand">
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\CloudflareStreamClientInterface"/>
+            <argument type="service" id="Setono\SyliusVideoPlugin\CloudflareStream\WebhookSecretProviderInterface"/>
+            <argument type="service" id="router"/>
+            <argument>%setono_sylius_video.cloudflare_stream.webhook_secret%</argument>
             <tag name="console.command"/>
         </service>
     </services>

@@ -84,6 +84,83 @@ final class CloudflareStreamClient implements CloudflareStreamClientInterface
         $this->request('DELETE', sprintf('/accounts/%s/stream/%s', $this->accountId, $uid), [], [404]);
     }
 
+    public function getWebhook(): ?WebhookSubscription
+    {
+        $response = $this->request('GET', sprintf('/accounts/%s/stream/webhook', $this->accountId), [], [404]);
+
+        // An account without a subscription answers 404, or a success without a subscription in it.
+        if (404 === $response->getStatusCode()) {
+            return null;
+        }
+
+        $result = $this->result($response, 'the webhook subscription');
+        $notificationUrl = $result['notificationUrl'] ?? null;
+
+        if (!is_string($notificationUrl) || '' === $notificationUrl) {
+            return null;
+        }
+
+        return $this->webhookSubscription($notificationUrl, $result);
+    }
+
+    public function subscribeWebhook(string $notificationUrl): WebhookSubscription
+    {
+        $response = $this->request('PUT', sprintf('/accounts/%s/stream/webhook', $this->accountId), [
+            'json' => ['notificationUrl' => $notificationUrl],
+        ]);
+
+        $result = $this->result($response, 'the webhook subscription');
+        $subscribedUrl = $result['notificationUrl'] ?? null;
+
+        if (!is_string($subscribedUrl) || '' === $subscribedUrl) {
+            throw new CloudflareStreamException('Cloudflare Stream did not return the webhook subscription it was asked to create.');
+        }
+
+        return $this->webhookSubscription($subscribedUrl, $result);
+    }
+
+    /**
+     * @param array<array-key, mixed> $result the subscription as the API reports it
+     */
+    private function webhookSubscription(string $notificationUrl, array $result): WebhookSubscription
+    {
+        $secret = $result['secret'] ?? null;
+
+        if (!is_string($secret) || '' === $secret) {
+            throw new CloudflareStreamException('Cloudflare Stream returned the webhook subscription without its secret.');
+        }
+
+        $modifiedAt = null;
+
+        if (is_string($result['modified'] ?? null)) {
+            try {
+                $modifiedAt = new \DateTimeImmutable($result['modified']);
+            } catch (\Exception) {
+                // Only informational; an unreadable timestamp is not worth failing over.
+            }
+        }
+
+        return new WebhookSubscription($notificationUrl, $secret, $modifiedAt);
+    }
+
+    /**
+     * The `result` of an API response, as far as it is one.
+     *
+     * @return array<array-key, mixed>
+     */
+    private function result(ResponseInterface $response, string $subject): array
+    {
+        try {
+            $payload = $response->toArray(false);
+        } catch (ExceptionInterface $e) {
+            throw new CloudflareStreamException(sprintf('Cloudflare Stream returned an unreadable response for %s: %s', $subject, $e->getMessage()), 0, $e);
+        }
+
+        $result = $payload['result'] ?? null;
+
+        return is_array($result) ? $result : [];
+    }
+
     /**
      * @param array<string, mixed> $options
      * @param list<int> $acceptedErrorStatuses response codes outside 2xx that are not failures

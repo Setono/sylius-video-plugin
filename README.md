@@ -274,8 +274,8 @@ was uploaded; a template override can plug in any other player.
            account_id: '%env(CLOUDFLARE_STREAM_ACCOUNT_ID)%'
            api_token: '%env(CLOUDFLARE_STREAM_API_TOKEN)%'
            customer_subdomain: '%env(CLOUDFLARE_STREAM_CUSTOMER_SUBDOMAIN)%'
-           webhook_secret: '%env(CLOUDFLARE_STREAM_WEBHOOK_SECRET)%'
            # max_duration_seconds: 600          # optional cap, enforced by Cloudflare per upload
+           # webhook_secret: ~                  # optional, see step 5: by default it is read from Cloudflare
    ```
 
 3. Import the plugin's admin route (the endpoint that creates uploads) and Symfony's webhook
@@ -296,15 +296,25 @@ was uploaded; a template override can plug in any other player.
    nullable columns on the video table, `cloudflare_stream_uid` and `cloudflare_stream_ready`),
    `doctrine:migrations:migrate` and `assets:install`.
 
-5. Subscribe Cloudflare's webhook (one per account) to `https://<shop>/webhook/cloudflare_stream`
-   and put the `secret` the API returns in `CLOUDFLARE_STREAM_WEBHOOK_SECRET`:
+5. Point Cloudflare's webhook at the shop:
 
    ```bash
-   curl -X PUT "https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/stream/webhook" \
-        -H "Authorization: Bearer <API_TOKEN>" \
-        -H "Content-Type: application/json" \
-        --data '{"notificationUrl":"https://<shop>/webhook/cloudflare_stream"}'
+   bin/console setono:sylius-video:cloudflare-stream:subscribe-webhook
    ```
+
+   The URL defaults to the application's `/webhook/cloudflare_stream` endpoint with the host from
+   `framework.router.default_uri`; pass another URL as the argument to override it. The command is
+   idempotent (a subscription that already points at the URL is left alone; `--force` subscribes
+   again), so it can simply run on every deploy.
+
+   There is no secret to copy around: Cloudflare returns the signing secret together with the
+   subscription, and the plugin reads it back through the API. It is remembered in `cache.app` for
+   an hour and read again when a signature stops matching, so re-subscribing needs no restart. Set
+   `webhook_secret` only if you want to pin the secret in the configuration instead.
+
+   Cloudflare allows **one webhook per account**. If several environments share an account, only
+   the one subscribed last is notified, so run the command for production only and let the others
+   rely on the sync command below.
 
 ### How it behaves
 
@@ -332,9 +342,11 @@ was uploaded; a template override can plug in any other player.
 - **Security.** The upload endpoint sits under the admin prefix, so the admin firewall guards it,
   and it only answers `XMLHttpRequest` calls (a cross-site form post cannot add that header). The
   webhook endpoint is public but the parser refuses any notification whose `Webhook-Signature`
-  (HMAC-SHA256 of `<time>.<body>` keyed with the secret) is invalid or older than five minutes;
-  without a configured `webhook_secret` the type is not routed at all, so `/webhook/cloudflare_stream`
-  answers 404.
+  (HMAC-SHA256 of `<time>.<body>` keyed with the secret) is invalid or older than five minutes.
+  The secret is the configured `webhook_secret` or, by default, the one read from Cloudflare; while
+  the account has no subscription every notification is refused. Forged notifications cannot burn
+  the API quota: one without a signature costs no API call, and the secret is re-read at most once
+  a minute.
 
 ## Security
 
