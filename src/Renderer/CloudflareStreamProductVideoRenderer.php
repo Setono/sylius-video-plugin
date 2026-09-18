@@ -11,10 +11,10 @@ use Setono\SyliusVideoPlugin\Model\ProductVideoInterface;
 use Twig\Environment;
 
 /**
- * Renders a Cloudflare Stream video as a Video.js player fed by Cloudflare's HLS and DASH
- * manifests. The template marks the element with `data-setono-sylius-video-player`, which the
- * plugin's shop script mounts (loading Video.js on demand). A video Cloudflare has not finished
- * processing renders nothing: there is no stream to play yet.
+ * Renders a Cloudflare Stream video. The default template embeds Cloudflare's own Stream Player
+ * (an iframe: no JavaScript dependency, plays everywhere); the HLS and DASH manifest URLs are in
+ * the template context too, for an override that brings its own player. A video Cloudflare has
+ * not finished processing renders nothing: there is no stream to play yet.
  */
 final class CloudflareStreamProductVideoRenderer implements VideoRendererInterface
 {
@@ -44,6 +44,7 @@ final class CloudflareStreamProductVideoRenderer implements VideoRendererInterfa
 
         return $this->twig->render($this->template, [
             'video' => $video,
+            'player_url' => $this->urlGenerator->player($uid),
             'hls_url' => $this->urlGenerator->hlsManifest($uid),
             'dash_url' => $this->urlGenerator->dashManifest($uid),
         ]);

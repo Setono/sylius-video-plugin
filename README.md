@@ -6,16 +6,17 @@
 [![Code Coverage][ico-code-coverage]][link-code-coverage]
 
 Adds a **Videos** tab to the admin product create/edit page so editors can attach videos to a
-product through three built-in types â **file upload**, **external URL** and **direct embed
-code** â and renders them on the shop product page.
+product through three built-in types — **file upload**, **external URL** and **direct embed
+code** — and renders them on the shop product page.
 
 An optional fourth type, **Cloudflare Stream**, uploads videos from the admin's browser straight to
-Cloudflare Stream and plays them on the product page with Video.js â see [Cloudflare Stream](#cloudflare-stream).
+Cloudflare Stream and plays them on the product page through Cloudflare's own player, or a player of
+your choice — see [Cloudflare Stream](#cloudflare-stream).
 
 Videos are stored with **Single Table Inheritance** (a base `ProductVideo` plus `FileProductVideo` /
 `UrlProductVideo` / `EmbedProductVideo` subtypes) and presented through **tagged composite renderers**, so the
 plugin is extended exactly like [`setono/sylius-qr-code-plugin`](https://github.com/Setono/sylius-qr-code-plugin):
-add a subtype + a resource entry + a renderer and the discriminator map picks it up â no edits to
+add a subtype + a resource entry + a renderer and the discriminator map picks it up — no edits to
 the plugin's mapping required.
 
 ## Installation
@@ -120,7 +121,7 @@ sylius_product:
 
 ### 4. Update the database
 
-The plugin does not ship migrations â generate one against your own schema and run it:
+The plugin does not ship migrations — generate one against your own schema and run it:
 
 ```bash
 bin/console doctrine:migrations:diff
@@ -224,9 +225,6 @@ setono_sylius_video:
         customer_subdomain: ~
         webhook_secret: ~
         max_duration_seconds: ~
-        video_js:
-            script: https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video.min.js
-            stylesheet: https://cdn.jsdelivr.net/npm/video.js@8.24.0/dist/video-js.min.css
     # Sylius resources; override a class to extend a type (a subclass keeps its parent's type name).
     resources:
         product_video:
@@ -257,9 +255,9 @@ An opt-in type for shops that host their videos on [Cloudflare Stream](https://d
 The file never passes through the shop's PHP: the admin form uploads it from the browser straight
 to Cloudflare (a [direct creator upload](https://developers.cloudflare.com/stream/uploading-videos/direct-creator-uploads/)
 over the tus protocol, in 50 MiB chunks, so PHP upload limits do not apply) and only the video's
-uid is saved. On the product page the video plays through [Video.js](https://videojs.com) from
-Cloudflare's HLS/DASH manifests, with Cloudflare's generated thumbnail as the poster unless one
-was uploaded.
+uid is saved. On the product page the video plays through Cloudflare's own Stream Player (an
+iframe, no JavaScript dependency), with Cloudflare's generated thumbnail as the poster unless one
+was uploaded; a template override can plug in any other player.
 
 ### Setup
 
@@ -278,9 +276,6 @@ was uploaded.
            customer_subdomain: '%env(CLOUDFLARE_STREAM_CUSTOMER_SUBDOMAIN)%'
            webhook_secret: '%env(CLOUDFLARE_STREAM_WEBHOOK_SECRET)%'
            # max_duration_seconds: 600          # optional cap, enforced by Cloudflare per upload
-           # video_js:                          # host Video.js yourself instead of the jsDelivr CDN
-           #     script: /build/video.min.js
-           #     stylesheet: /build/video-js.min.css
    ```
 
 3. Import the routes — the admin endpoint that creates uploads and the public webhook:
@@ -318,14 +313,13 @@ was uploaded.
   upload has finished, and afterwards shows the uid and whether the video is ready. Its type is
   locked once saved like any other; picking a new file on a saved row replaces the video, and the
   previous one is deleted from Cloudflare after the save, as is the video of a removed row.
-- **Shop.** The plugin's `sylius.shop.layout.javascripts` block loads a small bootstrap
-  (`setono-sylius-video-plugin-shop.js`) that fetches Video.js on demand — the first time a page
-  contains a `[data-setono-sylius-video-player]` element — and mounts it. Markup inserted later,
-  say a gallery that swaps the player in on click, is mounted with
-  `window.SetonoSyliusVideo.mount(element)` and released with `window.SetonoSyliusVideo.unmount(element)`
-  before it is removed. Safari plays the HLS stream natively; other browsers use Video.js's
-  built-in HLS support. Override the `setono_sylius_video` block of that event to load the
-  bootstrap differently, or point `video_js.script` / `video_js.stylesheet` at your own copies.
+- **Shop.** The default template embeds Cloudflare's Stream Player in an iframe, sized by the
+  plugin's responsive box like the URL type's providers, with the resolved poster passed as the
+  player's `poster` parameter. To use your own player instead, override
+  `templates/bundles/SetonoSyliusVideoPlugin/shop/renderer/cloudflare_stream.html.twig`: the context
+  carries `player_url`, `hls_url` and `dash_url`, so a Video.js or hls.js player is a `<video>` with
+  the HLS (and DASH) manifest as its sources — Safari plays HLS natively, other browsers need the
+  player library, which your shop then loads and mounts itself.
 - **Security.** The upload endpoint sits under the admin prefix, so the admin firewall guards it,
   and it only answers `XMLHttpRequest` calls (a cross-site form post cannot add that header). The
   webhook is public but refuses any notification whose `Webhook-Signature` (HMAC-SHA256 of
@@ -348,7 +342,7 @@ than "can edit products".
 
 ## Overriding
 
-- **Models:** swap any subtype via the `setono_sylius_video.resources.*.classes.model` config â
+- **Models:** swap any subtype via the `setono_sylius_video.resources.*.classes.model` config —
   the discriminator keys stay stable because they are derived from each model's `getType()`.
 - **Renderer templates:** override at `templates/bundles/SetonoSyliusVideoPlugin/shop/renderer/<type>.html.twig`;
   the shop block itself is `shop/product/_videos.html.twig` and the admin tab
@@ -361,7 +355,7 @@ than "can edit products".
 - **Uploads:** decorate the `setono_sylius_video.uploader` service, or point `filesystem.adapter`
   at any Flysystem/Gaufrette adapter Sylius exposes.
 
-## Extending â adding a new video type
+## Extending — adding a new video type
 
 Worked example: a `youtube` type that extends the URL type to reuse its `url` column and accessors,
 parses the video id from the link, renders YouTube's player and computes its thumbnail from the
@@ -371,15 +365,15 @@ exact type under `tests/Application` (`Entity/Video`, `Form`, `Renderer`, `Poste
 
 | Step | Artefact | Wired by |
 |---|---|---|
-| 1 | `<Type>ProductVideo` model (+ interface) | class name â `getType()` |
+| 1 | `<Type>ProductVideo` model (+ interface) | class name → `getType()` |
 | 2 | ORM mapping (mapped superclass, fields only for new columns) | Doctrine mapping config |
 | 3 | Sylius resource entry | `sylius_resource.resources.<app>.<name>` |
 | 4 | Renderer (+ template) and optional poster resolver | tags `setono_sylius_video.renderer` / `.poster_resolver` |
 | 5 | Form fields | a `ProductVideoType` extension, tag `form.type_extension` |
 | 6 | Validation XML in group `sylius`, `setono_sylius_video.ui.types.<type>` label | Symfony validator / translations |
 
-**1. Subtype model + interface** â name it `<Type>ProductVideo` and the static `getType()`
-derives the discriminator (`YoutubeProductVideo` â `youtube`); override it only for a
+**1. Subtype model + interface** — name it `<Type>ProductVideo` and the static `getType()`
+derives the discriminator (`YoutubeProductVideo` → `youtube`); override it only for a
 non-conventional name. Extending a concrete type is fine: the derived name (`youtube`, not `url`)
 keeps the two apart in the discriminator map. Two models resolving to the same type (for example
 an override of `getType()` returning `url`) fail loudly at container build and metadata load, since
@@ -414,7 +408,7 @@ class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideo
 }
 ```
 
-**2. ORM mapping** â every class in the discriminator map must be known to a mapping driver, even
+**2. ORM mapping** — every class in the discriminator map must be known to a mapping driver, even
 one that adds no column, so always ship a mapping. Declare it as a mapped superclass (Sylius turns
 the resource into an entity) and map fields only for new columns. With attributes that is a single
 line on the class:
@@ -427,7 +421,7 @@ class YoutubeProductVideo extends UrlProductVideo implements YoutubeProductVideo
 or, for an XML-mapped entity namespace, `<mapped-superclass name="App\Entity\Video\YoutubeProductVideo"/>`
 in `config/doctrine/Video.YoutubeProductVideo.orm.xml`.
 
-**3. Register it as a resource** â the plugin scans every Sylius resource whose model implements
+**3. Register it as a resource** — the plugin scans every Sylius resource whose model implements
 `ProductVideoInterface`: the discriminator listener adds it to the STI map and the type selector
 picks it up (label derived as `setono_sylius_video.ui.types.<type>`). No plugin config to edit, no
 listener to decorate:
@@ -440,7 +434,7 @@ sylius_resource:
                 model: App\Entity\Video\YoutubeProductVideo
 ```
 
-**4. Renderer + poster** â implement `VideoRendererInterface` (`instanceof YoutubeProductVideoInterface`),
+**4. Renderer + poster** — implement `VideoRendererInterface` (`instanceof YoutubeProductVideoInterface`),
 tag it `setono_sylius_video.renderer` with a `priority` above 0 so it is asked before the plugin's
 URL renderer (a YouTube video is a URL video too, and the composite picks the first renderer that
 supports it), and add a template for it. Add a poster resolver that builds the thumbnail from the
@@ -478,7 +472,7 @@ final class YoutubePosterResolver implements VideoPosterResolverInterface
 }
 ```
 
-**5. Form fields** â ship a `ProductVideoType` extension for the type's input(s) by extending
+**5. Form fields** — ship a `ProductVideoType` extension for the type's input(s) by extending
 `AbstractProductVideoTypeExtension` and tagging it `form.type_extension`. Declare the type and its
 field(s) as a `name => [form type, options]` map; the base class adds them, reveals/hides them per
 the selected type and strips them on submit when another type is chosen:
@@ -507,7 +501,7 @@ final class YoutubeProductVideoTypeExtension extends AbstractProductVideoTypeExt
 }
 ```
 
-**6. Validation + translations** â add a per-subtype validation file with its constraints in the
+**6. Validation + translations** — add a per-subtype validation file with its constraints in the
 `sylius` group (each row is validated in `%setono_sylius_video.form.type.product_video.validation_groups%`,
 `[sylius]` by default) and the `setono_sylius_video.ui.types.youtube` label key (plus labels for any
 fields your extension adds).

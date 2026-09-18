@@ -18,6 +18,7 @@ final class CloudflareStreamUrlGeneratorTest extends TestCase
 
         self::assertSame('https://customer-abc123.cloudflarestream.com/video1/manifest/video.m3u8', $generator->hlsManifest('video1'));
         self::assertSame('https://customer-abc123.cloudflarestream.com/video1/manifest/video.mpd', $generator->dashManifest('video1'));
+        self::assertSame('https://customer-abc123.cloudflarestream.com/video1/iframe', $generator->player('video1'));
         self::assertSame('https://customer-abc123.cloudflarestream.com/video1/thumbnails/thumbnail.jpg?time=1s&height=720', $generator->thumbnail('video1'));
         self::assertSame('https://customer-abc123.cloudflarestream.com/video1/thumbnails/thumbnail.jpg?time=2m30s&height=360', $generator->thumbnail('video1', '2m30s', 360));
     }

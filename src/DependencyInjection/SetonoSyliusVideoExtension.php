@@ -59,77 +59,32 @@ final class SetonoSyliusVideoExtension extends AbstractResourceExtension impleme
 
     public function prepend(ContainerBuilder $container): void
     {
-        if (!$container->hasExtension('sylius_ui')) {
-            return;
-        }
-
-        // Render the product's videos on the shop product page. The `content` event always
-        // fires on the product show page (unlike `before_thumbnails`, which only fires when a
-        // product has more than one image). Priority 12 places the block after the product
-        // tabs (20) and before the associations (10); apps can move it or disable it by
-        // overriding this block's `priority` / `enabled`.
-        $events = [
-            // The stylesheet sizes pasted embed iframes inside the responsive box.
-            'sylius.shop.layout.stylesheets' => [
-                'blocks' => [
-                    'setono_sylius_video' => [
-                        'template' => '@SetonoSyliusVideoPlugin/shop/layout/_stylesheets.html.twig',
+        if ($container->hasExtension('sylius_ui')) {
+            // Render the product's videos on the shop product page. The `content` event always
+            // fires on the product show page (unlike `before_thumbnails`, which only fires when a
+            // product has more than one image). Priority 12 places the block after the product
+            // tabs (20) and before the associations (10); apps can move it or disable it by
+            // overriding this block's `priority` / `enabled`.
+            $container->prependExtensionConfig('sylius_ui', [
+                'events' => [
+                    // The stylesheet sizes pasted embed iframes inside the responsive box.
+                    'sylius.shop.layout.stylesheets' => [
+                        'blocks' => [
+                            'setono_sylius_video' => [
+                                'template' => '@SetonoSyliusVideoPlugin/shop/layout/_stylesheets.html.twig',
+                            ],
+                        ],
                     ],
-                ],
-            ],
-            'sylius.shop.product.show.content' => [
-                'blocks' => [
-                    'setono_sylius_video' => [
-                        'template' => '@SetonoSyliusVideoPlugin/shop/product/_videos.html.twig',
-                        'priority' => 12,
-                    ],
-                ],
-            ],
-        ];
-
-        $cloudflareStream = $this->rawCloudflareStreamConfig($container);
-
-        // The Cloudflare Stream type needs the player bootstrap on the shop layout. The raw config
-        // is inspected here because the merged configuration is not available yet in prepend();
-        // env placeholders are passed through and resolved by the container later.
-        if (false !== ($cloudflareStream['enabled'] ?? false)) {
-            $videoJs = is_array($cloudflareStream['video_js'] ?? null) ? $cloudflareStream['video_js'] : [];
-
-            $events['sylius.shop.layout.javascripts'] = [
-                'blocks' => [
-                    'setono_sylius_video' => [
-                        'template' => '@SetonoSyliusVideoPlugin/shop/layout/_javascripts.html.twig',
-                        'context' => [
-                            'video_js_script' => $videoJs['script'] ?? Configuration::DEFAULT_VIDEO_JS_SCRIPT,
-                            'video_js_stylesheet' => $videoJs['stylesheet'] ?? Configuration::DEFAULT_VIDEO_JS_STYLESHEET,
+                    'sylius.shop.product.show.content' => [
+                        'blocks' => [
+                            'setono_sylius_video' => [
+                                'template' => '@SetonoSyliusVideoPlugin/shop/product/_videos.html.twig',
+                                'priority' => 12,
+                            ],
                         ],
                     ],
                 ],
-            ];
+            ]);
         }
-
-        $container->prependExtensionConfig('sylius_ui', ['events' => $events]);
-    }
-
-    /**
-     * The `cloudflare_stream` section as configured, later files overriding earlier ones key by key.
-     *
-     * @return array<string, mixed>
-     */
-    private function rawCloudflareStreamConfig(ContainerBuilder $container): array
-    {
-        $merged = [];
-
-        foreach ($container->getExtensionConfig($this->getAlias()) as $config) {
-            if (!is_array($config['cloudflare_stream'] ?? null)) {
-                continue;
-            }
-
-            foreach ($config['cloudflare_stream'] as $key => $value) {
-                $merged[(string) $key] = $value;
-            }
-        }
-
-        return $merged;
     }
 }
