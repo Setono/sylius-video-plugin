@@ -10,16 +10,13 @@ use Setono\SyliusVideoPlugin\Model\CloudflareStreamProductVideoInterface;
  * Copies Cloudflare's `readyToStream` flag onto a video. Used by the sync command as the fallback
  * for shops that cannot receive the webhook.
  */
-final class ReadinessSynchronizer
+final class ReadinessSynchronizer implements ReadinessSynchronizerInterface
 {
     public function __construct(
         private readonly CloudflareStreamClientInterface $client,
     ) {
     }
 
-    /**
-     * @throws CloudflareStreamException
-     */
     public function sync(CloudflareStreamProductVideoInterface $video): VideoDetails
     {
         $uid = $video->getUid();
